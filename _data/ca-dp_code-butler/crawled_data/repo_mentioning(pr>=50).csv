@@ -1,0 +1,6 @@
+Repository,Count,File Paths,pr_count,stars,forks,contributors,commits,releases,languages,file_count,has_license
+bucketeer-io/bucketeer,1,.github/workflows/code-butler.yaml,1435,323,21,22,1253,17,"JavaScript, Go, TypeScript, Makefile, Mustache, CSS, Smarty, Shell, Python, Dockerfile, Starlark, Stan, HTML",3232,Apache License 2.0
+pipe-cd/pipecd,1,.github/workflows/code-butler.yaml,4350,1135,158,96,4426,30,"Go, TypeScript, Shell, JavaScript, Makefile, Mustache, Dockerfile, HTML",11597,Apache License 2.0
+ca-risken/core,1,.github/workflows/code-butler.yml,340,4,0,5,1014,15,"Go, Makefile, Shell, Dockerfile",182,MIT License
+ca-dp/code-butler,1,.github/workflows/code-butler.yml,384,24,2,3,276,17,TypeScript,54,MIT License
+ca-risken/code,1,.github/workflows/code-butler.yml,173,0,0,5,456,15,"Go, Makefile, Dockerfile, Shell",71,MIT License

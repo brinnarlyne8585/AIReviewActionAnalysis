@@ -1,0 +1,173 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1171806715,2,"- suggest changing the comment from ""fisherman"" to ""fishermen"" to use the correct plural form."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160180621,2,- can you add a comment on the key-value types here?
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184436462,2,"- consideration: if switching to newrandomsub, there will be a max size"
+https://api.github.com/repos/xun082/create-neat/pulls/comments/1528641886,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174214813,2,- can you add a `techdebt: these structures were copied as placeholders from v0 and need to be updated to reflect changes in v1; <insert_link_to_v0_ref_here>`
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829250184,2,"- i suggest changing
+  ```
+  +                    f""data index for {reader.pattern} contains out-of-order timestamps!"",
+  +                    stacklevel=2,
+  ```
+  to
+  ```
+  +                    f""data index for {reader.pattern} contains out-of-order timestamps!"", stacklevel=2
+  ```
+- revert black"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228789399,2,"1. can't we just get it directly from `session`?
+2. if not, we should be able to do `s.getbus().getconsensusmodule().currentheight()`
+3. if neither 1 or 2 work, this is `techdebt`, not `improve` imo"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160294627,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1826216808,2,"- ""note that bullet lists need to start after a linebreak. when breaking the bullet description into multiple lines, these need to align with the first line for the docs to render correctly.""
+- ""full suggestion that gets rid of noqa 501.""
+- the provided docstring example suggests reformatting the docstring to improve bullet list formatting and line alignment, as shown in the code block."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820625134,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1254315920,2,- need to check `m.isstakedactor()` here...
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220512526,2,- can you add a very short comment for each of them?
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1479556773,2,"- i think yo can delete `/*ktlint-disable*/`, local execution `./gradlew ktlintcheck` passed successfully"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1824905241,2,- would you revert this change as well?
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,2,"- ""`offer_data_api_call_id` ⇾ `jsonpayload.extra.offer_data_api_call_id`""
+- ""pourrait-on expliciter ce que contient ce champ ainsi que les suivants :""
+- ""here are some alternative column name suggestions :
+offer_suggestion_api_id
+subcategory_predict_api_id
+predictive_model_call_id
+suggested_offer_api_id
+api_call_subcat_suggestion_id
+predictive_offer_call_id
+subcat_offer_api_id
+suggestion_model_api_id
+api_offer_prediction_id
+offer_creation_api_id"""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184450214,2,"1. can you rename `fisherman.json` to `fisherman1.json` in case we add more; ditto for the servicer
+2. can you rename the `config*.json` to `validator*.json` so everything is semantically identified"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220406444,2,optional nit: i feel like single lining this whole statement (even if it's > 80 chars) will make it easier to read
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1182005752,2,"i suggest changing
+```
++          description: session servicer response
+```
+to
+```
++          description: session response
+```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1201133126,2,"- ""`s/appmsgdata/pocketenvelopebz` ?\n\ni realize you were staying consistent with what we had before but doesn't hurt to be more explicit seeing how we're already here."""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184416497,2,"- i suggest changing
+  ```
++	if height == 0 {
++		currentheight := int64(s.getbus().getconsensusmodule().currentheight())
++		if currentheight > 0 {
++			currentheight -= 1
++		}
++		return currentheight
++	}
++	return height
+  ```
+  to
+  ```
++	if height != 0 {
++		return height
++	}
++	currentheight := int64(s.getbus().getconsensusmodule().currentheight())
++	if currentheight > 0 {
++		currentheight -= 1
++	}
++	return currentheight
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1195874598,2,- let's log a warning here with details
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1581104089,2,- can we drop the `return` statements in the fixtures that do not return anything?
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1173565356,2,- what do you think about multi-lining this signature for readability?
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228800495,2,- addtest: need to add more unit tests for the numerical portion of this functionality
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220445042,2,- let's also rename it to `relayminingvolumeaccuracy` and point to https://arxiv.org/abs/2305.10672
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251317366,2,"- i suggest changing
+  ```
+  +_discuss(team): if you feel this needs a diagram, please reach out to the team for additional details._
+  ```
+  to
+  ```
+  +_note: if you (the reader) feel this needs a diagram, please reach out to the team for additional details._
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184471728,2,- can you reflect the same name of the wg as what you passed in. it'll help with the flow of the code to the reader.
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1206007090,2,"- thoughts on decoupling ""getsession"" and ""getservicer"" or getting the session in place and passing that to `fetchservicer`?
+- feels weird to get back a session from a function called `fetchservicer`"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820652338,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174221617,2,"- i suggest changing
+  ```
+  +	}
+  ```
+  to
+  ```
+  +	}
+  +	defer readctx.release()
+  ```
+- ditto everywhere else"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251330088,0,
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,2,- there is a typo in the variable name `deploy_model_taks`; it should likely be `deploy_model_tasks`.
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1210858477,2,"- ""why not assign to `payload.jsonrpcpayload.headers[header.name]` directly? i believe it's auto initialized to an empty map."""
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1906709003,2,- nit: isn't datetime.strptime better for this?
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228700393,1,
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1483859108,2,"- i suggest changing
+```
++    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan</string>
+```
+to
+```
++    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan.</string>
+```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1180838572,2,"- i suggest changing
+  ```
+  +func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+  ```
+  to
+  ```
+  +func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+  +  t.helper()
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243115416,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220421661,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820658854,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1235980764,2,"- should we update the test to getting pocket height? otherwise, this is confusing of using `pokt-unittest` with `eth_blocknumber`.
+- my suggestion:
+  1. pokt-unittest with rest payload getting `/v1/height`
+  2. eth goerli with `eth_blocknumber` and json rpc"
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1188377629,2,- remove it
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1828128411,2,"- i suggest changing
+  ```
++            {
++                ""strain_id"": animal_resp[""strain_id""],
++                ""strain_name"": animal_resp[""strain_id""],
++            },
+  ```
+  to
+  ```
++            {""strain_id"": animal_resp[""strain_id""], ""strain_name"": animal_resp[""strain_id""]},
+  ```
+  revert black
+
+- likewise the following dicts can fit in a single line
+  https://github.com/sainsburywellcomecentre/aeon_mecha/blob/48493cbc0de8b6e2a5e20bcebc0f30f3f7e6719b/aeon/dj_pipeline/subject.py#l74-l85"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228792764,2,"- suggestion to use utilities to generate keys that are guaranteed to be compatible, such as:
+  ```go
+  	operatorkey, err := crypto.generatepublickey()
+  	if err != nil {
+  		return nil, err
+  	}
+
+  	outputaddr, err := crypto.generateaddress()
+  	if err != nil {
+  		return nil, err
+  	}
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1205997356,2,"- ""we have a helper in `shared/crypto/sha3.go` you might be able to use. can you see if it can be leveraged?"""
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829515344,2,- remove this as project requires python >= 3.11 we can use the `datetime.utc` alias
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251331098,2,"- i suggest changing
+```
++func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+```
+to
+```
++// setuppubsub sets up a new gossip sub topic using libp2p
++func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243081568,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1209947205,2,- what is stopping us from using the txindexer alone for this call?
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,2,"- change ""structures"" to ""cultural entities"" in the added sentence: ""cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution)."""

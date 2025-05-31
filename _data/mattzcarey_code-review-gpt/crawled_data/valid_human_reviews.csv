@@ -1,0 +1,577 @@
+PR_URL,Comment_URL,Comment_Author,Original_Commit_id,Commit_id,Diff_hunk,Diff_path,Created_At,Updated_At,Body,Start_Line,Original_Start_Line,Start_Side,Line,Original_Line,Side,Original_Position,Position,Subject_Type,Affiliated_PR_URL,Repository,Merge_Commit_SHA
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3430,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1838179217,vbusson-pass,f127198e354fe976f4e7450332b96d4e5bc193fe,f127198e354fe976f4e7450332b96d4e5bc193fe,"@@ -24,12 +24,16 @@
+     ""prod"": [""passculture.pro""],
+ }[ENV_SHORT_NAME]
+ 
+-GCP_PROJECT_NATIVE_DEFAULT_ENV = ""passculture-native.analytics_267263535""
++# double run for native while we are migrating to new project.
++GCP_PROJECT_NATIVE_DEFAULT_ENV = [
++    ""passculture-native.analytics_267263535"",
++    ""pc-native-production.analytics_450774560"",
++]
+ 
+ GCP_PROJECT_NATIVE_ENV = {
+-    ""dev"": [GCP_PROJECT_NATIVE_DEFAULT_ENV],
+-    ""stg"": [GCP_PROJECT_NATIVE_DEFAULT_ENV],
+-    ""prod"": [GCP_PROJECT_NATIVE_DEFAULT_ENV],
++    ""dev"": GCP_PROJECT_NATIVE_DEFAULT_ENV + [""pc-native-testing.analytics_451612566""],
++    ""stg"": GCP_PROJECT_NATIVE_DEFAULT_ENV + [""pc-native-staging.analytics_450776578""],
++    ""prod"": GCP_PROJECT_NATIVE_DEFAULT_ENV,",orchestration/dags/dependencies/firebase/import_firebase.py,2024-11-12 14:15:13+00:00,2024-11-12T14:15:34Z,"pas sur de comprendre pourquoi ne pas reprendre le template du dessous: 
+GCP_PROJECT_NATIVE_DEFAULT_ENV = ""passculture-native.analytics_267263535""
+GCP_PROJECT_NATIVE_ENV = {
+    ""dev"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native-testing.analytics_451612566""],
+    ""stg"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native-staging.analytics_450776578""],
+    ""prod"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native.production.analytics_450774560""]
+}[ENV_SHORT_NAME]",,,,36.0,36,RIGHT,17,17.0,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3430,pass-culture/data-gcp,6d4de2c317d170acca2250443ba60a80d034d723
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3470,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867275285,cdelabre-pass,6406a12f4b97bc799799244c5278d30ec58b81e8,cc3db6e9d7656d7584d856fb16d71b3be8083f09,"@@ -0,0 +1,18 @@
++---
++title: Transactional jeune",orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/intermediate/brevo/description__int_brevo__transactional_native.md,2024-12-03 08:44:25+00:00,2024-12-03T08:45:09Z,native,,,,,2,RIGHT,2,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3470,pass-culture/data-gcp,1ea84616c72609a350065dc680ef0748377b1088
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3488,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1852414625,lmontier-pass,e959c1321c69050d38ced4608512def586623083,d5b1381a8a0c3640f1d89786a1cf4122f031129e,"@@ -25,15 +25,29 @@ with
+             count(distinct item_id) as item_number,
+             sum(ifnull(total_individual_bookings, 0)) as total_booking_count,
+             'performer' as artist_type
+-        from `{{ bigquery_analytics_dataset }}.global_offer`
++        from {{ ref(""mrt_global__offer"") }}
+         where
+             offer_category_id in (""MUSIQUE_LIVE"", ""SPECTACLE"", ""MUSIQUE_ENREGISTREE"")
+             and performer is not null
+             and performer != """"
+         group by performer, offer_category_id, is_synchronised
+     )
+-select *
++select
++    artist_name,
++    offer_category_id,
++    is_synchronised,
++    offer_number,
++    item_number,
++    total_booking_count,
++    artist_type",orchestration/dags/data_gcp_dbt/models/machine_learning/linkage/artist/input/ml_linkage__artist_name_to_link.sql,2024-11-21 16:00:44+00:00,2024-11-25T14:24:56Z,"offer_is_synchronised / z
+total_offer_count
+total_item_count
+artist_type",,36.0,RIGHT,,42,RIGHT,29,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3488,pass-culture/data-gcp,e0cf6ea71f89e0b4bacf5dcf362b341e0a364491
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3549,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1866134804,mripoll-pass,9d8ee14b8dbb90359d0b0116a0e0023b7c4a40e0,ae08e5b7327612a35c8faeb8719d1ae1412d39d6,"@@ -12,23 +11,10 @@
+ {% docs column__institution_city %} City where the educational institution is located. {% enddocs %}
+ {% docs column__institution_epci %} EPCI code of the educational institution. {% enddocs %}
+ {% docs column__institution_density_label %} Density label of the educational institution's area. {% enddocs %}
+-{% docs column__institution_macro_density_label %} Macro density label of the educational institution's area. {% enddocs %}
++{% docs column__institution_macro_density_label %} Macro density label of the educational institution : rural or urbain. {% enddocs %}",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__institution.md,2024-12-02 16:11:32+00:00,2024-12-02T16:11:32Z,urban,,,,,14,RIGHT,10,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3549,pass-culture/data-gcp,d7c01963ee36abb1375d541672b581c199d8efeb
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3549,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1866135760,mripoll-pass,9d8ee14b8dbb90359d0b0116a0e0023b7c4a40e0,ae08e5b7327612a35c8faeb8719d1ae1412d39d6,"@@ -75,3 +75,5 @@ title: Metrics
+ {% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
++{% docs column__ratio_current_credit_utilization %}The ratio of current credit utilization for the educational institution.{% enddocs %}",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,2024-12-02 16:12:07+00:00,2024-12-02T16:12:08Z,based on all booking status ?,,,,,78,RIGHT,4,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3549,pass-culture/data-gcp,d7c01963ee36abb1375d541672b581c199d8efeb
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3526,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863763334,mripoll-pass,289f48f1000fd5ad4507c5200453e75ea8351104,d53fa7e2571f9d730d3644170040fef7701b4688,"@@ -8,9 +8,18 @@ description: Description of the `mrt_global__cultural_partner` table.
+ # Table: Cultural Partner
+ 
+ The `mrt_global__cultural_partner` table is designed to store information about the cultural partner concept that is between venue and offerer concept.
++A cultural partner is an in-house concept created to better record and monitor the activity of cultural players registered on the pass Culture.",orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/mart/global/description__mrt_global__cultural_partner.md,2024-11-29 16:38:43+00:00,2024-11-29T16:38:53Z,players ?,,,,,11,RIGHT,4,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3526,pass-culture/data-gcp,c4180ded4591ab50c55a304858bd4c94f9bed01d
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3526,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,mripoll-pass,289f48f1000fd5ad4507c5200453e75ea8351104,d53fa7e2571f9d730d3644170040fef7701b4688,"@@ -8,9 +8,18 @@ description: Description of the `mrt_global__cultural_partner` table.
+ # Table: Cultural Partner
+ 
+ The `mrt_global__cultural_partner` table is designed to store information about the cultural partner concept that is between venue and offerer concept.
++A cultural partner is an in-house concept created to better record and monitor the activity of cultural players registered on the pass Culture.
++
+ 
+ {% enddocs %}
+ 
++Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution).",orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/mart/global/description__mrt_global__cultural_partner.md,2024-11-29 16:39:30+00:00,2024-11-29T16:39:30Z,structures -> cultural entities,,,,,16,RIGHT,9,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3526,pass-culture/data-gcp,c4180ded4591ab50c55a304858bd4c94f9bed01d
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3585,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,vbusson-pass,bf8deef12fda58e360f2198987a26c2b6c92e3e5,7b41cba0cb7d79a20894cb86f2d5f73d4db395f0,"@@ -89,59 +90,48 @@
+         labels={""job_type"": ""ml""},
+     )
+ 
+-    fetch_code = CloneRepositoryGCEOperator(
+-        task_id=""fetch_code"",
++    fetch_install_code = InstallDependenciesOperator(
++        task_id=""fetch_install_code"",
+         instance_name=GCE_INSTANCE,
+-        command=""{{ params.branch }}"",
++        branch=""{{ params.branch }}"",
+         python_version=""3.10"",
+-        retries=2,
+-    )
+-
+-    fetch_code.set_upstream(gce_instance_start)
+-
+-    install_dependencies = SSHGCEOperator(
+-        task_id=""install_dependencies"",
+-        instance_name=GCE_INSTANCE,
+         base_dir=BASE_DIR,
+-        command=""""""pip install -r requirements.txt --user"""""",
+-        dag=dag,
++        installer=GCE_UV_INSTALLER,
++        retries=2,
+     )
+ 
+-    install_dependencies.set_upstream(fetch_code)
+-
+-    tasks = []
+-    seq_task = install_dependencies
+-    for model_params in models_to_deploy:
+-        experiment_name = model_params[""experiment_name""]
+-        endpoint_name = model_params[""endpoint_name""]
+-        version_name = model_params[""version_name""]
+-        instance_type = model_params[""instance_type""]
+-        min_nodes = model_params[""min_nodes""]
+-        max_nodes = model_params[""max_nodes""]
+-        deploy_command = f""""""
+-            python deploy_model.py \
+-                --region {DEFAULT_REGION} \
+-                --experiment-name {experiment_name} \
+-                --endpoint-name {endpoint_name} \
+-                --version-name {version_name} \
+-                --instance-type {instance_type} \
+-                --min-nodes {min_nodes} \
+-                --max-nodes {max_nodes}
+-        """"""
+-
+-        deploy_model = SSHGCEOperator(
+-            task_id=f""deploy_model_{experiment_name}_{endpoint_name}"",
+-            instance_name=GCE_INSTANCE,
+-            base_dir=BASE_DIR,
+-            command=deploy_command,
+-            dag=dag,
+-        )
+-
+-        deploy_model.set_upstream(seq_task)
+-        seq_task = deploy_model
++    deploy_model_taks = {}",orchestration/dags/jobs/ml/algo_default_deployment.py,2024-12-11 14:47:54+00:00,2024-12-11T14:54:35Z,typo,,,,,103,RIGHT,79,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3585,pass-culture/data-gcp,17b1a6dcc9852af137b9918ce5c1e73b5454d97d
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3587,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880502361,mvey-pass,0eb108082546d487e228405c39dd35cfe0356fd6,cf3df68bddb0dc851d9c26e318ffaec0196399b1,"@@ -8,18 +8,30 @@ with
+             )
+     ),
+     venue_emails as (
+-        select *
++        select venue_managing_offerer_id as offerer_id, venue_id, venue_booking_email
++        from `{{ bigquery_raw_dataset }}.applicative_database_venue`
++    ),
++    collective_offer_emails as (
++        select distinct venue_id, booking_email as collective_offer_email
+         from
+-            external_query(
+-                '{{ applicative_external_connection_id }}',
+-                'SELECT CAST(""id"" AS varchar(255)) AS venue_id, ""bookingEmail"" as venue_email FROM public.venue'
+-            )
++            (
++                select
++                    venue_id, split(collective_offer_booking_email, ',') as emails_array
++                from `{{ bigquery_raw_dataset }}.applicative_database_collective_offer`
++            ),
++            unnest(emails_array) as booking_email
++    ),
++    collective_offer_emails_offerer as (
++        select offerer_id, collective_offer_email
++        from collective_offer_emails
++        left join
++            venue_emails on collective_offer_emails.venue_id = venue_emails.venue_id
+     )
+ select distinct
+     template,
+     tag,
+     user_id,
+-    venue_id,
++    offerer_id,",orchestration/dags/dependencies/sendinblue/sql/raw/sendinblue_transactional.sql,2024-12-11 16:19:52+00:00,2024-12-12T09:21:56Z,"du coup COALESCE(venue_emails.offerer_id, co.offerer_id) non ? ",,,,,34,RIGHT,33,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3587,pass-culture/data-gcp,06ffdf6c145e118742277acdfe325d4fe389158d
+https://api.github.com/repos/hyochan/react-native-iap/pulls/2764,https://api.github.com/repos/hyochan/react-native-iap/pulls/comments/1640807011,hyochan,26f8dee8e23aef4f66271563de1cf152e65c95da,26f8dee8e23aef4f66271563de1cf152e65c95da,"@@ -6,7 +6,7 @@ RNIap_buildToolsVersion=33.0.0
+ RNIap_ndkversion=23.1.7779620
+ RNIap_playServicesVersion=18.1.0
+ RNIap_amazonSdkVersion=3.0.4
+-RNIap_playBillingSdkVersion=6.1.0
++RNIap_playBillingSdkVersion=7.0.0",android/gradle.properties,2024-06-15 06:26:09+00:00,2024-06-15T06:26:09Z,https://github.com/dooboolab-community/react-native-iap/issues/2755#issuecomment-2166852914,,,,9.0,9,RIGHT,5,5.0,line,https://api.github.com/repos/hyochan/react-native-iap/pulls/2764,hyochan/react-native-iap,20010581bc5cdcbe90589f0d19c890210cc32a64
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3412,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1834604766,cdelabre-pass,b558eb16dd4516670e705c5c5ad7b1659d430701,375c64b41ae7abfafefdcbdf1fb4f5d6ae2d8786,"@@ -59,6 +59,7 @@ select
+     user_is_current_beneficiary,
+     date_diff(
+         date('{{ ds() }}'), cast(user_activation_date as date), day
+-    ) as user_seniority
++    ) as user_seniority,",orchestration/dags/data_gcp_dbt/models/mart/global/mrt_global__user.sql,2024-11-08 15:42:31+00:00,2024-11-08T15:46:46Z,Add field here to check if CI fails correctly.,,,,,62,RIGHT,5,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3412,pass-culture/data-gcp,ee5ccca292be93e97405f1afd86f1f7f42542de9
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3412,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1834610247,cdelabre-pass,ab99828ce80e167535d616e4bf860bf3d0d8f960,375c64b41ae7abfafefdcbdf1fb4f5d6ae2d8786,"@@ -0,0 +1,3 @@
++select user_id, user_department_code, user_department_name",orchestration/dags/data_gcp_dbt/models/mart/global/mrt_global__not_documented_model.sql,2024-11-08 15:46:36+00:00,2024-11-08T15:46:36Z,Add fake model to check if CI fails correctly.,,,,,1,RIGHT,1,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3412,pass-culture/data-gcp,ee5ccca292be93e97405f1afd86f1f7f42542de9
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3589,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880400242,lmontier-pass,803e3ac83b9b69a7dd017fb25f3ca18faa34c443,9444a1fe666f2dd68e8aeb638b98b51adf0d08ae,"@@ -0,0 +1,20 @@
++## Two towers model",jobs/ml_jobs/algo_training/two_towers_model/README.md,2024-12-11 15:20:33+00:00,2024-12-12T08:20:40Z,:heart,,,,1.0,1,RIGHT,1,1.0,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3589,pass-culture/data-gcp,6b3f4fdbc132ab7191b9cd725cc2ab8db3af6246
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3554,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,cdelabre-pass,c86a607c5bf52e36fe61345bbaeaa2e94e9823e6,d14a2ff6bf16a95a45210e655ee9938ab3f4b8ef,"@@ -135,5 +135,12 @@ select
+     date(
+         jsonpayload.extra.firstdepositactivationdate
+     ) as user_first_deposit_activation_date,
+-    jsonpayload.extra.status as user_status
++    jsonpayload.extra.status as user_status,
++    cast(jsonpayload.extra.user_satisfaction as string) as user_satisfaction,
++    cast(jsonpayload.extra.user_comment as string) as user_comment,
++    cast(offer_data_api_call_id as string) as offer_data_api_call_id,",orchestration/dags/data_gcp_dbt/models/intermediate/pcapi/int_pcapi__log.sql,2024-12-03 13:00:47+00:00,2024-12-03T13:53:56Z,"`offer_data_api_call_id` ⇾ `jsonpayload.extra.offer_data_api_call_id`
+Pourrait-on expliciter ce que contient ce champ ainsi que les suivants : 
+
+Here are some alternative column name suggestions :
+offer_suggestion_api_id
+subcategory_predict_api_id
+predictive_model_call_id
+suggested_offer_api_id
+api_call_subcat_suggestion_id
+predictive_offer_call_id
+subcat_offer_api_id
+suggestion_model_api_id
+api_offer_prediction_id
+offer_creation_api_id
+",,,,,141,RIGHT,8,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3554,pass-culture/data-gcp,13c3b6b8038a39870d70a22e8821d52b9b944f8b
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881698653,vbusson-pass,2e204f354512e44d0b4406033c9d3806428730e6,0cb1c12d993d200b648b6f1a1de31e380e87c4e5,"@@ -20,60 +21,87 @@ title: Metrics
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
++current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
++current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
++the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,2024-12-12 09:26:49+00:00,2024-12-12T09:54:59Z,theoretic ? -> expected revenue ?,,,,,32,RIGHT,36,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,pass-culture/data-gcp,0f875fb80aa4fa9cc40a11847fc9fc4df5422276
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881702097,vbusson-pass,2e204f354512e44d0b4406033c9d3806428730e6,0cb1c12d993d200b648b6f1a1de31e380e87c4e5,"@@ -20,60 +21,87 @@ title: Metrics
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
++current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
++current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
++the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
++year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,2024-12-12 09:28:31+00:00,2024-12-12T09:54:59Z,Total collective bookings used for the current year.,,,,,34,RIGHT,38,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,pass-culture/data-gcp,0f875fb80aa4fa9cc40a11847fc9fc4df5422276
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881704450,vbusson-pass,2e204f354512e44d0b4406033c9d3806428730e6,0cb1c12d993d200b648b6f1a1de31e380e87c4e5,"@@ -20,60 +21,87 @@ title: Metrics
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
++current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
++current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
++the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
++year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
++enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
++enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
++{% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+ {% docs column__total_individual_bookings %} Total number of individual bookings. {% enddocs %}
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
++deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
++collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
++{% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,2024-12-12 09:29:54+00:00,2024-12-12T09:54:59Z,rajouter un commentaire (duo -> individual booking only),,,,,57,RIGHT,68,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,pass-culture/data-gcp,0f875fb80aa4fa9cc40a11847fc9fc4df5422276
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881704830,vbusson-pass,2e204f354512e44d0b4406033c9d3806428730e6,0cb1c12d993d200b648b6f1a1de31e380e87c4e5,"@@ -20,60 +21,87 @@ title: Metrics
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
++current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
++current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
++the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
++year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
++enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
++enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
++{% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+ {% docs column__total_individual_bookings %} Total number of individual bookings. {% enddocs %}
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
++deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
++collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
++{% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
++enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,2024-12-12 09:30:07+00:00,2024-12-12T09:54:59Z,"duo, included ?",,,,,59,RIGHT,70,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,pass-culture/data-gcp,0f875fb80aa4fa9cc40a11847fc9fc4df5422276
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881744827,vbusson-pass,2e204f354512e44d0b4406033c9d3806428730e6,0cb1c12d993d200b648b6f1a1de31e380e87c4e5,"@@ -1,42 +1,58 @@
+ !!! note
+-    This file is auto-generated
++This file is auto-generated
+ 
+-    Tracking that are not related to specific concepts for now
++Tracking that are not related to specific concepts for now
+ 
+-    :construction_worker_tone1: Work in progress :construction_worker_tone1:
++:construction_worker_tone1: Work in progress :construction_worker_tone1:
+ 
+ 
+ {% docs column__event_date %}The date when the event occurred, used for partitioning the data.{% enddocs %}
+-{% docs column__event_name %}The name of the event. For screen views, it concatenates the event name with the Firebase screen name.{% enddocs %}
++{% docs column__event_name %}The name of the event. For screen views, it concatenates the event name with the Firebase
++screen name.{% enddocs %}
+ {% docs column__page_name %}The name of the page where the event occurred, providing context for the event.{% enddocs %}
+ {% docs column__event_timestamp %}The exact timestamp when the event was recorded.{% enddocs %}
+ {% docs column__user_pseudo_id %}A pseudo identifier for the user, used for tracking purposes.{% enddocs %}
+ {% docs column__origin %}The origin of the event, indicating where it was triggered from.{% enddocs %}
+ {% docs column__platform %}The platform on which the event was recorded, such as iOS or Android.{% enddocs %}
+ {% docs column__app_version %}The version of the application where the event was recorded.{% enddocs %}
+ {% docs column__traffic_campaign %}The name of the marketing campaign that generated the session.{% enddocs %}
+-{% docs column__traffic_source %}The source of the marketing campaign (Instagram, Snapchat ...) that generated the session.{% enddocs %}
+-{% docs column__traffic_medium %}The medium of the marketing campaign (email, push notification ...)that generated the session.{% enddocs %}
+-{% docs column__session_id %}Deprecated: use unique_session_id. The session identifier during which the event was recorded.{% enddocs %}
++{% docs column__traffic_source %}The source of the marketing campaign (Instagram, Snapchat ...) that generated the
++session.{% enddocs %}
++{% docs column__traffic_medium %}The medium of the marketing campaign (email, push notification ...)that generated the
++session.{% enddocs %}
++{% docs column__session_id %}Deprecated: use unique_session_id. The session identifier during which the event was
++recorded.{% enddocs %}
+ {% docs column__unique_session_id %}A unique identifier for the session, ensuring no duplicates.{% enddocs %}
+ 
++
+ {% hide columns %}
+ 
+-{% docs column__session_number %}The number of the session during which the visit occurred, indicating the sequence of user sessions.{% enddocs %}
+-{% docs column__first_event_date %}The date of the first event in the session, used for partitioning the data.{% enddocs %}
++{% docs column__session_number %}The number of the session during which the visit occurred, indicating the sequence of
++user sessions.{% enddocs %}
++{% docs column__first_event_date %}The date of the first event in the session, used for partitioning the data.{% enddocs
++%}
+ {% docs column__first_event_timestamp %}The exact timestamp of the first event in the session.{% enddocs %}
+ {% docs column__last_event_timestamp %}The exact timestamp of the last event in the session.{% enddocs %}
+-{% docs column__visit_duration_seconds %}The duration of the visit in seconds, calculated from the first to the last event.{% enddocs %}
+-{% docs column__destination %}The destination associated with the event, if applicable, indicating the target location or page.{% enddocs %}
+-{% docs column__user_device_category %}The category of the user's device, such as mobile, tablet, or desktop.{% enddocs %}
+-{% docs column__user_device_operating_system %}The operating system of the user's device, such as Windows, macOS, iOS, or Android.{% enddocs %}
+-{% docs column__user_device_operating_system_version %}The version of the operating system on the user's device.{% enddocs %}
++{% docs column__visit_duration_seconds %}The duration of the visit in seconds, calculated from the first to the last
++event.{% enddocs %}
++{% docs column__destination %}The destination associated with the event, if applicable, indicating the target location
++or page.{% enddocs %}
++{% docs column__user_device_category %}The category of the user's device, such as mobile, tablet, or desktop.{% enddocs
++%}
++{% docs column__user_device_operating_system %}The operating system of the user's device, such as Windows, macOS, iOS,
++or Android.{% enddocs %}
++{% docs column__user_device_operating_system_version %}The version of the operating system on the user's device.{%
++enddocs %}
+ {% docs column__user_web_browser %}The web browser used by the user, such as Chrome, Firefox, or Safari.{% enddocs %}
+ {% docs column__user_web_browser_version %}The version of the web browser used by the user.{% enddocs %}
+ {% docs column__page_location %}The location of the page where the event occurred, typically a URL or path.{% enddocs %}
+ {% docs column__url_path_extract %}The extracted path from the URL where the event occurred.{% enddocs %}
+ {% docs column__page_referrer %}The referrer page that led to the current page where the event occurred.{% enddocs %}
+ {% docs column__page_number %}The number of the page in a sequence, if applicable.{% enddocs %}
++{% docs column__event_type %}The type of the interaction event.{% enddocs %}
++{% docs column__event_hour %}The hour of the interaction event.{% enddocs %}
++{% docs column__event_day %}The day of the interaction event.{% enddocs %}
++{% docs column__event_month %}The month of the interaction event.{% enddocs %}",orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/tracking/column__event.md,2024-12-12 09:54:14+00:00,2024-12-12T09:54:59Z,type?,,,,44.0,55,RIGHT,69,28.0,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3586,pass-culture/data-gcp,0f875fb80aa4fa9cc40a11847fc9fc4df5422276
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3620,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1890541508,lmontier-pass,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,"@@ -61,3 +13,23 @@ def access_secret_data(project_id, secret_id, version_id=""latest"", default=None)
+         return response.payload.data.decode(""UTF-8"")
+     except DefaultCredentialsError:
+         return default
++
++
++def mergeDictionary(dict_1, dict_2):",jobs/etl_jobs/external/dms/utils.py,2024-12-18 16:42:55+00:00,2024-12-18T16:43:30Z,Ajoute une doc: `Warning: function not symetrical: dict_2 cannot contain any list),,,,18.0,18,RIGHT,67,67.0,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3620,pass-culture/data-gcp,5e1bf170b09d6e6320e3bb1e7efad8b1ae0d938d
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3620,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1890541885,lmontier-pass,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,"@@ -61,3 +13,23 @@ def access_secret_data(project_id, secret_id, version_id=""latest"", default=None)
+         return response.payload.data.decode(""UTF-8"")
+     except DefaultCredentialsError:
+         return default
++
++
++def mergeDictionary(dict_1, dict_2):
++    dict_3 = {**dict_1, **dict_2}
++    for key, value in dict_3.items():
++        if key in dict_1 and key in dict_2:
++            if isinstance(dict_1[key], list):
++                list_value = [value]
++                dict_3[key] = list_value + dict_1[key]",jobs/etl_jobs/external/dms/utils.py,2024-12-18 16:43:13+00:00,2024-12-18T16:43:30Z,if value is list => raise,23.0,23.0,RIGHT,24.0,24,RIGHT,73,73.0,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3620,pass-culture/data-gcp,5e1bf170b09d6e6320e3bb1e7efad8b1ae0d938d
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/280,https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1445004593,ObservedObserver,21eb8331f39e0a6b4fdef55e4d56d9b07493be7e,e301803e98d37126223b5fcb7629c24b8ff08280,"@@ -0,0 +1,139 @@
++import { observer } from 'mobx-react-lite';
++import React, { useState, useEffect, useRef, useMemo } from 'react';
++import { useVizStore } from '../../store';
++import DefaultButton from '../button/default';
++import PrimaryButton from '../button/primary';
++import Modal from '../modal';
++import { parseErrorMessage } from '../../utils';
++import { highlightField } from '../highlightField';
++import { aggFuncs, reservedKeywords, sqlFunctions } from '../../lib/sql';
++import { COUNT_FIELD_ID, MEA_KEY_ID, MEA_VAL_ID, PAINT_FIELD_ID } from '../../constants';
++
++// 构建正则表达式
++const keywordRegex = new RegExp(`\\b(${Array.from(reservedKeywords).join('|')})\\b`, 'gi');
++const bulitInRegex = new RegExp(`\\b(${Array.from(sqlFunctions).join('|')})(\\s*)\\(`, 'gi');
++const aggBultinRegex = new RegExp(`\\b(${Array.from(aggFuncs).join('|')})(\\s*)\\(`, 'gi');
++
++const stringRegex = /('[^']*'?)/g;
++
++const ComputedFieldCreation: React.FC = observer(() => {
++    const vizStore = useVizStore();
++    const { editingComputedFieldFid } = vizStore;
++    const [name, setName] = useState<string>('');
++    const [sql, setSql] = useState<string>('');
++    const [error, setError] = useState<string>('');
++    const ref = useRef<{ clear(): void; setValue(v: string): void }>(null);
++
++    const SQLField = useMemo(() => {
++        const fieldRegex = new RegExp(
++            `\\b(${vizStore.allFields
++                .filter((x) => ![COUNT_FIELD_ID, MEA_KEY_ID, MEA_VAL_ID, PAINT_FIELD_ID].includes(x.fid))
++                .map((x) => x.name)
++                .join('|')})\\b`,
++            'gi'
++        );
++        return highlightField((sql: string) => {
++            // highlight keyword
++            sql = sql.replace(keywordRegex, '<span class=""text-fuchsia-700 dark:text-fuchsia-600"">$1</span>');
++
++            // highlight function
++            sql = sql.replace(bulitInRegex, '<span class=""text-yellow-700 dark:text-yellow-600"">$1</span>$2(');
++
++            // highlight agg function
++            sql = sql.replace(aggBultinRegex, '<span class=""text-amber-700 dark:text-amber-600"">$1</span>$2(');
++
++            // highlight string
++            sql = sql.replace(stringRegex, '<span class=""text-green-700 dark:text-green-600"">$1</span>');
++
++            // highlight field
++            sql = sql.replace(fieldRegex, '<span class=""text-blue-700 dark:text-blue-600"">$1</span>');
++
++            return sql;
++        });
++    }, [vizStore.allFields]);
++
++    useEffect(() => {
++        if (editingComputedFieldFid !== undefined) {
++            if (editingComputedFieldFid === '') {
++                let idx = 1;
++                while (vizStore.allFields.find((x) => x.name === `Computed ${idx}`)) {
++                    idx++;
++                }
++                setName(`Computed ${idx}`);",packages/graphic-walker/src/components/computedField/index.tsx,2024-01-08 16:54:33+00:00,2024-01-08T16:58:49Z,manual batch since it can be used in react 17,,,,,61,RIGHT,62,,line,https://api.github.com/repos/Kanaries/graphic-walker/pulls/280,Kanaries/graphic-walker,db0862d1cde8463090533a16458c32ddc995f3ed
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/286,https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1464354636,islxyqwe,3d0836821c52241213eeb61995e1b66438fcf745,6421ee924d0425dfd15f1b730d24046735e527cb,"@@ -238,7 +250,7 @@ const PivotTable: React.FC<PivotTableProps> = observer(function PivotTableCompon
+                             enableCollapse={enableCollapse}
+                         />
+                     )}
+-                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} />}
++                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} numberFormat={format} />}",packages/graphic-walker/src/components/pivotTable/index.tsx,2024-01-24 06:17:35+00:00,2024-01-24T06:29:26Z,"You can directly use `numberFormat={layout.format.numberFormat}` to pass the numberFormat, so that the table content will change immediately after modifying the numberFormat.",,,,,253,RIGHT,40,,line,https://api.github.com/repos/Kanaries/graphic-walker/pulls/286,Kanaries/graphic-walker,915781a02edeb7a4c41e4d6a6f7f13c8495c42d4
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/286,https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1464362084,islxyqwe,3d0836821c52241213eeb61995e1b66438fcf745,6421ee924d0425dfd15f1b730d24046735e527cb,"@@ -1,22 +1,47 @@
+ import React from 'react';
+-import { IField, IRow } from '../../interfaces';
++import { useMemo } from ""react"";
++import { IField, IRow, IVisualConfig } from '../../interfaces';
+ import { getMeaAggKey } from '../../utils';
++import { format } from ""d3-format"";
+ 
+ interface MetricTableProps {
+     matrix: any[][];
+     meaInRows: IField[];
+     meaInColumns: IField[];
++    numberFormat: IVisualConfig['format']
+ }
+ 
+-function getCellData (cell: IRow, measure: IField) {
++function getCellData (cell: IRow, measure: IField, formatter: (value: unknown) => string) {
++
+     const meaKey = getMeaAggKey(measure.fid, measure.aggName);
+     if (cell[meaKey] === undefined) {
+         return '--';
+     }
+-    return cell[meaKey];
++    const formattedValue = formatter(cell[meaKey]);
++    return formattedValue;
+ }
+ const MetricTable: React.FC<MetricTableProps> = React.memo((props) => {
+-    const { matrix, meaInRows, meaInColumns } = props;
++    const { matrix, meaInRows, meaInColumns, numberFormat } = props;
++
++    const numberFormatter = useMemo<(value: unknown) => string>(() => {",packages/graphic-walker/src/components/pivotTable/metricTable.tsx,2024-01-24 06:28:32+00:00,2024-01-24T06:29:26Z,"There may be non-number content in the table, so when the value is not a number, it should return the value itself.
+In addition, the function appears to be a bit bloated, so it is recommended to write it in the following form:
+```
+const numberFormatter = useMemo<(value: unknown) => string>(() => {
+    const numberFormatter = numberFormat ? format(numberFormat) : (v: number) => v.toLocaleString();
+    return (value: unknown) => {
+        if (typeof value !== ""number"") {
+            return `${value}`;
+        }
+        return numberFormatter(value);
+    };
+}, [numberFormat]);
+ ```",,,,27.0,26,RIGHT,30,31.0,line,https://api.github.com/repos/Kanaries/graphic-walker/pulls/286,Kanaries/graphic-walker,915781a02edeb7a4c41e4d6a6f7f13c8495c42d4
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3615,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1891567516,lrainteau-pass,a6b16aeeba52c9dc9af4f0a577f52483110c5729,d2f5e04c93fe20e8162d57643eb301089d8a02d3,"@@ -56,25 +56,25 @@ def fetch_macros(self) -> List[Dict[str, Any]]:
+             logger.error(f""Error fetching macros: {e}"")
+             raise RuntimeError(f""Error fetching macros: {e}"")
+ 
+-    def fetch_tickets(self, created_at: str) -> List[Dict[str, Any]]:
++    def fetch_tickets(self, updated_at: str) -> List[Dict[str, Any]]:
+         """"""
+         Fetches closed tickets created after the specified date.
+ 
+         Args:
+-            created_at (str): The creation date filter for tickets.
++            updated_at (str): The creation date filter for tickets.",jobs/etl_jobs/external/zendesk/extract.py,2024-12-19 10:23:54+00:00,2024-12-19T10:27:58Z,"```suggestion
+            updated_at (str): The modification date filter for tickets.
+```",,,,,64,RIGHT,11,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3615,pass-culture/data-gcp,49e563c50e7577290c86a094c951e682ac091fe2
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3490,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1858770122,cdelabre-pass,3fbb182fc5c5e18df1ce987c1aff5b2ec24d834a,3c7b4bb910406b18b13c488fc986f477e51207b5,"@@ -183,4 +183,5 @@ sources:
+       - name: item_embedding_reduced_32
+       - name: item_embedding_reduced_16
+       - name: item_embedding_reduced_5
++      - name: linked_artists",orchestration/dags/data_gcp_dbt/models/sources.yml,2024-11-26 15:36:14+00:00,2024-11-26T15:36:15Z,artist_linked ( ?) ,,,,,186,RIGHT,4,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3490,pass-culture/data-gcp,e5077da2e832932f15cb985518ef168a05ed2649
+https://api.github.com/repos/pass-culture/data-gcp/pulls/3490,https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1860420245,vbusson-pass,dc2ff5b92fb6f5465cc1d468fd27c2a6e742f98c,3c7b4bb910406b18b13c488fc986f477e51207b5,"@@ -72,6 +62,13 @@
+ LINK_FROM_SCRATCH_TASK_ID = ""link_from_scratch""
+ LINK_NEW_PRODUCTS_TO_ARTISTS_TASK_ID = ""link_new_products_to_artists""
+ 
++# DBT",orchestration/dags/jobs/ml/artist_linkage.py,2024-11-27 10:36:40+00:00,2024-11-27T10:42:31Z,delete,,,,,65,RIGHT,51,,line,https://api.github.com/repos/pass-culture/data-gcp/pulls/3490,pass-culture/data-gcp,e5077da2e832932f15cb985518ef168a05ed2649

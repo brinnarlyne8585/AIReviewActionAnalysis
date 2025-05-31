@@ -1,0 +1,115 @@
+Repository,Count,File Paths,pr_count,stars,forks,contributors,commits,releases,languages,file_count,has_license
+TeTedo/NFT_lottery,1,.github/workflows/cr.yml,117,0,0,3,357,0,"Java, Solidity, HTML, TypeScript, JavaScript, CSS, Shell",345,MIT License
+yuriykulikov/AlarmClock,1,.github/workflows/chatgpt-code-review.yml,349,539,177,28,2028,0,"Kotlin, Java, Shell",444,
+gravis-os/gravis-os,1,.github/workflows/chatgpt-codereviewer.yml,580,4,2,19,2808,30,"TypeScript, JavaScript, PLpgSQL, CSS, EJS, MDX, HTML, Shell",1725,MIT License
+COS-project/cos-frontend,1,.github/workflows/code-review.yml,83,0,2,7,633,0,"TypeScript, CSS, JavaScript",322,MIT License
+gfargo/coco,1,.github/workflows/ai-review.yml,349,9,0,2,683,30,"TypeScript, JavaScript",169,MIT License
+NU-WA-Project/FE,1,.github/workflows/cr.yml,172,0,2,6,667,0,"JavaScript, CSS, HTML",610,MIT License
+TUSB/TheUnusualSkyBlock,1,.github/workflows/chatgpt-review.yml,263,43,2,21,5192,16,mcfunction,7586,
+Mai0313/chess-ai,1,.github/workflows/openai-code-review.yml,121,0,0,4,245,13,"Python, Jupyter Notebook, Batchfile, Shell, Makefile, Dockerfile",162,
+team-collabor/coworkers,1,.github/workflows/code-reivew.yml,103,0,4,5,686,0,"TypeScript, JavaScript, CSS",410,Apache License 2.0
+hyperskill/mobile-app,1,.github/workflows/gpt_review.yml,1235,34,13,11,4657,30,"Kotlin, Swift, JavaScript, Java, CSS, Ruby, Shell, Objective-C, Liquid",6173,
+YJU-OKURA/project_minori-gin-deployment-repo,1,.github/workflows/openai_code_review.yml,253,1,2,2,754,0,"Go, Dockerfile",98,
+NEUQ-ACM/weekly-23,1,.github/workflows/coderevier.yml,90,11,19,17,249,0,"Python, HTML",169,
+PatientPaI/patientpal-frontend,1,.github/workflows/cr.yml,65,0,2,2,387,0,"TypeScript, CSS, JavaScript, HTML, Shell",295,
+LESSERAFIM-Aespa/TripMate,1,.github/workflows/bot.yml,124,1,2,5,1897,1,Kotlin,557,
+three-ping/SyncDay_Front,1,.github/workflows/deploy.yml,98,0,0,6,579,0,"Vue, JavaScript, CSS, HTML",197,
+WeBankFinTech/fes.js,1,.github/workflows/cr.yml,177,1519,167,18,1855,30,"JavaScript, Vue, Smarty, Less, HTML, CSS, SCSS, TypeScript",907,MIT License
+fresh-trash-project/fresh-trash-backend,1,.github/workflows/code_review_bot.yml,98,1,0,3,630,2,"Java, HTML, JavaScript, Shell, Dockerfile",421,
+Team-B1ND/alimo-ios,1,.github/workflows/code-review.yml,76,5,0,3,513,4,Swift,420,
+etff/web-novel,1,.github/workflows/deploy-develop.yml,84,0,0,1,219,0,"Java, Dockerfile",206,
+zae-park/zae-engine,1,.github/workflows/code_review_gpt.yml,168,3,0,1,1513,17,Python,259,Other
+YJU-OKURA/project_minori-next-deployment-repo,1,.github/workflows/openai_code_review.yml,123,1,4,5,366,0,"TypeScript, CSS, Dockerfile, JavaScript, Shell",457,
+lwshen/portfolio-remix,1,.github/workflows/cr.yml,309,0,0,2,134,0,"TypeScript, CSS, JavaScript, Dockerfile, Shell",160,MIT License
+jgeofil/mlreadme-astro-blog,1,.github/workflows/cr.yml,96,0,1,3,259,0,"PLpgSQL, Astro, MDX, TypeScript, CSS, JavaScript, Nix",136,GNU General Public License v3.0
+codestates-seb/fe-sprint-my-agora-states-server,1,.github/workflows/cr.yml,898,5,718,4,27,0,JavaScript,19,
+m0nclous/click-claim-bot,1,.github/workflows/code-review.yml,106,9,0,2,156,30,"TypeScript, JavaScript, Dockerfile",216,MIT License
+bottle-note/bottle-note-api-server,1,.github/workflows/code-review.yml,197,2,1,3,1410,0,"Java, HTML, Vim Snippet, Dockerfile",960,
+g471000/coding-alarm-clock,1,.github/workflows/chatgpt-code-review.yml,50,1,0,31,2058,0,"Kotlin, Java, HTML, Shell",313,
+AirtestProject/Airtest,1,.github/workflows/cr.yml,123,8544,1328,44,973,23,"Python, HTML, JavaScript, CSS, Shell",649,Apache License 2.0
+bottle-note/bottle-note-frontend,1,.github/workflows/code-review.yml,164,0,0,4,322,0,"TypeScript, JavaScript, Dockerfile, CSS",393,
+Synaptrix/ChatGPT-Desktop,1,.github/workflows/code-review.yml,109,1709,187,8,202,13,"Vue, TypeScript, Rust, SCSS, HTML, JavaScript, Shell",165,MIT License
+FISCO-BCOS/FISCO-BCOS,1,.github/workflows/cr.yml,4212,2434,718,41,8803,30,"C++, Shell, Python, CMake, Solidity, Rust, SWIG, C, Dockerfile",2049,Apache License 2.0
+NEUQ-ACM/weekly-report-24,1,.github/workflows/coderevier.yml,186,2,18,20,506,0,"JavaScript, Java, HTML, Vue, CSS, TypeScript",3375,
+transmission-remote-gui/transgui,1,.github/workflows/chatgpt-codereview.yml,98,3314,285,48,1402,28,"Pascal, Makefile, Inno Setup, Ruby, Emacs Lisp, Berry, JavaScript, Perl, SystemVerilog, NewLisp, Smalltalk, Shell, Batchfile",191,GNU General Public License v2.0
+storm-software/acidic,1,.github/workflows/code-review.yml,57,4,0,3,67,0,"TypeScript, JavaScript, Handlebars, CSS, HTML",638,Apache License 2.0
+JustCode-Gallery/Gallery-with-me,1,.github/workflows/code_review_from_chatgpt.yml,62,2,3,5,209,0,"HTML, Python, CSS, JavaScript, Dockerfile",664,
+yukieiji/ExtremeRoles,1,.github/workflows/review.yml,84,60,29,10,7639,30,"C#, Python, C++, PowerShell, C, Batchfile",1044,GNU General Public License v3.0
+Chia1104/chia1104.dev,1,.github/workflows/gpt-review.yml,2312,26,0,5,5212,0,"TypeScript, CSS, JavaScript, Pkl, Dockerfile, Makefile, Handlebars, Go",930,MIT License
+anc95/ChatGPT-CodeReview,1,.github/workflows/cr.yml,85,4227,435,28,197,22,"JavaScript, TypeScript, HTML, Dockerfile",67,ISC License
+EveryMutsa/Every-Mutsa,1,.github/workflows/cr.yml,67,1,2,4,22,0,Java,154,
+potenday-project/311TEN003,1,.github/workflows/Code-Review.yml,99,0,1,2,221,0,"Java, TypeScript, Jupyter Notebook, MDX, JavaScript, CSS, Shell, Dockerfile",629,
+fec-cache-me-if-you-can/FEC-cache-up,1,.github/workflows/cr.yml,68,0,2,3,432,0,"JavaScript, SCSS, CSS, HTML",331,
+BCSDLab/KOIN_ADMIN_V2,1,.github/workflows/cr.yml,63,2,0,10,744,0,"TypeScript, HTML, CSS",1741,
+Team-pingping/pingping-FE,1,.github/workflows/cr.yml,88,3,2,4,143,0,"TypeScript, CSS, HTML, JavaScript, Shell",313,
+cround-team/cround-server,1,.github/workflows/code-review-from-gpt.yml,88,2,1,2,337,4,Java,313,
+boocam-project/FastTime-backend,1,.github/workflows/cr.yml,192,2,2,7,1420,0,"Java, Vim Snippet, HTML, Shell",743,
+jhkim-a/codereview,1,.github/workflows/cr.yml,63,0,0,1,9,0,Java,105,
+6-dreaming-stars/space-star-front-monorepo,1,.github/workflows/cr.yml,77,0,1,4,569,0,"TypeScript, CSS, JavaScript, Dockerfile, HTML, Shell",468,
+UnUniFi/chain,1,.github/workflows/cr.yml,527,33,14,24,3983,30,"Go, Shell, Makefile, Dockerfile, Python",1006,GNU General Public License v3.0
+WeBankFinTech/fes-design,1,.github/workflows/cr.yml,678,145,21,15,1238,30,"TypeScript, Vue, Less, JavaScript, Shell",1666,MIT License
+DDD-Community/Chevit-Android,1,.github/workflows/code-review.yml,56,0,0,3,201,0,Kotlin,736,
+hongbo-miao/hongbomiao.com,1,.github/workflows/test.yml,25342,232,42,11,28567,30,"HCL, Python, Just, MATLAB, TypeScript, Shell, Rust, Go, JavaScript, C#, Dockerfile, Jupyter Notebook, C++, C, Java, LabVIEW, Open Policy Agent, Scala, Swift, CMake, Cuda, CSS, PLpgSQL, OpenSCAD, P4, HTML, FLUX, Verilog, Kotlin, Julia, Cypher, PowerShell, VHDL, LLVM, Assembly, QML, Solidity, Ruby, Linker Script, Lua",3961,MIT License
+Talljack/react-starter,1,.github/workflows/cr.yml,417,3,1,3,84,0,"TypeScript, JavaScript, HTML, CSS",64,
+wizmap/wizmap2,1,.github/workflows/cr.yml,75,1,3,6,293,0,"Vue, Python, CSS, JavaScript, HTML, Dockerfile",341,Apache License 2.0
+VladislavPetyukevich/GulagGazRoom,1,.github/workflows/cr.yml,149,0,0,3,499,8,"C#, TypeScript, CSS, HTML, Dockerfile, JavaScript, Shell",787,MIT License
+mate-academy/layout_catalog,1,.github/workflows/main.yml,5205,7,4369,25,152,0,"JavaScript, HTML, SCSS",44,GNU General Public License v3.0
+dsm23/dsm23-next-markdown-blog-starter,1,.github/workflows/cr.yml,139,0,0,3,271,0,"TypeScript, MDX, JavaScript, CSS",76,MIT License
+let-s-record-it/Server,1,.github/workflows/codereview.yml,159,0,0,2,588,0,"Java, Dockerfile, Shell",683,
+UnUniFi/web-apps,1,.github/workflows/cr.yml,612,5,1,12,3886,27,"TypeScript, HTML, JavaScript, CSS, Dockerfile, Shell",1617,
+BCSDLab/BCSD_INTERNAL_WEB,1,.github/workflows/cr.yml,86,3,0,5,701,0,"TypeScript, JavaScript, CSS, HTML",830,
+sinProject-Inc/sinpro-dev,1,.github/workflows_/cr-anc95.yml,154,2,0,15,2251,14,"Svelte, TypeScript, CSS, JavaScript, HTML, Shell",305,MIT License
+almond-bongbong/react-simple-toasts,1,.github/workflows/99_codereview.yml,107,41,9,7,455,30,"TypeScript, CSS, JavaScript, SCSS, HTML",146,
+YAPP-Github/24th-Web-Team-1-FE,1,.github/workflows/gpt-code-review.yml,125,5,1,4,1144,0,"TypeScript, JavaScript, CSS, MDX",547,
+sidhantpanda/docker-express-typescript-boilerplate,1,.github/workflows/code-review.yml,237,313,95,5,404,0,"TypeScript, JavaScript, HTML, Shell, Dockerfile",58,MIT License
+K-Slave/petBook-Client,1,.github/workflows/cr.yml,173,3,0,8,1623,0,"TypeScript, MDX, SCSS, JavaScript, Shell",731,MIT License
+YJU-OKURA/project_minori-nest-deployment-repo,1,.github/workflows/cr.yml,55,0,2,2,459,0,"TypeScript, JavaScript",235,
+reisene/HulajDusza-serwis,1,.github/workflows/cr.yml,284,1,0,13,951,0,"HTML, JavaScript, CSS, PHP, Nix, CodeQL",286,Apache License 2.0
+sparcs-kaist/otlplus-server,1,.github/workflows/code-review.yml,110,5,0,14,417,2,"TypeScript, JavaScript, Shell, Python",413,
+TEAM-BlockVote/CapstoneDesign,1,.github/workflows/cr.yml,58,1,1,4,356,0,"JavaScript, CSS, HTML, Solidity",264,
+QuickSwap/interface-v2,1,.github/workflows/code-review.yml,1764,91,188,35,5231,30,"TypeScript, SCSS, JavaScript, HTML",2318,GNU General Public License v3.0
+sullivanpj/open-system,1,.github/workflows/cr.yml,506,7,0,8,1917,30,"TypeScript, Java, Mustache, JavaScript, Shell, CSS, Dockerfile, HTML",3390,Apache License 2.0
+okdohyuk/okdohyuk-front,1,.github/workflows/cr.yml,107,1,0,1,467,30,"TypeScript, JavaScript, SCSS, CSS, Shell, HTML",388,GNU General Public License v3.0
+dsm23/parkrun-organise-pacer-events,1,.github/workflows/cr.yml,217,0,0,3,438,0,"TypeScript, PLpgSQL, MDX, JavaScript, CSS, Dockerfile",231,MIT License
+ujeans/oxox,1,.github/workflows/main.yml,53,0,1,2,278,0,"TypeScript, HTML, CSS",122,
+appbaseio/reactivesearch-api,1,.github/workflows/code-review.yml,370,208,28,4,9,30,"Go, Dockerfile, Shell, Makefile",636,Apache License 2.0
+cty288/Capstone,1,.github/workflows/code-review.yml,247,1,0,6,2607,0,"C#, HTML, Rich Text Format, ShaderLab, HLSL, JavaScript, CSS, PHP, Objective-C",29791,
+Andrewshin-7th-technology-student/build-CI,1,.github/workflows/cr.yml,493,5,2,19,1376,0,"JavaScript, C, HTML, C++, Ada, Squirrel, CMake, Python, WebAssembly, Ruby, Shell, C#, PHP, CSS, PowerShell, Java, ABAP, TypeScript, Kotlin, Batchfile, Starlark, Assembly",1207,GNU Affero General Public License v3.0
+dsm23/dsm23-next-supabase-template,1,.github/workflows/cr.yml,224,0,0,3,444,0,"TypeScript, MDX, JavaScript, PLpgSQL, CSS",163,
+storm-software/cyclone-ui,1,.github/workflows/code-review.yml,105,9,1,2,248,30,"TypeScript, CSS, JavaScript, HCL, HTML, Batchfile",1279,Apache License 2.0
+KDT-Final-Team4/salarying-fe,1,.github/workflows/cr.yml,73,0,0,3,312,0,"TypeScript, JavaScript, CSS",168,
+pokt-network/pocket,1,.github/workflows/cr.yml,505,64,33,22,593,1,"Go, Makefile, Starlark, Shell, Python, Gherkin, Smarty, Mustache",861,MIT License
+Techeer-blabla/techeer-resume,1,.github/workflows/codereview.yml,152,0,0,9,264,0,"Java, TypeScript, Shell, JavaScript, CSS, HTML, Dockerfile",380,
+innovationCamp/messenger-service,1,.github/workflows/workflow-PR.yml,70,4,2,4,252,0,"Java, HTML, CSS, JavaScript, Dockerfile",193,
+sj-distributor/PostBoy.Web,1,.github/workflows/CodeReview.yml,129,0,0,9,1016,30,"TypeScript, SCSS, CSS, HTML, Dockerfile",266,
+two-clock/backend,1,.github/workflows/ci.yml,55,4,0,2,315,0,Java,238,
+clickcaramel/PolyglotRocks,1,.github/workflows/gpt-review.yml,55,19,0,3,215,1,"Shell, Ruby, Dockerfile",58,Apache License 2.0
+Blazity/next-news,1,.github/workflows/cr.yml,104,51,20,4,416,0,"TypeScript, JavaScript, CSS",202,MIT License
+LeeByeongMuk/nextjs-starter-kit,1,.github/workflows/review.yml,86,3,0,3,68,8,"TypeScript, JavaScript, Dockerfile, CSS",231,
+THE-FIRST-DANCE/soomga-frontend,1,.github/workflows/code-review.yml,50,0,0,3,641,0,"TypeScript, JavaScript, HTML, Dockerfile, CSS",320,
+KEA-DoKebi/dalkom-backend,1,.github/workflows/GptCodeReview.yml,300,2,2,2,8,5,"Java, HTML",576,
+2lambda123/dragonflyoss-Dragonfly2,1,.github/workflows/cr.yml,142,0,0,80,2564,0,"Go, Shell, Roff, Makefile, Dockerfile",956,Apache License 2.0
+jakobnunnendorf/shop,1,.github/workflows/cr.yml,71,1,0,4,454,0,"TypeScript, JavaScript, CSS",459,MIT License
+YasushiKobayashi/samples,1,.github/workflows/cr.yml,1123,2,1,4,1854,0,"PHP, TypeScript, Shell, HCL, Blade, EJS, JavaScript, Dockerfile, Makefile",314,
+bingryan/WeChatAI,1,.github/workflows/cr.yml,50,98,14,2,49,11,"Rust, Vue, TypeScript, CSS, Less, JavaScript, HTML, Shell",252,MIT License
+Project-Catcher/batch-service,1,.github/workflows/cr.yml,56,0,1,6,204,0,"Java, Dockerfile",138,
+amit-kumar56/TechieBuggie,1,.github/workflows/cr.yml,55,2,0,2,76,0,,6,
+NextIntern/NextIntern-Backend,1,.github/workflows/cr.yml,83,2,2,3,240,0,"C#, Dockerfile",441,
+JadeKim042386/My3D,1,.github/workflows/cr.yml,107,1,0,1,450,0,"Java, HTML, JavaScript, CSS, Shell, Less, Dockerfile",5500,
+sunjin110/folio,1,.github/workflows/cr.yml,473,0,0,2,706,0,"TypeScript, Go, HCL, Swift, Makefile, Shell, Rust, JavaScript, CSS, Python, HTML, Dockerfile",864,
+lkcozy/web-scraper,1,.github/workflows/codeReview.yml,81,0,0,3,126,0,"TypeScript, Shell",43,
+Project-Catcher/catcher-web,1,.github/workflows/cr.yml,57,0,2,6,513,0,"TypeScript, JavaScript, CSS, Dockerfile, Shell",6037,
+KUDDY-2023/KUDDY-back,1,.github/workflows/cr.yml,90,1,0,3,397,0,"Java, HTML, Shell, Dockerfile, C++",582,
+THE-FIRST-DANCE/soomga-backend,1,.github/workflows/code-review.yml,81,0,0,2,345,0,"TypeScript, JavaScript, Dockerfile",285,
+le2sky/mealkitary-server,1,.github/workflows/mealkitary-code-review-automation.yml,58,5,0,2,398,10,Kotlin,439,Apache License 2.0
+ant-design/ant-design-mini,1,.github/workflows/chatgpt_code_review.yaml,1098,475,142,48,968,30,"TypeScript, Less, JavaScript, HTML",1912,MIT License
+LeoAC0/hello-world-typescript_actions,1,.github/workflows/disable/cr.yaml,250,0,0,2,375,0,"TypeScript, Shell, HTML, JavaScript",50,MIT License
+dokimiki/manabo-next-front,1,.github/workflows/aicodereview.yaml,52,2,0,3,65,0,"TypeScript, JavaScript, SCSS",85,
+takemo101/cms-tool,1,.github/workflows/code-review-pr.yaml,75,0,0,1,706,13,"PHP, Twig, TypeScript, SCSS, CSS, Dockerfile, JavaScript",1093,
+opentiny/tiny-vue,1,.github/workflows/gpt-ci.yaml,2524,1915,291,83,2266,23,"Less, Vue, TypeScript, JavaScript, Shell",14039,MIT License
+jakoss/AndroidArchitectureTemplate,1,.github/workflows/cr.yaml,282,4,0,4,345,0,Kotlin,385,
+fluid-dev/hexo-theme-fluid,1,.github/workflows/cr.yaml,243,7635,1138,62,1040,30,"JavaScript, EJS, Stylus, CSS",216,GNU General Public License v3.0
+daniel-juyeon-kim/quicker-back-v2,1,.github/workflows/code-review.yaml,60,0,0,1,369,0,"TypeScript, JavaScript",417,
+DucretJe/std-deploy,1,.github/workflows/gptpr.yaml,51,0,0,2,54,0,"HCL, Python, Makefile, Smarty",79,
+sword-x-shield/pizza-ui,1,.github/workflows/code-check.yml,59,0,0,3,103,0,"TypeScript, Vue, SCSS, JavaScript, CSS, HTML, Shell",253,MIT License
+kubebb/core,1,.github/workflows/gpt-review.yaml,217,9,9,8,366,7,"Go, Shell, Makefile, Python, Dockerfile",323,Apache License 2.0

@@ -1,0 +1,28 @@
+Repository,Count,File Paths,pr_count,stars,forks,contributors,commits,releases,languages,file_count,has_license
+SainsburyWellcomeCentre/aeon_mecha,1,.github/workflows/gpt_pr_review.yml,255,6,6,10,1505,2,"Python, Jupyter Notebook, Dockerfile, Shell",173,"BSD 3-Clause ""New"" or ""Revised"" License"
+lightspeedwp/tour-operator,1,.github/workflows/ai-pr-reviewer.yml,288,12,0,17,1976,22,"PHP, HTML, JavaScript, CSS, SCSS",1259,GNU General Public License v3.0
+BetterSocial/bettersocial-dev-queue,1,.github/workflows/ai-pr-reviewer.yml,336,1,0,16,1028,0,"JavaScript, Shell, Dockerfile, Procfile, DIGITAL Command Language",327,GNU General Public License v3.0
+GatewayDW/workflow-host-dbt-docs,1,.github/workflows/ai_pr_reviewer.yml,66,1,0,2,85,3,"Batchfile, Python, Dockerfile, Shell",60,
+saiqulhaq/dynamic_links,1,.github/workflows/ai_pr_reviewer.yml,77,3,2,2,114,0,"Ruby, HTML, CSS, Python, JavaScript",218,
+aziontech/azion-console-kit,1,.github/workflows/ai-review.yml,2310,18,14,28,5759,30,"JavaScript, Vue, CSS, SCSS, HTML, Shell",2254,GNU Affero General Public License v3.0
+Dev-FE-1/Toy_Project_II_team4,1,.github/workflows/ai-pr-reviewer.yml,109,0,3,4,555,0,"TypeScript, CSS, JavaScript, HTML, Shell",184,
+Mayank77maruti/603WorkVed,1,.github/workflows/pr_summary.yml,65,23,48,35,172,1,"CSS, HTML, JavaScript",272,MIT License
+pkjmesra/PKScreener,1,.github/workflows/W17-ai-pr-reviewer.yml,70,220,87,2,11618,1,"Python, HTML, Dockerfile, JavaScript",307,MIT License
+Codrux2200/Rtype,1,.github/workflows/ai_coderabbit.yml,57,4,2,7,598,3,"C++, CSS, JavaScript, CMake, HTML, Shell, Batchfile",226,
+Taiki130/pill_notify,1,.github/workflows/ai-pr-reviewer.yml,118,0,0,2,213,0,"Go, HCL, Shell",26,
+CorantGmbH/ioBroker.air-q,1,.github/workflows/gh_code_review.yml,96,0,2,5,102,6,"TypeScript, HTML, JavaScript, CSS",74,MIT License
+riya-amemiya/pam,1,.github/workflows/openai-pr-reviewer.yml,61,0,0,1,331,0,"TypeScript, JavaScript, SCSS, Dockerfile, MDX",177,
+xun082/create-neat,1,.github/workflows/code-review.yml,207,562,147,33,110,0,"TypeScript, JavaScript, CSS, Vue, Shell, EJS, HTML",228,MIT License
+parkpow/deep-license-plate-recognition,1,.github/workflows/code-review.yml,203,554,126,14,1054,0,"C++, C, Python, TypeScript, JavaScript, C#, Dockerfile, Shell, Java, Batchfile, Makefile, CSS, HTML",329,MIT License
+BetterSocial/user-api,1,.github/workflows/review_and_testing.yml,841,1,0,18,2557,2,"JavaScript, HTML, Dockerfile, Shell, CSS, Procfile",803,GNU General Public License v3.0
+BetterSocial/mobileapp,1,.github/workflows/review.yml,2583,7,4,22,5877,0,"JavaScript, TypeScript, Ruby, Java, Objective-C, Starlark, Swift, Shell",1877,GNU General Public License v3.0
+Open-Quran/quran,1,.github/workflows/ai-pr-reviewer.yml,108,31,13,7,446,1,"Dart, C++, CMake, HTML, C, Swift, Kotlin, Objective-C",466,MIT License
+imajoriri/tokeru,1,.github/workflows/ai-pr-reviewer.yml,169,2,0,3,1755,6,"Dart, C++, CMake, Swift, Ruby, Kotlin, HTML, C, Makefile, Objective-C",622,
+decide-ai/modclub_src,1,.github/workflows/pr_reviewer.yml,107,1,0,6,107,4,"Motoko, TypeScript, Rust, Shell, JavaScript, SCSS, CSS, Dhall, HTML, Dockerfile, Makefile",698,GNU Affero General Public License v3.0
+christophechr/LeAREA,1,.github/workflows/ai_coderabbit.yml,65,1,2,5,340,10,"JavaScript, CSS, HTML, Dockerfile",202,
+suzu784/back_programming_learning_record,1,.github/workflows/ai-pr-reviewer.yaml,85,0,0,1,187,0,"PHP, JavaScript, Blade",169,
+BetterSocial/better-webapp-nextjs,1,.github/workflows/review.yaml,75,1,0,3,227,0,"JavaScript, TypeScript, CSS, Procfile",268,
+ktaroabobon/iccepm2024,1,.github/workflows/ai-pr-reviewer.yaml,71,0,0,1,210,0,"TypeScript, Makefile, JavaScript, CSS, HTML, Dockerfile",79,MIT License
+brisen-app/brisen-client,1,.github/workflows/pr-summary.yml,134,0,0,1,1177,2,"TypeScript, JavaScript",110,Other
+cuculus-dev/cuculus,1,.github/workflows/ai-pr-reviewer.yml,352,10,1,5,685,0,"TypeScript, JavaScript, Shell",225,
+Dev-FE-1/Toy_Project_3_team4,1,.github/workflows/ai-pr-reviewer.yml,95,0,2,4,515,0,"TypeScript, JavaScript, HTML, Shell",219,

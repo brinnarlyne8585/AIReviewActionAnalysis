@@ -1,0 +1,57 @@
+[I 2025-05-24 13:36:56,767] A new study created in memory with name: no-name-320c2754-66df-4d4d-9459-7b28656d642e
+[I 2025-05-24 13:37:33,975] Trial 0 finished with value: 402.80120813863533 and parameters: {'num_topics': 10, 'alpha': 0.007666039917713944, 'beta': 0.054990085159287126}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:38:10,923] Trial 1 finished with value: 514.8351864480476 and parameters: {'num_topics': 9, 'alpha': 0.001491875409624981, 'beta': 0.029178835547988103}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:38:34,887] Trial 2 finished with value: 27763.104593005253 and parameters: {'num_topics': 8, 'alpha': 4.474465043375275, 'beta': 0.0035339865144645424}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:38:52,758] Trial 3 finished with value: 502.2727842210123 and parameters: {'num_topics': 10, 'alpha': 7.914236633852293, 'beta': 0.6684393215240692}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:39:30,380] Trial 4 finished with value: 647.1311153850022 and parameters: {'num_topics': 5, 'alpha': 0.004959371982559423, 'beta': 0.012984794185444605}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:40:10,580] Trial 5 finished with value: 403.90188377874205 and parameters: {'num_topics': 10, 'alpha': 0.08992883503605334, 'beta': 0.04520272555287682}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:40:52,146] Trial 6 finished with value: 4490.555649720876 and parameters: {'num_topics': 8, 'alpha': 0.4732009964893312, 'beta': 0.003646636772369311}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:41:24,706] Trial 7 finished with value: 487.35053676520175 and parameters: {'num_topics': 8, 'alpha': 1.093096713434947, 'beta': 2.179946623103889}. Best is trial 0 with value: 402.80120813863533.
+[I 2025-05-24 13:41:59,158] Trial 8 finished with value: 379.25309018416027 and parameters: {'num_topics': 10, 'alpha': 0.004226955828568556, 'beta': 0.8653451039311115}. Best is trial 8 with value: 379.25309018416027.
+[I 2025-05-24 13:42:36,843] Trial 9 finished with value: 460.2031491334207 and parameters: {'num_topics': 8, 'alpha': 0.005284971264020865, 'beta': 0.02967897744098252}. Best is trial 8 with value: 379.25309018416027.
+[I 2025-05-24 13:43:12,659] Trial 10 finished with value: 360.7857878583088 and parameters: {'num_topics': 6, 'alpha': 0.034394410514347704, 'beta': 0.4414917299096146}. Best is trial 10 with value: 360.7857878583088.
+[I 2025-05-24 13:43:48,254] Trial 11 finished with value: 355.5025420530571 and parameters: {'num_topics': 6, 'alpha': 0.0431241464178766, 'beta': 0.3962593075577761}. Best is trial 11 with value: 355.5025420530571.
+[I 2025-05-24 13:44:04,833] Trial 12 finished with value: 473.6810279398566 and parameters: {'num_topics': 6, 'alpha': 0.04880672744026833, 'beta': 7.4611588697241675}. Best is trial 11 with value: 355.5025420530571.
+[I 2025-05-24 13:44:40,253] Trial 13 finished with value: 353.44622638160956 and parameters: {'num_topics': 6, 'alpha': 0.0357755019522967, 'beta': 0.36506903166651145}. Best is trial 13 with value: 353.44622638160956.
+[I 2025-05-24 13:45:18,028] Trial 14 finished with value: 356.00326418920173 and parameters: {'num_topics': 6, 'alpha': 0.2039993882014583, 'beta': 0.22984372012003224}. Best is trial 13 with value: 353.44622638160956.
+[I 2025-05-24 13:45:41,394] Trial 15 finished with value: 406.18565190000544 and parameters: {'num_topics': 5, 'alpha': 0.02175242849362525, 'beta': 2.4502208743929126}. Best is trial 13 with value: 353.44622638160956.
+[I 2025-05-24 13:46:17,150] Trial 16 finished with value: 350.21209764740195 and parameters: {'num_topics': 7, 'alpha': 0.018202919011372474, 'beta': 0.15478106892781804}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:46:54,424] Trial 17 finished with value: 352.1528593131993 and parameters: {'num_topics': 7, 'alpha': 0.013680750375159116, 'beta': 0.1354976548814266}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:47:32,806] Trial 18 finished with value: 368.64068363175284 and parameters: {'num_topics': 7, 'alpha': 0.0011280147204787393, 'beta': 0.13108574966171385}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:48:10,570] Trial 19 finished with value: 38510.88427837757 and parameters: {'num_topics': 7, 'alpha': 0.012811284622819007, 'beta': 0.001453649808270321}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:48:49,431] Trial 20 finished with value: 613.9075148356685 and parameters: {'num_topics': 7, 'alpha': 0.162250785262031, 'beta': 0.012703845486752538}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:49:26,217] Trial 21 finished with value: 354.94011882275896 and parameters: {'num_topics': 7, 'alpha': 0.014107573577303047, 'beta': 0.12786887198253827}. Best is trial 16 with value: 350.21209764740195.
+[I 2025-05-24 13:50:02,454] Trial 22 finished with value: 348.8476135789475 and parameters: {'num_topics': 6, 'alpha': 0.09422305476119705, 'beta': 0.18259251524681178}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:50:42,281] Trial 23 finished with value: 354.2309056516199 and parameters: {'num_topics': 5, 'alpha': 0.40715062846409544, 'beta': 0.11668737737563571}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:51:15,363] Trial 24 finished with value: 391.6652501559364 and parameters: {'num_topics': 7, 'alpha': 0.0023818986919863024, 'beta': 1.2701837038016617}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:51:50,888] Trial 25 finished with value: 356.91151169921113 and parameters: {'num_topics': 9, 'alpha': 0.0966635384218501, 'beta': 0.2184901811520077}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:52:28,447] Trial 26 finished with value: 402.68611371690525 and parameters: {'num_topics': 6, 'alpha': 0.012046625128490833, 'beta': 0.051156349294040435}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:53:07,773] Trial 27 finished with value: 508.04017780557325 and parameters: {'num_topics': 7, 'alpha': 0.06131205610328925, 'beta': 0.0188219986862484}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:53:42,714] Trial 28 finished with value: 355.3204063982127 and parameters: {'num_topics': 9, 'alpha': 0.021524215546329634, 'beta': 0.21000181640340226}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:54:18,061] Trial 29 finished with value: 392.62244092398026 and parameters: {'num_topics': 5, 'alpha': 1.1445069387098057, 'beta': 0.060129309268910296}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:54:42,255] Trial 30 finished with value: 416.31741719129957 and parameters: {'num_topics': 6, 'alpha': 0.0076725684854581115, 'beta': 2.8157177580779518}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:55:18,503] Trial 31 finished with value: 357.13402930825 and parameters: {'num_topics': 6, 'alpha': 0.027061581688429214, 'beta': 0.4122819603129555}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:55:58,465] Trial 32 finished with value: 373.25603466240096 and parameters: {'num_topics': 7, 'alpha': 0.17217483310936454, 'beta': 0.08101088422957194}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:56:35,228] Trial 33 finished with value: 359.56270653991663 and parameters: {'num_topics': 6, 'alpha': 0.002369110266448772, 'beta': 0.25074533972357627}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:57:11,437] Trial 34 finished with value: 376.9651494491553 and parameters: {'num_topics': 8, 'alpha': 0.06831923597994073, 'beta': 0.6515222562200772}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:57:45,135] Trial 35 finished with value: 385.67206629290666 and parameters: {'num_topics': 7, 'alpha': 0.008647237641710473, 'beta': 1.1385816986656003}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:58:19,245] Trial 36 finished with value: 362.62819215533244 and parameters: {'num_topics': 5, 'alpha': 0.019910135975732487, 'beta': 0.09473297761059726}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:58:55,534] Trial 37 finished with value: 457.30394980460505 and parameters: {'num_topics': 6, 'alpha': 0.0032906781128812963, 'beta': 0.03223393451903502}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 13:59:36,562] Trial 38 finished with value: 949.4219839927689 and parameters: {'num_topics': 7, 'alpha': 0.2763729005238414, 'beta': 0.007404678035687052}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:00:12,483] Trial 39 finished with value: 356.2653053435692 and parameters: {'num_topics': 9, 'alpha': 0.10806183544969175, 'beta': 0.18883341604099282}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:00:48,060] Trial 40 finished with value: 392.64811363230666 and parameters: {'num_topics': 8, 'alpha': 1.1863119006054723, 'beta': 0.3202304477122881}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:01:28,155] Trial 41 finished with value: 354.4586115793918 and parameters: {'num_topics': 5, 'alpha': 0.5488922181092093, 'beta': 0.13484782859113503}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:02:00,034] Trial 42 finished with value: 400.51592935119436 and parameters: {'num_topics': 5, 'alpha': 2.6869249498838186, 'beta': 0.07357286103344413}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:02:38,628] Trial 43 finished with value: 353.4237972759747 and parameters: {'num_topics': 5, 'alpha': 0.31073861285368565, 'beta': 0.13561128898186917}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:03:11,464] Trial 44 finished with value: 367.95154618959856 and parameters: {'num_topics': 6, 'alpha': 0.037840738884968965, 'beta': 0.6946554399997137}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:03:47,509] Trial 45 finished with value: 401.3366114475017 and parameters: {'num_topics': 5, 'alpha': 0.12324301502745005, 'beta': 0.04286937848826353}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:04:23,468] Trial 46 finished with value: 358.6444439706911 and parameters: {'num_topics': 6, 'alpha': 0.06612468919288443, 'beta': 0.42461900604939334}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:05:01,821] Trial 47 finished with value: 353.26862559837707 and parameters: {'num_topics': 6, 'alpha': 0.2798897795595967, 'beta': 0.14786274147765446}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:05:39,395] Trial 48 finished with value: 589.4036312696362 and parameters: {'num_topics': 8, 'alpha': 0.7854966363455762, 'beta': 0.019271976671840583}. Best is trial 22 with value: 348.8476135789475.
+[I 2025-05-24 14:06:16,611] Trial 49 finished with value: 352.24316436643915 and parameters: {'num_topics': 5, 'alpha': 0.2987411457087817, 'beta': 0.1600186743235812}. Best is trial 22 with value: 348.8476135789475.
+
+🏆 Best parameters:
+  num_topics: 6.0000
+  alpha: 0.0942
+  beta: 0.1826
+🔥 Best perplexity: 348.8476

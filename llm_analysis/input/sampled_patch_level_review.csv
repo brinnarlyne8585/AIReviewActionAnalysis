@@ -1,0 +1,3436 @@
+source_action,Comment_URL,Comment_HTML_URL,Review_Start_Line,Review_End_Line,Original_Commit_id,Merge_Commit_id,Diff_path,New_path,Body,Diff_hunk,Change_Until_Merged,"Whether it contain issues or suggestions
+(Not Contain Any Items: 0;
+Only Contain General Items: 1;
+Contain Specific Items: 2)",List of specific issues or suggestions,"Addressed Status Classification
+(Not Enough Information: -1;
+Not Addressed: 0;
+Partly Addressed: 1;
+Fully Addressed: 2)",Detail
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1440512678,https://github.com/saiqulhaq/dynamic_links/pull/13#discussion_r1440512678,12,13,fb2ca6aeb4acb9eaa4c579e899e137c30e8b8016,5867d8428557fa15611953cad499c9eb74d78a9e,lib/dynamic_links/strategy_factory.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `ensure_nanoid_available` method is called before initializing the `NanoIDStrategy`. This is a good practice to ensure that the required dependencies are available. However, it would be better if we could also pass the `redis_config` to the `NanoIDStrategy` constructor as we do for `RedisCounterStrategy`, even if it's not used right now. It will make the code more consistent and future-proof in case `NanoIDStrategy` needs to use Redis in the future.
+```diff
+- ShorteningStrategies::NanoIDStrategy.new
++ ShorteningStrategies::NanoIDStrategy.new(DynamicLinks.configuration.redis_config)
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+        ensure_nanoid_available
++        ShorteningStrategies::NanoIDStrategy.new","--- 
+
++++ 
+
+@@ -33,7 +33,13 @@
+
+       begin
+         require 'redis'
+       rescue LoadError
+-        Rails.logger.warn 'Missing dependency: Please add ""redis"" to your Gemfile to use RedisCounterStrategy.'
++        raise 'Missing dependency: Please add ""redis"" to your Gemfile to use RedisCounterStrategy.'
++      end
++
++      begin
++        require 'connection_pool'
++      rescue LoadError
++        raise 'Missing dependency: Please add ""connection_pool"" to your Gemfile to use RedisCounterStrategy.'
+       end
+     end
+   end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1777229984,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/421#discussion_r1777229984,413,418,ac2aa137454538ff7c05dff4476ed09491ac4dcb,83cd9056b5434b830384c61211752035990e1738,aeon/io/reader.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The current implementation of `class_int2str` method has a complexity of O(n^2) because for each class, it iterates over the entire DataFrame to replace the integer identity with the string identity. This could be optimized by creating a mapping dictionary and using the pandas `replace` function, which would reduce the complexity to O(n).
+
+```diff
+-        identity = data[""identity""].astype(""string"")
+-        for i, subj in enumerate(classes):
+-            identity.loc[data[identity.name] == i] = subj
+-        data[identity.name] = identity
++        identity_mapping = {i: subj for i, subj in enumerate(classes)}
++        data[""identity""] = data[""identity""].replace(identity_mapping)
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+    def class_int2str(data: pd.DataFrame, classes: list[str]) -> pd.DataFrame:
+         """"""Converts a class integer in a tracking data dataframe to its associated string (subject id).""""""
+-        if config_file.stem == ""confmap_config"":  # SLEAP
+-            with open(config_file) as f:
+-                config = json.load(f)
+-            try:
+-                heads = config[""model""][""heads""]
+-                classes = util.find_nested_key(heads, ""classes"")
+-            except KeyError as err:
+-                raise KeyError(f""Cannot find classes in {config_file}."") from err
+-            for i, subj in enumerate(classes):
+-                data.loc[data[""identity""] == i, ""identity""] = subj
++        identity = data[""identity""].astype(""string"")
++        for i, subj in enumerate(classes):
++            identity.loc[data[identity.name] == i] = subj
++        data[identity.name] = identity","--- 
+
++++ 
+
+@@ -304,20 +304,36 @@
+
+     """"""
+ 
+     def __init__(self, pattern: str, model_root: str = ""/ceph/aeon/aeon/data/processed""):
+-        """"""Pose reader constructor.""""""
+-        # `pattern` for this reader should typically be '<hpcnode>_<jobid>*'
++        """"""Pose reader constructor.
++
++        The pattern for this reader should typically be `<device>_<hpcnode>_<jobid>*`.
++        If a register prefix is required, the pattern should end with a trailing
++        underscore, e.g. `Camera_202_*`. Otherwise, the pattern should include a
++        common prefix for the pose model folder excluding the trailing underscore,
++        e.g. `Camera_model-dir*`.
++        """"""
+         super().__init__(pattern, columns=None)
+         self._model_root = model_root
++        self._pattern_offset = pattern.rfind(""_"") + 1
+ 
+     def read(self, file: Path) -> pd.DataFrame:
+         """"""Reads data from the Harp-binarized tracking file.""""""
+         # Get config file from `file`, then bodyparts from config file.
+-        model_dir = Path(*Path(file.stem.replace(""_"", ""/"")).parent.parts[-4:])
+-        config_file_dir = file.parent / model_dir
+-        if not config_file_dir.exists():
+-            config_file_dir = Path(self._model_root) / model_dir
+-            if not config_file_dir.exists():
+-                raise FileNotFoundError(f""Cannot find model dir {config_file_dir}"")
++        model_dir = Path(file.stem[self._pattern_offset :].replace(""_"", ""/"")).parent
++
++        # Check if model directory exists in local or shared directories.
++        # Local directory is prioritized over shared directory.
++        local_config_file_dir = file.parent / model_dir
++        shared_config_file_dir = Path(self._model_root) / model_dir
++        if local_config_file_dir.exists():
++            config_file_dir = local_config_file_dir
++        elif shared_config_file_dir.exists():
++            config_file_dir = shared_config_file_dir
++        else:
++            raise FileNotFoundError(
++                f""""""Cannot find model dir in either local ({local_config_file_dir}) \
++                    or shared ({shared_config_file_dir}) directories""""""
++            )
+ 
+         config_file = self.get_config_file(config_file_dir)
+         identities = self.get_class_names(config_file)
+@@ -412,10 +428,10 @@
+
+     @staticmethod
+     def class_int2str(data: pd.DataFrame, classes: list[str]) -> pd.DataFrame:
+         """"""Converts a class integer in a tracking data dataframe to its associated string (subject id).""""""
+-        identity = data[""identity""].astype(""string"")
+-        for i, subj in enumerate(classes):
+-            identity.loc[data[identity.name] == i] = subj
+-        data[identity.name] = identity
++        if not classes:
++            raise ValueError(""Classes list cannot be None or empty."")
++        identity_mapping = dict(enumerate(classes))
++        data[""identity""] = data[""identity""].replace(identity_mapping)
+         return data
+ 
+     @classmethod",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/mrako/week-number/pulls/comments/1236833555,https://github.com/mrako/week-number/pull/29#discussion_r1236833555,,16,08089113741645198a42138ba3811f0943703b21,15488b2b5b414d3f41e183afbb1114cd17966f10,src/index.js,nan,"Instead of checking for `date`, you can use a ternary operator inside the JSX to conditionally render the week number or a default value.","+    setDate(isNaN(date) ? new Date() : new Date(date));
++  }, []);
++
++  if (date) {","--- 
+
++++ 
+
+@@ -8,9 +8,9 @@
+
+ 
+   useEffect(() => {
+     const searchParams = new URLSearchParams(window.location.search);
+-    const date = Date.parse(searchParams.get('date'));
++    const dateParam = Date.parse(searchParams.get('date'));
+ 
+-    setDate(isNaN(date) ? new Date() : new Date(date));
++    setDate(isNaN(dateParam) ? new Date() : new Date(dateParam));
+   }, []);
+ 
+   if (date) {",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663252,https://github.com/brisen-app/brisen-client/pull/3#discussion_r1536663252,22,32,46793c649333414b445f1d42ca1ff4bd8d8a51a2,ccad80f2210c4994adca60df93cc4043733bbfe1,.github/workflows/pr-review.yml,.github/workflows/pr-summary.yml,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The workflow definition for the `pr-review.yml` file looks well-structured and organized. However, there are a few points to consider:
+
+1. Line 13: The `concurrency` configuration seems incomplete and contains a syntax error. It needs to be corrected for proper functionality.
+   
+2. Lines 30-31: The boolean values for `review_simple_changes` and `review_comment_lgtm` are set to `false`. Ensure these settings align with the intended behavior of the workflow.
+
+```diff
+-   concurrency:
+-     group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name == 'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+-     cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
++   concurrency:
++     group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name == 'pull_request_review_comment' && 'pr_comment' || 'pr' }}
++     cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+
+-           review_simple_changes: false
+-           review_comment_lgtm: false
++           review_simple_changes: true
++           review_comment_lgtm: true
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+    runs-on: ubuntu-latest
++    steps:
++      - uses: coderabbitai/ai-pr-reviewer@latest
++        env:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
++        with:
++          debug: false
++          review_simple_changes: false
++          review_comment_lgtm: false
++          openai_heavy_model: gpt-3.5-turbo","--- 
+
++++ 
+
+@@ -1,14 +1,14 @@
+
+-name: ✅ Code Review
++name: 📋 PR Summary
+ 
+ permissions:
+   contents: read
+   pull-requests: write
+ 
+ on:
++  workflow_dispatch:
+   pull_request:
+-  pull_request_review_comment:
+     types:
+-      - created
++      - opened
+ 
+ concurrency:
+   group: ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+@@ -17,8 +17,8 @@
+
+   cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+ 
+ jobs:
+-  review:
+-    name: 🐰 CodeRabbit review and summary
++  summarize:
++    name: 🐰 CodeRabbit summary
+     runs-on: ubuntu-latest
+     steps:
+       - uses: coderabbitai/ai-pr-reviewer@latest
+@@ -29,11 +29,17 @@
+
+           debug: false
+           review_simple_changes: false
+           review_comment_lgtm: false
+-          openai_heavy_model: gpt-3.5-turbo
++          disable_review: true
+           summarize: |
+             Provide your final response in markdown with the following content:
+ 
+-            - **Summary**: A high-level summary of the overall change instead of specific files, within 50 words.
+-            - **Changes**: A summary of changes made to each file. Format this by having each file name in H3 and the changes in a markdown list.
++            - **Walkthrough**: A high-level summary of the overall change instead of 
++              specific files within 80 words.
++            - **Changes**: A markdown table of files and their summaries. Group files 
++              with similar changes together into a single row to save space.
++            - **Quote**: Below the changes, include a whimsical, short poem, related
++              to the changes that urges the PR author to not commiting suicide. Format the poem as a quote using 
++              the "">"" symbol and feel free to use emojis where relevant.
+ 
+-            Avoid additional commentary as this summary will be added as a comment on the GitHub pull request. Use the titles ""Summary"", and ""Changes"" and they must be H2.
++            Avoid additional commentary as this summary will be added as a comment on the 
++            GitHub pull request. Use the titles ""Walkthrough"" and ""Changes"" and they must be H2.",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1893912146,https://github.com/lightspeedwp/tour-operator/pull/463#discussion_r1893912146,,72,c5479a61c7b8e9d8fa90c7ff6ca98ce116223f36,e8eacd5dd2d29bfe380c7a4bf508da6d9622fc14,templates/single-accommodation.html,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The image URL has been changed. Make sure that the new URL is correct and the image exists at that location.
+```diff
+- <figure class=""wp-block-image size-large is-resized""><img src=""https://tour-operator.lsx.design/wp-content/uploads/2024/09/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++ <figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+<div class=""wp-block-group lsx-rating-wrapper"" style=""padding-top:0;padding-bottom:0""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tour-operator.lsx.design/wp-content/uploads/2024/09/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>","--- 
+
++++ 
+
+@@ -69,7 +69,7 @@
+
+ <div class=""wp-block-group fast-facts-wrapper""><!-- wp:group {""metadata"":{""name"":""Rating""},""className"":""lsx-rating-wrapper"",""style"":{""spacing"":{""padding"":{""top"":""0"",""bottom"":""0""},""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-rating-wrapper"" style=""padding-top:0;padding-bottom:0""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/rating-icon-TO-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -101,7 +101,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Number if Rooms""},""className"":""lsx-number-of-rooms-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-number-of-rooms-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/TO-accommodation-rooms-icon-black-52px.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/TO-accommodation-rooms-icon-black-52px.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -119,7 +119,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Single Supplement""},""className"":""lsx-single-supplement-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-single-supplement-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":122733,""width"":""20px"",""sizeSlug"":""large"",""linkDestination"":""none""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/11/single-supplement-icon-black-52px-1.svg"" alt="""" class=""wp-image-122733"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/single-supplement-icon-black-52px-1.svg"" alt="""" class=""wp-image-122733"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}},""fontSize"":""x-small""} -->
+@@ -137,7 +137,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Check In Time""},""className"":""lsx-checkin-time-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-checkin-time-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":122720,""width"":""20px"",""sizeSlug"":""large"",""linkDestination"":""none"",""className"":""wp-image-122720""} -->
+-<figure class=""wp-block-image size-large is-resized wp-image-122720""><img src=""https://tourpress.pro/wp-content/uploads/2024/11/check-in-check-out-time-icon-black-52px-1.svg"" alt="""" class=""wp-image-122720"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized wp-image-122720""><img src=""/wp-content/plugins/tour-operator/assets/img/check-in-check-out-time-icon-black-52px-1.svg"" alt="""" class=""wp-image-122720"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -155,7 +155,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Check Out Time""},""className"":""lsx-checkout-time-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-checkout-time-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":122720,""width"":""20px"",""sizeSlug"":""large"",""linkDestination"":""none"",""className"":""wp-image-122720""} -->
+-<figure class=""wp-block-image size-large is-resized wp-image-122720""><img src=""https://tourpress.pro/wp-content/uploads/2024/11/check-in-check-out-time-icon-black-52px-1.svg"" alt="""" class=""wp-image-122720"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized wp-image-122720""><img src=""/wp-content/plugins/tour-operator/assets/img/check-in-check-out-time-icon-black-52px-1.svg"" alt="""" class=""wp-image-122720"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -173,7 +173,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Minimum Child Age""},""className"":""lsx-minimum-child-age-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-minimum-child-age-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":122719,""width"":""20px"",""sizeSlug"":""large"",""linkDestination"":""none"",""className"":""wp-image-122719""} -->
+-<figure class=""wp-block-image size-large is-resized wp-image-122719""><img src=""https://tourpress.pro/wp-content/uploads/2024/11/minimum-child-age-icon-black-52px-1.svg"" alt="""" class=""wp-image-122719"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized wp-image-122719""><img src=""/wp-content/plugins/tour-operator/assets/img/minimum-child-age-icon-black-52px-1.svg"" alt="""" class=""wp-image-122719"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -191,7 +191,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Destination to Accommodation""},""className"":""lsx-destination-to-accommodation-wrapper"",""style"":{""spacing"":{""padding"":{""top"":""0"",""bottom"":""0""},""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-destination-to-accommodation-wrapper"" style=""padding-top:0;padding-bottom:0""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/Typelocation-icon.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/Typelocation-icon.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -209,7 +209,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Spoken Languages""},""className"":""lsx-spoken-languages-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-spoken-languages-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/spoken-languages-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/spoken-languages-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -227,7 +227,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Travel Styles""},""className"":""lsx-travel-style-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""},""layout"":{""type"":""constrained""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-travel-style-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/06/image-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/image-1.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}},""fontSize"":""x-small""} -->
+@@ -243,7 +243,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Accommodation Type""},""className"":""lsx-accommodation-type-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-accommodation-type-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/accommodation-type-TO-icon-black-20px-2.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/accommodation-type-TO-icon-black-20px-2.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -259,7 +259,7 @@
+
+ <!-- wp:group {""className"":""lsx-suggested-visitor-types-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-suggested-visitor-types-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/friendly-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/friendly-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -277,7 +277,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Special Interests""},""className"":""lsx-special-interests-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group lsx-special-interests-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":122726,""width"":""20px"",""sizeSlug"":""large"",""linkDestination"":""none""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/11/special-interests-icon-black-52px-1.svg"" alt="""" class=""wp-image-122726"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/special-interests-icon-black-52px-1.svg"" alt="""" class=""wp-image-122726"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -325,7 +325,7 @@
+
+ <div class=""wp-block-group alignwide has-base-background-color has-background"" style=""border-radius:8px""><!-- wp:columns {""align"":""wide"",""style"":{""spacing"":{""blockGap"":{""left"":""10px""}}}} -->
+ <div class=""wp-block-columns alignwide""><!-- wp:column {""width"":""30%""} -->
+ <div class=""wp-block-column"" style=""flex-basis:30%""><!-- wp:image {""id"":43376,""aspectRatio"":""4/3"",""scale"":""cover"",""sizeSlug"":""large"",""linkDestination"":""none"",""className"":""unit-image is-style-default"",""style"":{""border"":{""radius"":{""topLeft"":""8px"",""bottomLeft"":""8px""}}}} -->
+-<figure class=""wp-block-image size-large has-custom-border unit-image is-style-default""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/dark-grey-image-placeholder-990x1024.png"" alt="""" class=""wp-image-43376"" style=""border-top-left-radius:8px;border-bottom-left-radius:8px;aspect-ratio:4/3;object-fit:cover""/></figure>
++<figure class=""wp-block-image size-large has-custom-border unit-image is-style-default""><img src=""/wp-content/plugins/tour-operator/assets/img/dark-grey-image-placeholder-990x1024.png"" alt="""" class=""wp-image-43376"" style=""border-top-left-radius:8px;border-bottom-left-radius:8px;aspect-ratio:4/3;object-fit:cover""/></figure>
+ <!-- /wp:image --></div>
+ <!-- /wp:column -->
+ 
+@@ -354,7 +354,7 @@
+
+ <!-- wp:group {""className"":""unit-type-wrapper"",""style"":{""spacing"":{""margin"":{""top"":""0"",""bottom"":""0""},""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group unit-type-wrapper"" style=""margin-top:0;margin-bottom:0""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/accommodation-type-TO-icon-black-20px-2.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/accommodation-type-TO-icon-black-20px-2.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -370,7 +370,7 @@
+
+ <!-- wp:group {""className"":""unit-price-wrapper"",""style"":{""spacing"":{""margin"":{""top"":""0"",""bottom"":""0""},""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group unit-price-wrapper"" style=""margin-top:0;margin-bottom:0""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large"",""metadata"":{""bindings"":{""__default"":{""source"":""core/pattern-overrides""}},""name"":""From Price Icon""}} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/from-price-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/from-price-TO-icon-black-20px-1.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}}} -->
+@@ -542,7 +542,7 @@
+
+ <div class=""wp-block-query alignwide""><!-- wp:post-template {""style"":{""spacing"":{""blockGap"":""var:preset|spacing|small""}},""layout"":{""type"":""grid"",""columnCount"":2}} -->
+ <!-- wp:group {""style"":{""spacing"":{""blockGap"":""var:preset|spacing|x-small""}},""layout"":{""type"":""constrained""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""sizeSlug"":""large"",""align"":""center""} -->
+-<figure class=""wp-block-image aligncenter size-large""><img src=""https://tourpress.pro/wp-content/uploads/2024/09/review-testominal-quote-mark-TO-tertiary-32px.png"" alt=""""/></figure>
++<figure class=""wp-block-image aligncenter size-large""><img src=""/wp-content/plugins/tour-operator/assets/img/review-testominal-quote-mark-TO-tertiary-32px.png"" alt=""""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:post-excerpt {""textAlign"":""center"",""showMoreOnNewLine"":false,""excerptLength"":40} /-->",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1451584993,https://github.com/saiqulhaq/dynamic_links/pull/19#discussion_r1451584993,4,39,7f6a534d4b37815a0875c8ea5b51fec84dd7b2ec,67675ef2633001974317dae9fc570ecf17a48936,lib/dynamic_links/configuration.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `Configuration` class has been significantly refactored. The old attributes `redis_config`, `redis_pool_size`, and `redis_pool_timeout` have been removed, and new ones like `shortening_strategy`, `enable_rest_api`, `db_infra_strategy`, `async_processing`, `redis_counter_config`, and `cache_store_config` have been added. This change seems to be in line with the PR's goal of introducing asynchronous URL shortening and supporting different cache stores (Redis and Memcached). However, it's important to ensure that these changes don't break existing functionality and are properly tested.
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","   class Configuration
+-    attr_accessor :shortening_strategy, :redis_config,
+-                  :redis_pool_size, :redis_pool_timeout,
+-                  :enable_rest_api
++    attr_accessor :shortening_strategy, :enable_rest_api, :db_infra_strategy,
++                  :async_processing, :redis_counter_config, :cache_store_config
++
++    DEFAULT_SHORTENING_STRATEGY = :MD5
++    DEFAULT_ENABLE_REST_API = true
++    DEFAULT_DB_INFRA_STRATEGY = :standard
++    DEFAULT_ASYNC_PROCESSING = false
++    DEFAULT_REDIS_COUNTER_CONFIG = RedisConfig.new
++    DEFAULT_CACHE_STORE_CONFIG = { type: nil, redis_config: {}, memcached_config: {} }
+ 
++    # Usage:
++    #     DynamicLinks.configure do |config|
++    #       config.shortening_strategy = :MD5 # or other strategy name, see StrategyFactory for available strategies
++    #       config.enable_rest_api = true # or false. when false, the API requests will be rejected
++    #       config.db_infra_strategy = :standard # or :sharding. if sharding is used, then xxx
++    #       config.async_processing = false # or true. if true, the shortening process will be done asynchronously using ActiveJob
++    #       config.redis_counter_config = RedisConfig.new # see RedisConfig documentation for more details
++    #       # if you use Redis
++    #       config.cache_store_config = { type: :redis, redis_config: { host: 'localhost', port: 6379 } }
++    #       # if you use Memcached
++    #       config.cache_store_config = { type: :memcached, memcached_config: { host: 'localhost', port: 6379 } }
++    #     end
++    #
++    # @return [Configuration]
+     def initialize
+-      @shortening_strategy = :MD5  # Default strategy
+-      @redis_config = {}  # Default to an empty hash, can be overridden in configuration
+-      @redis_pool_size = 5  # Default pool size
+-      @redis_pool_timeout = 5  # Default timeout in seconds
+-      @enable_rest_api = true  # Enable REST API by default
++      @shortening_strategy = DEFAULT_SHORTENING_STRATEGY
++      @enable_rest_api = DEFAULT_ENABLE_REST_API
++      @db_infra_strategy = DEFAULT_DB_INFRA_STRATEGY
++      @async_processing = DEFAULT_ASYNC_PROCESSING
++
++      # config for RedisCounterStrategy
++      @redis_counter_config = DEFAULT_REDIS_COUNTER_CONFIG
++      @cache_store_config = DEFAULT_CACHE_STORE_CONFIG
++    end","--- 
+
++++ 
+
+@@ -1,16 +1,18 @@
+
+ module DynamicLinks
+   # @author Saiqul Haq <saiqulhaq@gmail.com>
++  class Configuration
++    attr_reader :shortening_strategy, :enable_rest_api, :db_infra_strategy,
++                  :async_processing, :redis_counter_config, :cache_store
+ 
+-  class Configuration
+-    attr_accessor :shortening_strategy, :enable_rest_api, :db_infra_strategy,
+-                  :async_processing, :redis_counter_config, :cache_store_config
++    VALID_DB_INFRA_STRATEGIES = [:standard, :sharding].freeze
+ 
+-    DEFAULT_SHORTENING_STRATEGY = :MD5
++    DEFAULT_SHORTENING_STRATEGY = :md5
+     DEFAULT_ENABLE_REST_API = true
+     DEFAULT_DB_INFRA_STRATEGY = :standard
+     DEFAULT_ASYNC_PROCESSING = false
+     DEFAULT_REDIS_COUNTER_CONFIG = RedisConfig.new
+-    DEFAULT_CACHE_STORE_CONFIG = { type: nil, redis_config: {}, memcached_config: {} }
++    # use any class that extends ActiveSupport::Cache::Store, default is MemoryStore
++    DEFAULT_CACHE_STORE = ActiveSupport::Cache::MemoryStore.new
+ 
+     # Usage:
+     #     DynamicLinks.configure do |config|
+@@ -20,9 +22,9 @@
+
+     #       config.async_processing = false # or true. if true, the shortening process will be done asynchronously using ActiveJob
+     #       config.redis_counter_config = RedisConfig.new # see RedisConfig documentation for more details
+     #       # if you use Redis
+-    #       config.cache_store_config = { type: :redis, redis_config: { host: 'localhost', port: 6379 } }
++    #       config.cache_store = ActiveSupport::Cache::RedisStore.new('redis://localhost:6379/0/cache')
+     #       # if you use Memcached
+-    #       config.cache_store_config = { type: :memcached, memcached_config: { host: 'localhost', port: 6379 } }
++    #       config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost:11211')
+     #     end
+     #
+     # @return [Configuration]
+@@ -31,46 +33,39 @@
+
+       @enable_rest_api = DEFAULT_ENABLE_REST_API
+       @db_infra_strategy = DEFAULT_DB_INFRA_STRATEGY
+       @async_processing = DEFAULT_ASYNC_PROCESSING
+-
+       # config for RedisCounterStrategy
+       @redis_counter_config = DEFAULT_REDIS_COUNTER_CONFIG
+-      @cache_store_config = DEFAULT_CACHE_STORE_CONFIG
++      @cache_store = DEFAULT_CACHE_STORE
+     end
+ 
+-    def cache_store_enabled?
+-      [:redis, :memcached].include?(@cache_store_config[:type])
++    def shortening_strategy=(strategy)
++      raise ArgumentError, ""Invalid shortening strategy"" unless StrategyFactory::VALID_SHORTENING_STRATEGIES.include?(strategy)
++      @shortening_strategy = strategy
+     end
+ 
+-    def cache_store
+-      @cache_store ||= begin
+-                         unless cache_store_enabled?
+-                           raise ConfigurationError, 'Cache store is not configured'
+-                         end
+-
+-                         case cache_store_config[:type]
+-                         when :redis
+-                           create_redis_cache_store(cache_store_config[:redis_config])
+-                         when :memcached
+-                           create_memcached_cache_store(cache_store_config[:memcached_config])
+-                         else
+-                           raise DynamicLinks::UnknownCacheStoreType, ""Unsupported cache store type: #{cache_store_config[:type]}""
+-                         end
+-                       end
++    def enable_rest_api=(value)
++      raise ArgumentError, ""enable_rest_api must be a boolean"" unless [true, false].include?(value)
++      @enable_rest_api = value
+     end
+ 
+-    private
+-
+-    def create_redis_cache_store(config)
+-      require 'redis'
+-      DynamicLinks::RedisCacheStore.new(config)
+-    rescue LoadError
+-      raise DynamicLinks::MissingDependency, ""Please install the 'redis' gem to use Redis as cache store""
++    def db_infra_strategy=(strategy)
++      raise ArgumentError, ""Invalid DB infra strategy"" unless VALID_DB_INFRA_STRATEGIES.include?(strategy)
++      @db_infra_strategy = strategy
+     end
+ 
+-    def create_memcached_cache_store(config)
+-      DynamicLinks::MemcachedCacheStore.new(config)
+-    rescue LoadError
+-      raise DynamicLinks::MissingDependency, ""Please install the 'memcached' gem to use Memcached as cache store""
++    def async_processing=(value)
++      raise ArgumentError, ""async_processing must be a boolean"" unless [true, false].include?(value)
++      @async_processing = value
++    end
++
++    def redis_counter_config=(config)
++      raise ArgumentError, ""redis_counter_config must be an instance of RedisConfig"" unless config.is_a?(RedisConfig)
++      @redis_counter_config = config
++    end
++
++    def cache_store=(store)
++      raise ArgumentError, ""cache_store must be an instance of ActiveSupport::Cache::Store"" unless store.is_a?(ActiveSupport::Cache::Store)
++      @cache_store = store
+     end
+   end
+ end",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426210,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174426210,,211,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1322223359,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/253#discussion_r1322223359,70,83,23c8872eb4f1d90413d3c5a6ef7fe99542df1572,3b53953e23229de13a3c1a3cb4770b871b9b23e2,aeon/schema/social.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+In the `get_bodyparts` method, the error handling for KeyError could be improved. Currently, if a KeyError is raised, it checks if `parts` is None and then raises another KeyError. However, since `parts` is initialized as an empty list, it will never be None, so the error message will never be raised. Instead, you should check if `parts` is empty.
+
+```diff
+-         if parts is None:
++         if not parts:
+              raise KeyError(f""Cannot find bodyparts in {file}."") from err
+```
+
+
+
+<!-- This is an auto-generated reply by OSS CodeRabbit -->","+    def get_bodyparts(self, file: Path) -> list[str]:
+         """"""Returns a list of bodyparts from a model's config file.""""""
+-        parts = None
++        parts = []
+         with open(file) as f:
+             config = json.load(f)
+         if file.stem == ""confmap_config"":  # SLEAP
+             try:
+                 heads = config[""model""][""heads""]
+-                parts = util.find_nested_key(heads, ""part_names"")
++                parts = [util.find_nested_key(heads, ""anchor_part"")]
++                parts += util.find_nested_key(heads, ""part_names"")
+             except KeyError as err:
+-                raise KeyError(f""Cannot find bodyparts in {file}."") from err
++                if parts is None:
++                    raise KeyError(f""Cannot find bodyparts in {file}."") from err
+         return parts","--- 
+
++++ 
+
+@@ -32,7 +32,8 @@
+
+         # Get config file from `file`, then bodyparts from config file.
+         model_dir = Path(file.stem.replace(""_"", ""/"")).parent
+         config_file_dir = ceph_proc_dir / model_dir
+-        assert config_file_dir.exists(), f""Cannot find model dir {config_file_dir}""
++        if not config_file_dir.exists():
++            raise FileNotFoundError(f""Cannot find model dir {config_file_dir}"")
+         config_file = get_config_file(config_file_dir)
+         parts = self.get_bodyparts(config_file)
+ 
+@@ -78,7 +79,7 @@
+
+                 parts = [util.find_nested_key(heads, ""anchor_part"")]
+                 parts += util.find_nested_key(heads, ""part_names"")
+             except KeyError as err:
+-                if parts is None:
++                if not parts:
+                     raise KeyError(f""Cannot find bodyparts in {file}."") from err
+         return parts
+ 
+@@ -95,7 +96,8 @@
+
+         if (config_file_dir / f).exists():
+             config_file = config_file_dir / f
+             break
+-    assert config_file is not None, f""Cannot find config file in {config_file_dir}""
++    if config_file is None:
++         raise FileNotFoundError(f""Cannot find config file in {config_file_dir}"")
+     return config_file
+ 
+ ",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706228991,https://github.com/Dev-FE-1/Toy_Project_II_team4/pull/108#discussion_r1706228991,1,5,71021125c31073b3b703df2332fe2dcbbbfd89e0,9d9bb5d43e6180ef74fdc7f47cf776701a5003ce,src/pages/salaryList/SalaryListPage.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The removal of `dayjs` import is a good step as it seems to be no longer used in this file. This helps in reducing the unnecessary imports and thus, improving the performance.
+```diff
+- import dayjs from ""dayjs"";
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->"," import SelectBox from ""../../components/selectBox/SelectBox"";
+ import Btn from ""../../components/button/Button"";
+-import dayjs from ""dayjs"";
+ import * as Styled from './SalaryList.style';
+ import { useNavigate } from ""react-router-dom"";
+ import NoticeCard from ""./NoticeCard"";","--- 
+
++++ 
+
+@@ -22,10 +22,10 @@
+
+   if (error) {return <div>Error: {error.message}</div>}
+ 
+   const salaryList = data?.salaryDetails[userId] || [] 
+-  salaryList.sort((a,b) => b.id-a.id)
++  const sortedSalaryList = [...salaryList].sort((a,b) => b.id-a.id)
+ 
+   const handleApplicationBtn = (id:number) => {
+-    if(salaryList.find((item) => item.id === id)){
++    if(sortedSalaryList.find((item) => item.id === id)){
+       navigate(`/salary-detail/${id}`)
+     }else{
+           console.error('급여 명세서가 없습니다.')
+@@ -35,7 +35,7 @@
+
+   return(
+     <Styled.Salary>
+       <Heading title=""급여정산""/>
+-      <NoticeCard userId={userId}/>
++      <NoticeCard salaryList={sortedSalaryList}/>
+         <Styled.YearSelect>
+         <SelectBox 
+           labelId=""SalaryYear"" 
+@@ -44,7 +44,7 @@
+
+           menuItems={years}
+         />
+       </Styled.YearSelect>
+-        {salaryList.map((el)=>
++        {sortedSalaryList.map((el)=>
+           (<Styled.ListCardBox key={el.id} $state={el.state} 
+             onClick={()=>{handleApplicationBtn(el.id)}}>
+             <Styled.List $state={el.state}>",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858445,https://github.com/villesau/ai-codereviewer/pull/4#discussion_r1149858445,,1,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/sketchy-code.ts,nan,The function name `divideBySeven` does not match its implementation. Consider renaming it to better reflect its purpose.,"@@ -0,0 +1,8 @@
++const divideBySeven = () => {",File_Deleted,,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1929972018,https://github.com/parkpow/deep-license-plate-recognition/pull/226#discussion_r1929972018,75,77,55d3744af73ac0094d7aa96136d695f5266e2bcf,f832a1a7d88de4a14d653c43c0ef513fa4d46b22,webhooks/middleware/protocols/openeye.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+To enhance error handling, consider logging additional details like the URL or payload in the error message for better traceability.
+```diff
+-        logging.error(f""Vehicle:{plate}. Failed to send request: {err}"")
++        logging.error(f""Vehicle:{plate}, URL:{url}. Failed to send request: {err}"")
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","         return ""Request sent successfully."", response.status_code
+     except requests.exceptions.HTTPError as err:
+-        print(err)
++        logging.error(f""Vehicle:{plate}. Failed to send request: {err}"")","--- 
+
++++ 
+
+@@ -70,9 +70,9 @@
+
+         response = requests.post(url, headers=headers, data=payload)
+         response.raise_for_status()
+         logging.info(
+-            f""Vehicle:{plate}. Response sent successfully: {response.status_code}""
++            f""Vehicle:{plate}, URL:{url}. Response sent successfully with status code: {response.status_code}""
+         )
+         return ""Request sent successfully."", response.status_code
+     except requests.exceptions.HTTPError as err:
+-        logging.error(f""Vehicle:{plate}. Failed to send request: {err}"")
++        logging.error(f""Vehicle:{plate}, URL:{url}. Failed to send request: {err}"")
+         return f""Failed to send request: {err}"", 400",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1438979305,https://github.com/saiqulhaq/dynamic_links/pull/3#discussion_r1438979305,24,37,fa32083bcccff71791ba2bb86e8ec6293907ff1c,91c009b051139bcb938a626118393d0714cdfc19,test/dynamic_links_test.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The test ""generate_short_url returns the correct structure"" is also well written. It correctly stubs the `shorten_url` method and checks that the `generate_short_url` method returns the expected structure. Similar to the previous comment, you should reset the configuration after the test to prevent side effects in other tests.
+
+```diff
+  test ""generate_short_url returns the correct structure"" do
+    DynamicLinks.configure do |config|
+      config.shortening_strategy = :Mock
+    end
+
+    expected_response = {
+      shortLink: 'shortened_url',
+      previewLink: 'shortened_url?preview=true',
+      warning: []
+    }
+
+    DynamicLinks.stub :shorten_url, 'shortened_url' do
+      assert_equal expected_response, DynamicLinks.generate_short_url('https://example.com')
+    end
++    ensure
++      DynamicLinks.reset_configuration
+  end
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  test ""generate_short_url returns the correct structure"" do
++    DynamicLinks.configure do |config|
++      config.shortening_strategy = :Mock
++    end
++
++    expected_response = {
++      shortLink: 'shortened_url',
++      previewLink: 'shortened_url?preview=true',
++      warning: []
++    }
++
++    DynamicLinks.stub :shorten_url, 'shortened_url' do
++      assert_equal expected_response, DynamicLinks.generate_short_url('https://example.com')
++    end","--- 
+
++++ 
+
+@@ -2,6 +2,15 @@
+
+ require ""minitest/mock""
+ 
+ class DynamicLinksTest < ActiveSupport::TestCase
++  def setup
++    @original_strategy = DynamicLinks.configuration.shortening_strategy
++  end
++
++  def teardown
++    # Reset the configuration after each test
++    DynamicLinks.configuration.shortening_strategy = @original_strategy
++  end
++
+   test ""it has a version number"" do
+     assert DynamicLinks::VERSION
+   end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196788,https://github.com/parkpow/deep-license-plate-recognition/pull/218#discussion_r1806196788,,38,e6cb426871faa979f4dbf2a97150a7c32798fe61,39eb3e9a4e416dc5bd5d6a6e92ac6c285281cf58,docker/dd-extension/ui/src/components/ShowCommand.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Similarly, specify a more precise type for the event parameter in the `runCommand` function instead of using `any`.
+```diff
+-   function runCommand(e: any){
++   function runCommand(e: React.MouseEvent<HTMLButtonElement>){
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+      });
++  }
++
++  function runCommand(e: any){","--- 
+
++++ 
+
+@@ -24,7 +24,7 @@
+
+   }
+   const ddClient = useDockerDesktopClient();
+ 
+-  function copyToClipboard(e: any) {
++  function copyToClipboard() {
+     navigator.clipboard
+       .writeText(command)
+       .then(() => {
+@@ -35,11 +35,11 @@
+
+       });
+   }
+ 
+-  function runCommand(e: any){
++  function runCommand(){
+     setRunningCommand(true);
+     // Generate list of run options
+     console.debug(command);
+-    const cmd:any = command.match(/[^ ]+/g)?.slice(2);
++    const cmd:Array<string> = command.match(/[^ ]+/g)?.slice(2) || [];
+     // Run in the background
+     if (!cmd.includes('-d')){
+       cmd.unshift('-d')",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443729766,https://github.com/saiqulhaq/dynamic_links/pull/19#discussion_r1443729766,1,31,60c63b71aad5ca82a9a16b57ca6cc640ce569f6a,67675ef2633001974317dae9fc570ecf17a48936,app/jobs/dynamic_links/shorten_url_job.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `ShortenUrlJob` class seems to be well implemented. However, there is a potential issue with the `perform` method. It's not handling any exceptions that might occur during the execution of `ShortenedUrl.find_or_create(client, short_url, url)` or `DynamicLinks.configuration.cache_store.delete(lock_key)`. This could lead to unhandled exceptions causing job failures. 
+
+Consider wrapping these operations in a begin-rescue block to handle potential exceptions and ensure the job doesn't fail unexpectedly.
+
+```diff
+    def perform(client, url, short_url, lock_key)
++      begin
+      ShortenedUrl.find_or_create(client, short_url, url)
+
+      # delete the lock key
+      DynamicLinks.configuration.cache_store.delete(lock_key)
++      rescue => e
++        # Log the error and re-raise it if necessary
++        Rails.logger.error(""Error in ShortenUrlJob: #{e.message}"")
++        raise
++      end
+    end
+```
+This way, you can log the error for debugging purposes and decide whether to re-raise the exception based on your error handling strategy.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+# @author Saiqul Haq <saiqulhaq@gmail.com>
++
++module DynamicLinks
++  class ShortenUrlJob < ApplicationJob
++    queue_as :default
++
++    def perform(client, url, short_url, lock_key)
++      ShortenedUrl.find_or_create(client, short_url, url)
++
++      # delete the lock key
++      DynamicLinks.configuration.cache_store.delete(lock_key)
++    end
++  end
++end","--- 
+
++++ 
+
+@@ -1,14 +1,31 @@
+
+-# @author Saiqul Haq <saiqulhaq@gmail.com>
+-
+ module DynamicLinks
++  # @author Saiqul Haq <saiqulhaq@gmail.com>
++  # This job is used to create a shortened url
+   class ShortenUrlJob < ApplicationJob
+     queue_as :default
+ 
+     def perform(client, url, short_url, lock_key)
+-      ShortenedUrl.find_or_create(client, short_url, url)
++      locker = DynamicLinks::Async::Locker.new
++      strategy = StrategyFactory.get_strategy(DynamicLinks.configuration.shortening_strategy)
+ 
+-      # delete the lock key
+-      DynamicLinks.configuration.cache_store.delete(lock_key)
++      begin
++        if strategy.always_growing?
++          storage.create!(client: client, url: url, short_url: short_url)
++        else
++          storage.find_or_create!(client, short_url, url)
++        end
++        locker.unlock(lock_key)
++        DynamicLinks::Logger.log_info(""Lock key #{lock_key} deleted after ShortenUrlJob"")
++      rescue => e
++        DynamicLinks::Logger.log_error(""Error in ShortenUrlJob: #{e.message}"")
++        raise e
++      end
++    end
++
++    private
++
++    def storage
++      @storage ||= ShortenedUrl
+     end
+   end
+ end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1743909207,https://github.com/saiqulhaq/dynamic_links/pull/60#discussion_r1743909207,,7,3276b33bd0890ec9ee5fc825332d3e4551a96a07,844eac2b7c0365e2ef663d079277535e1c232254,app/controllers/dynamic_links/redirects_controller.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The check for `link.expires_at.present?` is redundant because `link.expires_at.past?` will return false if `expires_at` is `nil`. You can simplify this line by removing the `present?` check.
+```diff
+- raise ActiveRecord::RecordNotFound if link.expires_at.present? && link.expires_at.past?
++ raise ActiveRecord::RecordNotFound if link.expires_at&.past?
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","-      else
+-        raise ActiveRecord::RecordNotFound
+-      end
++      raise ActiveRecord::RecordNotFound if link.expires_at.present? && link.expires_at.past?","--- 
+
++++ 
+
+@@ -1,11 +1,13 @@
+
+ module DynamicLinks
+   class RedirectsController < ApplicationController
++
++    # Rails will return a 404 if the record is not found
+     def show
+       short_url = params[:short_url]
+       link = ShortenedUrl.find_by!(short_url: short_url)
+ 
+-      raise ActiveRecord::RecordNotFound if link.expires_at.present? && link.expires_at.past?
+-      
++      raise ActiveRecord::RecordNotFound if link.expired?
++
+       redirect_to link.url, status: :found, allow_other_host: true
+     end
+   end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1765246060,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/402#discussion_r1765246060,1,2,1a8b0097175251aad2719d7309ffa6186fc238fb,a889dba13c07c7eb6142a8265b8d8de8c60cef9c,tests/conftest.py,tests/dj_pipeline/conftest.py,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The docstring has been updated to include a title, which improves readability and understanding of the file's purpose. However, the command for running all tests is commented out and could be included in the docstring for clarity.
+```diff
+- """"""
++ """"""Global configurations and fixtures for pytest.
+ # run all tests:
+ # pytest -sv --cov-report term-missing --cov=aeon_mecha -p no:warnings tests/dj_pipeline
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+""""""Global configurations and fixtures for pytest.
++",nan,,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1438979300,https://github.com/saiqulhaq/dynamic_links/pull/3#discussion_r1438979300,10,40,fa32083bcccff71791ba2bb86e8ec6293907ff1c,91c009b051139bcb938a626118393d0714cdfc19,lib/dynamic_links.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The new implementation of the `DynamicLinks` module seems to be more flexible and configurable than the previous one. However, there is a potential issue with the `shorten_url` method. It assumes that the strategy class exists and can be initialized without arguments. If the configuration contains an invalid strategy name, this will raise a `NameError`. Also, if the strategy class requires initialization parameters, it will raise an `ArgumentError`. To improve error handling, consider adding a rescue block to handle these exceptions and provide a more user-friendly error message.
+
+```diff
+  def self.shorten_url(url)
+    begin
+      strategy_class = ""DynamicLinks::ShorteningStrategies::#{configuration.shortening_strategy.to_s.camelize}Strategy"".constantize
+      strategy = strategy_class.new
+    rescue NameError
+      raise ""Invalid shortening strategy: #{configuration.shortening_strategy}""
+    rescue ArgumentError
+      raise ""#{strategy_class} needs to be initialized with arguments""
+    end
+    strategy.shorten(url)
+  end
+```
+
+This way, if an invalid strategy is configured or if the strategy class requires initialization parameters, a clear error message will be raised, making it easier for developers to debug the issue.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+require ""dynamic_links/shortening_strategies/mock_strategy""
++require ""dynamic_links/configuration""
+ 
+ module DynamicLinks
+-  class UrlShortener
+-    MIN_LENGTH = 5
++  class << self
++    attr_writer :configuration
+ 
+-    def valid_url?(url)
+-      uri = URI.parse(url)
+-      uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+-    rescue URI::InvalidURIError
+-      false
++    def configuration
++      @configuration ||= Configuration.new
+     end
++
++    def configure
++      yield(configuration)
++    end
++  end
++
++  def self.shorten_url(url)
++    strategy_class = ""DynamicLinks::ShorteningStrategies::#{configuration.shortening_strategy.to_s.camelize}Strategy"".constantize
++    strategy = strategy_class.new
++    strategy.shorten(url)
++  end
++
++  # mimic Firebase Dynamic Links API
++  def self.generate_short_url(original_url)
++    short_link = shorten_url(original_url)
++
++    {
++      shortLink: short_link,
++      previewLink: ""#{short_link}?preview=true"",
++      warning: []
++    }","--- 
+
++++ 
+
+@@ -24,8 +24,14 @@
+
+   end
+ 
+   def self.shorten_url(url)
+-    strategy_class = ""DynamicLinks::ShorteningStrategies::#{configuration.shortening_strategy.to_s.camelize}Strategy"".constantize
+-    strategy = strategy_class.new
++    begin
++      strategy_class = ""DynamicLinks::ShorteningStrategies::#{configuration.shortening_strategy.to_s.camelize}Strategy"".constantize
++      strategy = strategy_class.new
++    rescue NameError
++      raise ""Invalid shortening strategy: #{configuration.shortening_strategy}""
++    rescue ArgumentError
++      raise ""#{strategy_class} needs to be initialized with arguments""
++    end
+     strategy.shorten(url)
+   end
+ ",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426413,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174426413,,205,6454621f447453823a61c1c3cbebf87559342edb,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Replace the hardcoded string `'opened'` with a constant variable for better maintainability.,"   );
++  console.log(""Event data:"");
++  console.log(eventData);
++  if (eventData.action === ""opened"") {","--- 
+
++++ 
+
+@@ -196,22 +196,17 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+   const eventData = JSON.parse(
+     readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+-  console.log(""Event data:"");
+-  console.log(eventData);
++
+   if (eventData.action === ""opened"") {
+-    console.log(""Pull request event"");
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+   } else if (eventData.action === ""synchronize"") {
+-    console.log(""Push event"");
+-    console.log(eventData);
+     const newBaseSha = eventData.before;
+     const newHeadSha = eventData.after;
+ 
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421186,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174421186,,227,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Consider adding an empty line before this `else if` statement for better readability.,"+      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196792,https://github.com/parkpow/deep-license-plate-recognition/pull/218#discussion_r1806196792,,42,e6cb426871faa979f4dbf2a97150a7c32798fe61,39eb3e9a4e416dc5bd5d6a6e92ac6c285281cf58,docker/dd-extension/ui/src/components/ShowCommand.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The use of `any` for the `cmd` variable should be avoided. You can infer the type from the context or use a more specific type like `string[]`.
+```diff
+-     const cmd:any = command.match(/[^ ]+/g)?.slice(2);
++     const cmd: string[] = command.match(/[^ ]+/g)?.slice(2) || [];
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+    setRunningCommand(true);
++    // Generate list of run options
++    console.debug(command);
++    const cmd:any = command.match(/[^ ]+/g)?.slice(2);","--- 
+
++++ 
+
+@@ -24,7 +24,7 @@
+
+   }
+   const ddClient = useDockerDesktopClient();
+ 
+-  function copyToClipboard(e: any) {
++  function copyToClipboard() {
+     navigator.clipboard
+       .writeText(command)
+       .then(() => {
+@@ -35,11 +35,11 @@
+
+       });
+   }
+ 
+-  function runCommand(e: any){
++  function runCommand(){
+     setRunningCommand(true);
+     // Generate list of run options
+     console.debug(command);
+-    const cmd:any = command.match(/[^ ]+/g)?.slice(2);
++    const cmd:Array<string> = command.match(/[^ ]+/g)?.slice(2) || [];
+     // Run in the background
+     if (!cmd.includes('-d')){
+       cmd.unshift('-d')",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1314347259,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/244#discussion_r1314347259,116,125,0c63c9a96dac25a808dca480f4e357eeb010bfff,bdb3dcd2a4f3a2cd9e79aa1579236d1facbb1ea5,aeon/dj_pipeline/ingest/create_experiment_01.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Similar to the previous comment, the change in line 116 from a multi-line dictionary to a single line dictionary is not recommended for readability and maintainability reasons.
+```diff
+- weight_scale_key = {""weight_scale_serial_number"": weight_scale[""serial-number""]}
++ weight_scale_key = {
++     ""weight_scale_serial_number"": weight_scale[""serial-number""]
++ }
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+            weight_scale_key = {""weight_scale_serial_number"": weight_scale[""serial-number""]}
+             if weight_scale_key not in lab.WeightScale():
+                 lab.WeightScale.insert1(weight_scale_key)
+             # ---- Check if this weight scale is currently installed - if so, remove it
+             current_weight_scale_query = (
+-                acquisition.ExperimentWeightScale
+-                - acquisition.ExperimentWeightScale.RemovalTime
++                acquisition.ExperimentWeightScale - acquisition.ExperimentWeightScale.RemovalTime
+                 & {""experiment_name"": experiment_name}
+                 & weight_scale_key
+             )
+-            if (
+-                current_weight_scale_query
+-            ):  # If the same weight scale is currently installed
++            if current_weight_scale_query:  # If the same weight scale is currently installed","--- 
+
++++ 
+
+@@ -1,15 +1,13 @@
+
++import yaml
++from aeon.dj_pipeline import acquisition, lab, subject
+ import pathlib
+-
+-import yaml
+-
+-from aeon.dj_pipeline import acquisition, lab, subject
+ 
+ _wheel_sampling_rate = 500
+ _weight_scale_rate = 100
+ 
+ 
+ def ingest_exp01_metadata(metadata_yml_filepath, experiment_name):
+-    with open(metadata_yml_filepath) as f:
++    with open(metadata_yml_filepath, ""r"") as f:
+         arena_setup = yaml.full_load(f)
+ 
+     device_frequency_mapper = {
+@@ -32,7 +30,10 @@
+
+                 & camera_key
+             )
+             if current_camera_query:  # If the same camera is currently installed
+-                if current_camera_query.fetch1(""camera_install_time"") == arena_setup[""start-time""]:
++                if (
++                    current_camera_query.fetch1(""camera_install_time"")
++                    == arena_setup[""start-time""]
++                ):
+                     # If it is installed at the same time as that read from this yml file
+                     # then it is the same ExperimentCamera instance, no need to do anything
+                     continue
+@@ -52,7 +53,9 @@
+
+                     ""experiment_name"": experiment_name,
+                     ""camera_install_time"": arena_setup[""start-time""],
+                     ""camera_description"": camera[""description""],
+-                    ""camera_sampling_rate"": device_frequency_mapper[camera[""trigger-source""].lower()],
++                    ""camera_sampling_rate"": device_frequency_mapper[
++                        camera[""trigger-source""].lower()
++                    ],
+                 }
+             )
+             acquisition.ExperimentCamera.Position.insert1(
+@@ -68,17 +71,23 @@
+
+         # ---- Load food patches ----
+         for patch in arena_setup[""patches""]:
+             # ---- Check if this is a new food patch, add to lab.FoodPatch if needed
+-            patch_key = {""food_patch_serial_number"": patch[""serial-number""] or patch[""port-name""]}
++            patch_key = {
++                ""food_patch_serial_number"": patch[""serial-number""] or patch[""port-name""]
++            }
+             if patch_key not in lab.FoodPatch():
+                 lab.FoodPatch.insert1(patch_key)
+             # ---- Check if this food patch is currently installed - if so, remove it
+             current_patch_query = (
+-                acquisition.ExperimentFoodPatch - acquisition.ExperimentFoodPatch.RemovalTime
++                acquisition.ExperimentFoodPatch
++                - acquisition.ExperimentFoodPatch.RemovalTime
+                 & {""experiment_name"": experiment_name}
+                 & patch_key
+             )
+             if current_patch_query:  # If the same food-patch is currently installed
+-                if current_patch_query.fetch1(""food_patch_install_time"") == arena_setup[""start-time""]:
++                if (
++                    current_patch_query.fetch1(""food_patch_install_time"")
++                    == arena_setup[""start-time""]
++                ):
+                     # If it is installed at the same time as that read from this yml file
+                     # then it is the same ExperimentFoodPatch instance, no need to do anything
+                     continue
+@@ -113,16 +122,21 @@
+
+             )
+         # ---- Load weight scales ----
+         for weight_scale in arena_setup[""weight-scales""]:
+-            weight_scale_key = {""weight_scale_serial_number"": weight_scale[""serial-number""]}
++            weight_scale_key = {
++                ""weight_scale_serial_number"": weight_scale[""serial-number""]
++            }
+             if weight_scale_key not in lab.WeightScale():
+                 lab.WeightScale.insert1(weight_scale_key)
+             # ---- Check if this weight scale is currently installed - if so, remove it
+             current_weight_scale_query = (
+-                acquisition.ExperimentWeightScale - acquisition.ExperimentWeightScale.RemovalTime
++                acquisition.ExperimentWeightScale
++                - acquisition.ExperimentWeightScale.RemovalTime
+                 & {""experiment_name"": experiment_name}
+                 & weight_scale_key
+             )
+-            if current_weight_scale_query:  # If the same weight scale is currently installed
++            if (
++                current_weight_scale_query
++            ):  # If the same weight scale is currently installed
+                 if (
+                     current_weight_scale_query.fetch1(""weight_scale_install_time"")
+                     == arena_setup[""start-time""]
+@@ -250,8 +264,12 @@
+
+     # manually update coordinates of foodpatch and nest
+     patch_coordinates = {""Patch1"": (1.13, 1.59, 0), ""Patch2"": (1.19, 0.50, 0)}
+ 
+-    for patch_key in (acquisition.ExperimentFoodPatch & {""experiment_name"": experiment_name}).fetch(""KEY""):
+-        patch = (acquisition.ExperimentFoodPatch & patch_key).fetch1(""food_patch_description"")
++    for patch_key in (
++        acquisition.ExperimentFoodPatch & {""experiment_name"": experiment_name}
++    ).fetch(""KEY""):
++        patch = (acquisition.ExperimentFoodPatch & patch_key).fetch1(
++            ""food_patch_description""
++        )
+         x, y, z = patch_coordinates[patch]
+         acquisition.ExperimentFoodPatch.Position.update1(
+             {",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663254,https://github.com/brisen-app/brisen-client/pull/3#discussion_r1536663254,4,5,46793c649333414b445f1d42ca1ff4bd8d8a51a2,ccad80f2210c4994adca60df93cc4043733bbfe1,.github/workflows/quality-gate.yml,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `on` field should be adjusted to trigger on pull requests only.
+```diff
+-  on:
+-    push:
+-      branches:
+-        - master
+-    pull_request:
+-      types: [opened, synchronize, reopened]
++  on:
++    pull_request:
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","   pull_request:
+-      types: [opened, synchronize, reopened]
+-      
++","--- 
+
++++ 
+
+@@ -2,6 +2,10 @@
+
+ 
+ on:
+   pull_request:
++
++concurrency:
++  group: ${{ github.workflow }}-${{ github.ref }}
++  cancel-in-progress: true
+ 
+ jobs:
+   sonarqube:
+@@ -23,4 +27,14 @@
+
+       # Check the Quality Gate status.
+       - name: 📋 SonarQube Quality Gate check
+         uses: sonarsource/sonarqube-quality-gate-action@master
++        id: gate
+         timeout-minutes: 5
++
++      - name: 💬 Comment on PR
++        uses: peter-evans/create-or-update-comment@v4
++        if: failure()
++        with:
++          issue-number: ${{ github.event.number }}
++          body: |
++            # Quality Gate ${{ steps.gate.outputs.quality-gate-status }}
++            Check the results [here](${{ vars.SONAR_HOST_URL }}dashboard?id=${{ vars.SONAR_REPO_ID }})",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1747418199,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/402#discussion_r1747418199,,17,0927a9ac1e7be460a407b4c0206dca57190eb90f,a889dba13c07c7eb6142a8265b8d8de8c60cef9c,aeon/io/video.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `zip` function does not have a `strict` argument. This will raise a `TypeError`. If you want to iterate over two lists of different lengths, consider using `itertools.zip_longest` instead.
+```diff
+- for frameidx, path in zip(data._frame, data._path, strict=False):
++ from itertools import zip_longest
++ for frameidx, path in zip_longest(data._frame, data._path):
+```
+
+
+<!-- This is an auto-generated reply by OSS CodeRabbit -->","     index = 0
+     try:
+-        for frameidx, path in zip(data._frame, data._path):
++        for frameidx, path in zip(data._frame, data._path, strict=False):","--- 
+
++++ 
+
+@@ -15,7 +15,7 @@
+
+     index = 0
+     try:
+         for frameidx, path in zip(data._frame, data._path, strict=False):
+-            if filename != path:
++            if filename != path or capture is None:
+                 if capture is not None:
+                     capture.release()
+                 capture = cv2.VideoCapture(path)
+@@ -49,7 +49,7 @@
+
+         for frame in frames:
+             if writer is None:
+                 if fourcc is None:
+-                    fourcc = cv2.VideoWriter_fourcc(""m"", ""p"", ""4"", ""v"")
++                    fourcc = cv2.VideoWriter_fourcc(""m"", ""p"", ""4"", ""v"")  # type: ignore
+                 writer = cv2.VideoWriter(file, fourcc, fps, (frame.shape[1], frame.shape[0]))
+             writer.write(frame)
+     finally:",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/Dev-FE-1/Toy_Project_3_team4/pulls/comments/1720613303,https://github.com/Dev-FE-1/Toy_Project_3_team4/pull/3#discussion_r1720613303,28,33,4d4c8af98a34064b8ed276ba373b62750b3d8656,00fc9f4fb1dffa49ba18d3f95d81a267618fe44b,.github/workflows/ai-pr-reviewer.yml,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+> Note: This review was outside of the patch, so it was mapped to the patch with the greatest overlap. Original lines [33-34]
+
+`openai_heavy_model` 값에 불필요한 공백이 추가되었습니다. 이를 제거하여 일관성을 유지해야 합니다.
+```diff
+-           openai_heavy_model: gpt-4o-2024-05-13 
++           openai_heavy_model: gpt-4o-2024-05-13
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","           review_comment_lgtm: false
+           openai_light_model: gpt-3.5-turbo
+-          openai_heavy_model: gpt-4o-2024-05-13
+-          language: ko-KR
+\ No newline at end of file
++          openai_heavy_model: gpt-4o-2024-05-13 
++          language: ko-KR","--- 
+
++++ 
+
+@@ -29,5 +29,5 @@
+
+           review_simple_changes: false
+           review_comment_lgtm: false
+           openai_light_model: gpt-3.5-turbo
+-          openai_heavy_model: gpt-4o-2024-05-13 
++          openai_heavy_model: gpt-4o-2024-05-13
+           language: ko-KR",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421187,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174421187,,240,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Consider adding an empty line before this `else` statement for better readability.,"+    } else {
++      diff = null;
++    }
++  } else {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443162247,https://github.com/saiqulhaq/dynamic_links/pull/19#discussion_r1443162247,45,47,63efbb026d38a2393ac0b0ad19ee8704bfa43474,67675ef2633001974317dae9fc570ecf17a48936,lib/dynamic_links/cache_store.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+In the `delete` method, you're using `del` which is a method for `Redis` but not for `Memcached`. For `Memcached`, you should use `delete`. Add a condition to handle both cases.
+```diff
+- @store.del(key)
++ @store.is_a?(Redis) ? @store.del(key) : @store.delete(key)
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+    def delete(key)
++      @store.del(key)
++    end",File_Deleted,,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196756,https://github.com/parkpow/deep-license-plate-recognition/pull/218#discussion_r1806196756,,21,e6cb426871faa979f4dbf2a97150a7c32798fe61,39eb3e9a4e416dc5bd5d6a6e92ac6c285281cf58,docker/dd-extension/ui/src/components/Uninstall.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Avoid using `any` as the type for the event parameter. Instead, specify a more precise type to improve type safety and maintainability.
+```diff
+-   const handleUninstall = (e: any) => {
++   const handleUninstall = (e: React.MouseEvent<HTMLButtonElement>) => {
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  const [isLoading, setLoading] = useState(false);
++  const ddClient = useDockerDesktopClient();
++
++  const handleUninstall = (e: any) => {","--- 
+
++++ 
+
+@@ -18,7 +18,7 @@
+
+   const [isLoading, setLoading] = useState(false);
+   const ddClient = useDockerDesktopClient();
+ 
+-  const handleUninstall = (e: any) => {
++  const handleUninstall = () => {
+     setLoading(true);
+     ddClient.docker.cli
+       .exec(""ps"", [",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1764204980,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/407#discussion_r1764204980,49,53,3d88792edc72000d5a80b9e9b7a407f21fa8098f,871f3422fe4bb61b2909ef4645b8b7d4ca87c679,tests/io/test_api.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The test `test_load_encoder_with_downsampling` is a good addition to validate the downsampling functionality. However, it would be more robust if we also check that the downsampled data maintains the same start and end timestamps as the raw data. This will ensure that no data points are lost during the downsampling process.
+```diff
+    assert len(data) < len(raw_data)
++   assert data.index[0] == raw_data.index[0]
++   assert data.index[-1] == raw_data.index[-1]
+    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
+```
+
+
+<!-- This is an auto-generated reply by OSS CodeRabbit -->","+def test_load_encoder_with_downsampling():
++    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
++    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    assert len(data) < len(raw_data)
++    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02","--- 
+
++++ 
+
+@@ -49,8 +49,22 @@
+
+ def test_load_encoder_with_downsampling():
+     data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
+     raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++
++    # Check that the length of the downsampled data is less than the raw data
+     assert len(data) < len(raw_data)
++
++    # Check that the first timestamp of the downsampled data is within 20ms of the raw data
++    assert abs(data.index[0] - raw_data.index[0]).total_seconds() <= 0.02
++
++    # Check that the last timestamp of the downsampled data is within 20ms of the raw data
++    assert abs(data.index[-1] - raw_data.index[-1]).total_seconds() <= 0.02
++
++    # Check that the minimum difference between consecutive timestamps in the downsampled data
++    # is at least 20ms (50Hz)
+     assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
++
++    # Check that the timestamps in the downsampled data are strictly increasing
++    assert data.index.is_monotonic_increasing
+ 
+ 
+ if __name__ == ""__main__"":",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858439,https://github.com/villesau/ai-codereviewer/pull/4#discussion_r1149858439,,148,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,nan,"Instead of using `flatMap`, you can use `map` and then `filter` to remove empty elements. This would make the code more readable.","+    lineNumber: string;
++    reviewComment: string;
++  }>
++): Array<{ body: string; path: string; line: number }> {","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1532539663,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/342#discussion_r1532539663,37,53,31721cc9db8ed617283d52fcbb3e76e16bd802a7,739bcbe762004157988bae2a831ff4d2e951dcd0,aeon/io/streams.py,aeon/schema/streams.py,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `Device` class constructor allows for a `None` value to be passed as the `name` parameter, but immediately raises a `ValueError` if this is the case. It would be better to make `name` a required positional argument without a default value to prevent misuse and unnecessary exception handling.
+```diff
+-    def __init__(self, name, *args, path=None):
++    def __init__(self, name=None, *args, path=None):
+```
+
+
+
+<!-- This is an auto-generated reply by OSS CodeRabbit -->","+class Device:
++    """"""Groups multiple data streams into a logical device.
++
++    If a device contains a single stream with the same pattern as the device
++    `name`, it will be considered a singleton, and the stream reader will be
++    paired directly with the device without nesting.
++
++    Attributes:
++        name (str): Name of the device.
++        args (Any): Data streams collected from the device.
++        path (str, optional): Path to the folder where stream chunks are located.
++    """"""
++
++    def __init__(self, name, *args, path=None):
++        if name is None:
++            raise ValueError(""name cannot be None."")
++","--- 
+
++++ 
+
+@@ -1,4 +1,5 @@
+
+ import inspect
++from itertools import chain
+ from warnings import warn
+ 
+ 
+@@ -27,10 +28,15 @@
+
+     def __init__(self, path, *args):
+         self.path = path
+         self._args = args
++        self._nested = (
++            member
++            for member in vars(self.__class__).values()
++            if inspect.isclass(member) and issubclass(member, (Stream, StreamGroup))
++        )
+ 
+     def __iter__(self):
+-        for callable in self._args:
+-            for stream in iter(callable(self.path)):
++        for factory in chain(self._nested, self._args):
++            for stream in iter(factory(self.path)):
+                 yield stream
+ 
+ 
+@@ -52,26 +58,22 @@
+
+             raise ValueError(""name cannot be None."")
+ 
+         self.name = name
+-        self._streams = Device._createStreams(name if path is None else path, *args)
++        self._streams = Device._createStreams(name if path is None else path, args)
+ 
+     @staticmethod
+-    def _createStreams(path, *args):
++    def _createStreams(path, args):
+         streams = {}
+-        if args:
+-            for callable in args:
+-                try:
+-                    streams.update(callable(path))
+-                except TypeError:
+-                    if inspect.isclass(callable):
+-                        warn(
+-                            f""Stream group classes with no constructors are deprecated. {callable}"",
+-                            category=DeprecationWarning,
+-                        )
+-                        for method in vars(callable).values():
+-                            if isinstance(method, staticmethod):
+-                                streams.update(method.__func__(path))
+-                    else:
+-                        raise
++        for factory in args:
++            if inspect.isclass(factory) and not hasattr(factory.__init__, ""__code__""):
++                warn(
++                    f""Stream group classes with default constructors are deprecated. {factory}"",
++                    category=DeprecationWarning,
++                )
++                for method in vars(factory).values():
++                    if isinstance(method, staticmethod):
++                        streams.update(method.__func__(path))
++            else:
++                streams.update(factory(path))
+         return streams
+ 
+     def __iter__(self):",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872860,https://github.com/villesau/ai-codereviewer/pull/32#discussion_r1412872860,,141,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,nan,The fallback value for `res` should be an empty array `[]` instead of an empty object `{}` to match the expected return type of the function.," 
+-    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    return JSON.parse(res);
++    const res = response.choices[0].message?.content?.trim() || ""{}"";","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code.",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1888123645,https://github.com/lightspeedwp/tour-operator/pull/458#discussion_r1888123645,246,282,0406cff338cf303c116a4470e4a151874520c008,19ae5d5580ae4bffd4616c22c01283684a6a1eba,assets/js/src/custom.js,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The changes made to the second slider, `.lsx-to-slider.travel-information`, look good. The number of slides shown at different breakpoints has been updated according to the PR description. However, I noticed that the `autoplaySpeed` is set to 0 which means the autoplay speed is essentially non-existent. If you want to disable autoplay, you should set `autoplay: false` (which you've already done). But if you want autoplay to work, you should set `autoplaySpeed` to a positive integer representing the delay between auto slides in milliseconds.
+```diff
+-  autoplaySpeed: 0,
++  autoplaySpeed: 3000, // for example, change slides every 3 seconds
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+		// Second slider: .lsx-to-slider.travel-information
++		$( '.lsx-travel-information-wrapper.lsx-to-slider .travel-information:not(.slider-disabled)' ).each( function() {
++			var $this = $( this );
++	
++			lsx_to.pre_build_slider( $this );
++	
++			// Ensure the second slider has 4 slides showing
++			if ( 1 < $this.children().length ) {
+ 				$this.slick( {
+ 					draggable: false,
+ 					infinite: true,
+ 					swipe: false,
+ 					dots: false,
+-					slidesToShow: 3,
+-					slidesToScroll: 1,
++					slidesToShow: 4,  // Show 4 items at a time
++					slidesToScroll: 1, // Scroll 1 item at a time
+ 					autoplay: false,
+ 					autoplaySpeed: 0,
+-					//appendArrows: $this.parent(),
+-					//appendDots: $this.parent(),
++					appendArrows: $this.parent(),  // Ensure arrows are appended correctly for this slider
++					appendDots: $this.parent(),    // Append dots in the correct place
+ 					responsive: [
+ 						{
+ 							breakpoint: 1028,
+ 							settings: {
+-								slidesToShow:   2,
++								slidesToShow: 3,
+ 								slidesToScroll: 1,
+ 								draggable: true,
+-								arrows: false,
++								arrows: true,
+ 								swipe: true,
+ 								dots: true,
+ 							}
+ 						},
+ 						{
+ 							breakpoint: 782,
+ 							settings: {
+-								slidesToShow:   1,
++								slidesToShow: 1,
+ 								slidesToScroll: 1,
+ 								draggable: true,","--- 
+
++++ 
+
+@@ -51,7 +51,11 @@
+
+ 			lsx_to.readMoreText = $(this).contents().filter(function() {
+ 				return this.nodeType === Node.TEXT_NODE;
+ 			}).text();
+-			lsx_to.readMoreSet( $(this), $(this).closest( '.wp-block-group' ).find('.wp-block-post-content') );
++
++			console.log($(this));
++			console.log($(this).parent( '.wp-block-group' ).find('.wp-block-post-content'));
++
++			lsx_to.readMoreSet( $(this), $(this).parent( '.wp-block-group' ).find('.wp-block-post-content') );
+ 		} );
+ 
+ 		$( '.single-tour-operator .wp-block-read-more' ).on( 'click', function( event ) {
+@@ -59,9 +63,9 @@
+
+ 			$( this ).hide();
+ 
+ 			if ( $( this ).hasClass( 'less-link' ) ) {
+-				lsx_to.readMoreSet( $(this), $(this).closest( '.wp-block-group' ).find('.wp-block-post-content') );
++				lsx_to.readMoreSet( $(this), $(this).parent( '.wp-block-group' ).find('.wp-block-post-content') );
+ 			} else {
+-				lsx_to.readMoreOpen( $(this), $(this).closest( '.wp-block-group' ).find('.wp-block-post-content') );
++				lsx_to.readMoreOpen( $(this), $(this).parent( '.wp-block-group' ).find('.wp-block-post-content') );
+ 			}
+ 
+ 			$( this ).show();
+@@ -69,8 +73,6 @@
+
+ 	};
+ 
+ 	lsx_to.readMoreSet = function( button, contentWrapper ) {
+-		console.log(contentWrapper);
+-		console.log(contentWrapper.length);
+ 		if ( 0 < contentWrapper.length ) {
+ 			if ( 1 < contentWrapper.children().length ) {
+ 
+@@ -118,17 +120,17 @@
+
+ 
+ 		$( '.single-tour-operator .additional-info .lsx-to-more-link' ).each( function() {
+ 			lsx_to.readMoreTIText = $(this).find('a').text();
+-			lsx_to.readMoreSet( $(this), $(this).closest( '.additional-info' ).find('.content') );
++			lsx_to.readMoreSet( $(this).find('a'), $(this).closest( '.additional-info' ).find('.content') );
+ 		} );
+ 
+ 		$( '.single-tour-operator .additional-info .lsx-to-more-link' ).on( 'click', function( event ) {
+ 			event.preventDefault();
+ 			$( this ).hide();
+ 
+-			if ( $( this ).hasClass( 'less-link' ) ) {
+-				lsx_to.readMoreSet( $(this), $(this).closest( '.additional-info' ).find('.content') );
++			if ( $( this ).find('a').hasClass( 'less-link' ) ) {
++				lsx_to.readMoreSet( $(this).find('a'), $(this).closest( '.additional-info' ).find('.content') );
+ 			} else {
+-				lsx_to.readMoreOpenTI( $(this), $(this).closest( '.additional-info' ).find('.content') );
++				lsx_to.readMoreOpen( $(this).find('a'), $(this).closest( '.additional-info' ).find('.content') );
+ 			}
+ 
+ 			$( this ).show();
+@@ -344,7 +346,7 @@
+
+ 	$document.ready( function() {
+ 		lsx_to.set_read_more();
+ 		lsx_to.set_read_more_travel_info();
+-		lsx_to.set_read_more_itinerary();
++		//lsx_to.set_read_more_itinerary();
+ 		lsx_to.build_slider( window_width );
+ 	} );
+ 
+@@ -359,7 +361,7 @@
+
+ 		lsx_to.build_slider_lightbox();
+ 	} );
+ 
+-	document.addEventListener('DOMContentLoaded', function () {
++	/*document.addEventListener('DOMContentLoaded', function () {
+ 		const paragraphs = document.querySelectorAll('.additional-info .wp-block-group.content p');
+ 	
+ 		paragraphs.forEach(function (p) {
+@@ -398,7 +400,7 @@
+
+ 				});
+ 			}
+ 		});
+-	});	
++	});
+ 
+ 	document.addEventListener('DOMContentLoaded', function () {
+ 		// Select all sections within `.single-tour-operator`
+@@ -446,6 +448,6 @@
+
+ 				});
+ 			}
+ 		});
+-	});
++	});*/
+ 
+ } )( jQuery, window, document );",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706229007,https://github.com/Dev-FE-1/Toy_Project_II_team4/pull/108#discussion_r1706229007,18,19,71021125c31073b3b703df2332fe2dcbbbfd89e0,9d9bb5d43e6180ef74fdc7f47cf776701a5003ce,src/pages/salaryList/NoticeCard.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `salaryList` is derived from the fetched data using the provided `userId`. If no data is found for the given `userId`, an empty array is returned. This is a good practice as it prevents potential errors when trying to access properties on `undefined`. The sorting of the `salaryList` is done in place which might lead to unexpected behavior if the original data is needed elsewhere in its initial order.
+
+```diff
++   const salaryList = data?.salaryDetails[userId] || []
++   salaryList.sort((a,b) => b.id-a.id)
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  const salaryList = data?.salaryDetails[userId] || []
++  salaryList.sort((a,b) => b.id-a.id) ","--- 
+
++++ 
+
+@@ -1,22 +1,18 @@
+
+ import * as Styled from './NoticeCard.style';
+ import Btn from '../../components/button/Button';
+-import useSalaryDetails from './useSalaryDetails';
++import { SalaryDataItem } from './api/fetchSalaryInfo';
+ import { useNavigate } from ""react-router-dom"";
+ import dayjs from ""dayjs"";
+ 
+ type noticeData = {
+-  userId:string;
++  salaryList? : Array<SalaryDataItem> 
+   button?: boolean;
+   label?: React.ReactNode;
+ };
+ 
+ 
+-export default function NoticeCard({ userId, button = false, label}: noticeData) {
+-  const navigate = useNavigate()
+-  const {data} = useSalaryDetails()
+-
+-  const salaryList = data?.salaryDetails[userId] || []
+-  salaryList.sort((a,b) => b.id-a.id) 
++export default function NoticeCard({ salaryList=[], button = false, label}: noticeData) {
++  const navigate = useNavigate() 
+ 
+   const handleApplicationBtn = (id:number) => {
+     if(salaryList.find((item) => item.id === id)){",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443749710,https://github.com/saiqulhaq/dynamic_links/pull/19#discussion_r1443749710,59,100,cad41f3e9090c7ccd051fff9f607d8ef86809bdf,67675ef2633001974317dae9fc570ecf17a48936,test/dynamic_links_test.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `simulate_shorten_url` method is used to simulate the URL shortening process and assert the results. It's a good practice to extract this kind of logic into a separate method to avoid code duplication. However, the method is quite complex and might be hard to understand and maintain. Consider breaking it down into smaller methods, each responsible for a specific part of the process (e.g., configuring the system, preparing the mocks, running the operation, asserting the results). Also, consider adding comments to explain the purpose of each step, especially for complex operations like the ones involving mocks and stubs.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  def simulate_shorten_url(strategy,
++                           async,
++                           cache_store_config = DynamicLinks::Configuration::DEFAULT_CACHE_STORE_CONFIG,
++                           lock_key_exists = false)
++    DynamicLinks.configure do |config|
++      config.shortening_strategy = strategy
++      config.async_processing = async
++      config.cache_store_config = cache_store_config
++    end
++
++    DynamicLinks.configuration.cache_store.clear if async
++
++    strategy_mock = Minitest::Mock.new
++    expected_short_path = 'shortened_url'
++    full_short_url = ""#{@client.scheme}://#{@client.hostname}/#{expected_short_path}""
++    strategy_mock.expect :shorten, expected_short_path, ['https://example.com']
++    strategy_mock.expect :always_growing?, false if !async
++
++    cache_store_mock = Minitest::Mock.new
++    cache_key = ""shorten_url:#{@client.id}:#{expected_short_path}""
++    lock_key = ""lock:shorten_url:#{expected_short_path}""
++    cache_store_mock.expect :read, lock_key_exists, [lock_key]
++    if lock_key_exists
++      DynamicLinks::ShorteningStrategies::MockStrategy.stub :new, strategy_mock do
++        DynamicLinks.configuration.stub :cache_store, cache_store_mock do
++          assert_equal full_short_url, DynamicLinks.shorten_url('https://example.com', @client)
++        end
++      end
++    else
++      cache_store_mock.expect :write, nil, [lock_key, 'locked', { expires_in: 10.minutes }]
++      cache_store_mock.expect :write, nil, [cache_key, { url: 'https://example.com', short_url: expected_short_path }]
++
++      DynamicLinks::ShorteningStrategies::MockStrategy.stub :new, strategy_mock do
++        DynamicLinks.configuration.stub :cache_store, cache_store_mock do
++          assert_equal full_short_url, DynamicLinks.shorten_url('https://example.com', @client)
++        end
++      end
++    end
++
++    strategy_mock.verify
++    cache_store_mock.verify if async
++  end","--- 
+
++++ 
+
+@@ -2,100 +2,7 @@
+
+ require ""minitest/mock""
+ 
+ class DynamicLinksTest < ActiveSupport::TestCase
+-  def setup
+-    @original_strategy = DynamicLinks.configuration.shortening_strategy
+-    @original_async = DynamicLinks.configuration.async_processing
+-    @original_cache_store_config = DynamicLinks.configuration.cache_store_config
+-    @client = dynamic_links_clients(:one)
+-  end
+-
+-  # Reset the configuration after each test
+-  def teardown
+-    DynamicLinks.configuration.shortening_strategy = @original_strategy
+-    DynamicLinks.configuration.async_processing = @original_async
+-    DynamicLinks.configuration.cache_store_config = @original_cache_store_config
+-  end
+-
+   test ""it has a version number"" do
+     assert DynamicLinks::VERSION
+   end
+-
+-  test ""shorten_url invokes the correct strategy and shortens URL synchronously"" do
+-    simulate_shorten_url(:mock, false)
+-  end
+-
+-  test ""shorten_url invokes the correct strategy and shortens URL asynchronously with condition lock key is empty"" do
+-    simulate_shorten_url(:mock, true, {
+-      type: :redis, redis_config: { host: 'redis', port: 6379 }
+-    }, false)
+-  end
+-
+-  test ""shorten_url invokes the correct strategy and shortens URL asynchronously with condition lock key is not empty"" do
+-    simulate_shorten_url(:mock, true, {
+-      type: :redis, redis_config: { host: 'redis', port: 6379 }
+-    }, true)
+-  end
+-
+-  test ""generate_short_url returns the correct structure"" do
+-    DynamicLinks.configure do |config|
+-      config.shortening_strategy = :mock
+-    end
+-
+-    expected_short_path = 'shortened_url'
+-    full_short_url = ""#{@client.scheme}://#{@client.hostname}/#{expected_short_path}""
+-    expected_response = {
+-      shortLink: full_short_url,
+-      previewLink: ""#{full_short_url}?preview=true"",
+-      warning: []
+-    }
+-
+-    DynamicLinks.stub :shorten_url, full_short_url do
+-      assert_equal expected_response, DynamicLinks.generate_short_url('https://example.com', @client)
+-    end
+-  end
+-
+-  private
+-
+-  def simulate_shorten_url(strategy,
+-                           async,
+-                           cache_store_config = DynamicLinks::Configuration::DEFAULT_CACHE_STORE_CONFIG,
+-                           lock_key_exists = false)
+-    DynamicLinks.configure do |config|
+-      config.shortening_strategy = strategy
+-      config.async_processing = async
+-      config.cache_store_config = cache_store_config
+-    end
+-
+-    DynamicLinks.configuration.cache_store.clear if async
+-
+-    strategy_mock = Minitest::Mock.new
+-    expected_short_path = 'shortened_url'
+-    full_short_url = ""#{@client.scheme}://#{@client.hostname}/#{expected_short_path}""
+-    strategy_mock.expect :shorten, expected_short_path, ['https://example.com']
+-    strategy_mock.expect :always_growing?, false if !async
+-
+-    cache_store_mock = Minitest::Mock.new
+-    cache_key = ""shorten_url:#{@client.id}:#{expected_short_path}""
+-    lock_key = ""lock:shorten_url:#{expected_short_path}""
+-    cache_store_mock.expect :read, lock_key_exists, [lock_key]
+-    if lock_key_exists
+-      DynamicLinks::ShorteningStrategies::MockStrategy.stub :new, strategy_mock do
+-        DynamicLinks.configuration.stub :cache_store, cache_store_mock do
+-          assert_equal full_short_url, DynamicLinks.shorten_url('https://example.com', @client)
+-        end
+-      end
+-    else
+-      cache_store_mock.expect :write, nil, [lock_key, 'locked', { expires_in: 10.minutes }]
+-      cache_store_mock.expect :write, nil, [cache_key, { url: 'https://example.com', short_url: expected_short_path }]
+-
+-      DynamicLinks::ShorteningStrategies::MockStrategy.stub :new, strategy_mock do
+-        DynamicLinks.configuration.stub :cache_store, cache_store_mock do
+-          assert_equal full_short_url, DynamicLinks.shorten_url('https://example.com', @client)
+-        end
+-      end
+-    end
+-
+-    strategy_mock.verify
+-    cache_store_mock.verify if async
+-  end
+ end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1765335037,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/402#discussion_r1765335037,,453,df20e9f386ab58bbdb0daeb53182b33afea989f4,a889dba13c07c7eb6142a8265b8d8de8c60cef9c,aeon/io/reader.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The docstring added here provides a clear, concise description of the function's purpose, which improves code readability and maintainability.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->"," 
+ 
+ def to_dict(dotmap):
++    """"""Converts a DotMap object to a dictionary.""""""","--- 
+
++++ 
+
+@@ -43,7 +43,7 @@
+
+         self.columns = columns
+         self.extension = extension
+ 
+-    def read(self, _):
++    def read(self, file):
+         """"""Reads data from the specified file.""""""
+         return pd.DataFrame(columns=self.columns, index=pd.DatetimeIndex([]))
+ 
+@@ -94,7 +94,7 @@
+
+         """"""Returns path and epoch information for the specified chunk.""""""
+         epoch, chunk = chunk_key(file)
+         data = {""path"": file, ""epoch"": epoch}
+-        return pd.DataFrame(data, index=[chunk], columns=self.columns)
++        return pd.DataFrame(data, index=pd.Series(chunk), columns=self.columns)
+ 
+ 
+ class Metadata(Reader):
+@@ -113,7 +113,7 @@
+
+         workflow = metadata.pop(""Workflow"")
+         commit = metadata.pop(""Commit"", pd.NA)
+         data = {""workflow"": workflow, ""commit"": commit, ""metadata"": [DotMap(metadata)]}
+-        return pd.DataFrame(data, index=[time], columns=self.columns)
++        return pd.DataFrame(data, index=pd.Series(time), columns=self.columns)
+ 
+ 
+ class Csv(Reader):
+@@ -353,7 +353,7 @@
+
+         data = self.class_int2str(data, config_file)
+         n_parts = len(parts)
+         part_data_list = [pd.DataFrame()] * n_parts
+-        new_columns = [""identity"", ""identity_likelihood"", ""part"", ""x"", ""y"", ""part_likelihood""]
++        new_columns = pd.Series([""identity"", ""identity_likelihood"", ""part"", ""x"", ""y"", ""part_likelihood""])
+         new_data = pd.DataFrame(columns=new_columns)
+         for i, part in enumerate(parts):
+             part_columns = (
+@@ -379,17 +379,16 @@
+
+     @staticmethod
+     def get_class_names(config_file: Path) -> list[str]:
+         """"""Returns a list of classes from a model's config file.""""""
+-        classes = None
+         with open(config_file) as f:
+             config = json.load(f)
+-        if config_file.stem == ""confmap_config"":  # SLEAP
+-            try:
+-                heads = config[""model""][""heads""]
+-                classes = util.find_nested_key(heads, ""class_vectors"")[""classes""]
+-            except KeyError as err:
+-                if not classes:
+-                    raise KeyError(f""Cannot find class_vectors in {config_file}."") from err
+-        return classes
++        if config_file.stem != ""confmap_config"":  # SLEAP
++            raise ValueError(f""The model config file '{config_file}' is not supported."")
++
++        try:
++            heads = config[""model""][""heads""]
++            return util.find_nested_key(heads, ""class_vectors"")[""classes""]
++        except KeyError as err:
++            raise KeyError(f""Cannot find class_vectors in {config_file}."") from err
+ 
+     @staticmethod
+     def get_bodyparts(config_file: Path) -> list[str]:",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1888123658,https://github.com/lightspeedwp/tour-operator/pull/458#discussion_r1888123658,296,297,0406cff338cf303c116a4470e4a151874520c008,19ae5d5580ae4bffd4616c22c01283684a6a1eba,assets/css/style.css,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The padding value here seems to be inconsistent with the one defined on line 260. If the intention is to override the previous value, then it's fine. Otherwise, consider making them consistent.
+```diff
+-   padding: 15px !important;
++   padding: 0 !important;
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+.wp-block-query.lsx-to-slider .slick-slide,
++.lsx-travel-information-wrapper.lsx-to-slider .slick-slide {","--- 
+
++++ 
+
+@@ -252,11 +252,11 @@
+
+   display: none;
+ }
+ 
+-.lsx-to-slider.travel-information .slick-list {
++.lsx-to-slider.lsx-travel-information-wrapper .slick-list {
+   max-width: 100% !important;
+   width: 100% !important;
+ }
+-.lsx-to-slider.travel-information .slick-slide {
++.lsx-to-slider.lsx-travel-information-wrapper .slick-slide {
+   padding: 0 !important;
+   margin: 0 10px !important;
+ }
+@@ -293,8 +293,8 @@
+
+   left: 3px;
+   height: 20px;
+ }
+-.wp-block-query.lsx-to-slider .slick-slide,
+-.lsx-travel-information-wrapper.lsx-to-slider .slick-slide {
++
++.wp-block-query.lsx-to-slider .slick-slide {
+   padding: 15px !important;
+ }
+ ",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246008,https://github.com/villesau/ai-codereviewer/pull/5#discussion_r1150246008,,84,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,nan,Consider rephrasing this line to: `- Avoid suggesting to comment on the code.` for better clarity.," function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.","--- 
+
++++ 
+
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1314347286,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/244#discussion_r1314347286,254,257,0c63c9a96dac25a808dca480f4e357eeb010bfff,bdb3dcd2a4f3a2cd9e79aa1579236d1facbb1ea5,aeon/dj_pipeline/report.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The docstring formatting has been changed. The new format is more readable and consistent with PEP 8 guidelines.
+```diff
+-        """"""
+-        Each entry in this table correspond to one subject. However, the plot is capturing
+-             data for all sessions.
+-         Hence a dynamic update routine is needed to recompute the plot as new sessions
+-            become available
+-         """"""
++        """"""Each entry in this table correspond to one subject. However, the plot is capturing
++             data for all sessions.
++         Hence a dynamic update routine is needed to recompute the plot as new sessions
++            become available.
++        """"""
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+        """"""Each entry in this table correspond to one subject. However, the plot is capturing
+             data for all sessions.
+         Hence a dynamic update routine is needed to recompute the plot as new sessions
+-            become available
++            become available.","--- 
+
++++ 
+
+@@ -1,15 +1,18 @@
+
++import os
++import datajoint as dj
++import pandas as pd
++import numpy as np
++import pathlib
++import matplotlib.pyplot as plt
++import re
++import datetime
+ import json
+-import os
+-import pathlib
+-
+-import datajoint as dj
+-import matplotlib.pyplot as plt
+-import numpy as np
+-import pandas as pd
+ 
+ from aeon.analysis import plotting as analysis_plotting
+ 
+-from . import acquisition, analysis, get_schema_name
++from . import acquisition, analysis
++from . import get_schema_name
++
+ 
+ schema = dj.schema(get_schema_name(""report""))
+ os.environ[""DJ_SUPPORT_FILEPATH_MANAGEMENT""] = ""TRUE""
+@@ -29,7 +32,9 @@
+
+     summary_plot_png: attach
+     """"""
+ 
+-    key_source = analysis.InArena & analysis.InArenaTimeDistribution & analysis.InArenaSummary
++    key_source = (
++        analysis.InArena & analysis.InArenaTimeDistribution & analysis.InArenaSummary
++    )
+ 
+     color_code = {
+         ""Patch1"": ""b"",
+@@ -40,16 +45,18 @@
+
+     }
+ 
+     def make(self, key):
+-        acquisition.Experiment.get_data_directory(key)
+-
+-        in_arena_start, in_arena_end = (analysis.InArena * analysis.InArenaEnd & key).fetch1(
+-            ""in_arena_start"", ""in_arena_end""
+-        )
++        raw_data_dir = acquisition.Experiment.get_data_directory(key)
++
++        in_arena_start, in_arena_end = (
++            analysis.InArena * analysis.InArenaEnd & key
++        ).fetch1(""in_arena_start"", ""in_arena_end"")
+ 
+         # subject's position data in the time_slices
+         position = analysis.InArenaSubjectPosition.get_position(key)
+ 
+-        position_minutes_elapsed = (position.index - in_arena_start).total_seconds() / 60
++        position_minutes_elapsed = (
++            position.index - in_arena_start
++        ).total_seconds() / 60
+ 
+         # figure
+         fig = plt.figure(figsize=(16, 8))
+@@ -63,12 +70,16 @@
+
+ 
+         # position plot
+         non_nan = np.logical_and(~np.isnan(position.x), ~np.isnan(position.y))
+-        analysis_plotting.heatmap(position[non_nan], 50, ax=position_ax, bins=500, alpha=0.5)
++        analysis_plotting.heatmap(
++            position[non_nan], 50, ax=position_ax, bins=500, alpha=0.5
++        )
+ 
+         # event rate plots
+         in_arena_food_patches = (
+             analysis.InArena
+-            * acquisition.ExperimentFoodPatch.join(acquisition.ExperimentFoodPatch.RemovalTime, left=True)
++            * acquisition.ExperimentFoodPatch.join(
++                acquisition.ExperimentFoodPatch.RemovalTime, left=True
++            )
+             & key
+             & ""in_arena_start >= food_patch_install_time""
+             & 'in_arena_start < IFNULL(food_patch_remove_time, ""2200-01-01"")'
+@@ -115,17 +126,20 @@
+
+             )
+ 
+         # ethogram
+-        in_arena, in_corridor, arena_time, corridor_time = (analysis.InArenaTimeDistribution & key).fetch1(
++        in_arena, in_corridor, arena_time, corridor_time = (
++            analysis.InArenaTimeDistribution & key
++        ).fetch1(
+             ""in_arena"",
+             ""in_corridor"",
+             ""time_fraction_in_arena"",
+             ""time_fraction_in_corridor"",
+         )
+-        nest_keys, in_nests, nests_times = (analysis.InArenaTimeDistribution.Nest & key).fetch(
+-            ""KEY"", ""in_nest"", ""time_fraction_in_nest""
+-        )
++        nest_keys, in_nests, nests_times = (
++            analysis.InArenaTimeDistribution.Nest & key
++        ).fetch(""KEY"", ""in_nest"", ""time_fraction_in_nest"")
+         patch_names, in_patches, patches_times = (
+-            analysis.InArenaTimeDistribution.FoodPatch * acquisition.ExperimentFoodPatch & key
++            analysis.InArenaTimeDistribution.FoodPatch * acquisition.ExperimentFoodPatch
++            & key
+         ).fetch(""food_patch_description"", ""in_patch"", ""time_fraction_in_patch"")
+ 
+         ethogram_ax.plot(
+@@ -135,7 +149,7 @@
+
+             color=self.color_code[""arena""],
+             markersize=0.5,
+             alpha=0.6,
+-            label=""Times in arena"",
++            label=f""Times in arena"",
+         )
+         ethogram_ax.plot(
+             position_minutes_elapsed[in_corridor],
+@@ -144,7 +158,7 @@
+
+             color=self.color_code[""corridor""],
+             markersize=0.5,
+             alpha=0.6,
+-            label=""Times in corridor"",
++            label=f""Times in corridor"",
+         )
+         for in_nest in in_nests:
+             ethogram_ax.plot(
+@@ -154,9 +168,11 @@
+
+                 color=self.color_code[""nest""],
+                 markersize=0.5,
+                 alpha=0.6,
+-                label=""Times in nest"",
+-            )
+-        for patch_idx, (patch_name, in_patch) in enumerate(zip(patch_names, in_patches)):
++                label=f""Times in nest"",
++            )
++        for patch_idx, (patch_name, in_patch) in enumerate(
++            zip(patch_names, in_patches)
++        ):
+             ethogram_ax.plot(
+                 position_minutes_elapsed[in_patch],
+                 np.full_like(position_minutes_elapsed[in_patch], (patch_idx + 3)),
+@@ -215,7 +231,9 @@
+
+ 
+         # ---- Save fig and insert ----
+         save_dir = _make_path(key)
+-        fig_dict = _save_figs((fig,), (""summary_plot_png"",), save_dir=save_dir, prefix=save_dir.name)
++        fig_dict = _save_figs(
++            (fig,), (""summary_plot_png"",), save_dir=save_dir, prefix=save_dir.name
++        )
+ 
+         self.insert1({**key, **fig_dict})
+ 
+@@ -251,10 +269,11 @@
+
+ 
+     @classmethod
+     def delete_outdated_entries(cls):
+-        """"""Each entry in this table correspond to one subject. However, the plot is capturing
++        """"""
++        Each entry in this table correspond to one subject. However, the plot is capturing
+             data for all sessions.
+         Hence a dynamic update routine is needed to recompute the plot as new sessions
+-            become available.
++            become available
+         """"""
+         outdated_entries = (
+             cls
+@@ -300,10 +319,11 @@
+
+ 
+     @classmethod
+     def delete_outdated_entries(cls):
+-        """"""Each entry in this table correspond to one subject. However the plot is capturing
++        """"""
++        Each entry in this table correspond to one subject. However the plot is capturing
+             data for all sessions.
+         Hence a dynamic update routine is needed to recompute the plot as new sessions
+-            become available.
++            become available
+         """"""
+         outdated_entries = (
+             cls
+@@ -347,10 +367,11 @@
+
+ 
+     @classmethod
+     def delete_outdated_entries(cls):
+-        """"""Each entry in this table correspond to one subject. However the plot is capturing
++        """"""
++        Each entry in this table correspond to one subject. However the plot is capturing
+             data for all sessions.
+         Hence a dynamic update routine is needed to recompute the plot as new sessions
+-            become available.
++            become available
+         """"""
+         outdated_entries = (
+             cls
+@@ -383,7 +404,12 @@
+
+     experiment_name, subject, in_arena_start = (analysis.InArena & in_arena_key).fetch1(
+         ""experiment_name"", ""subject"", ""in_arena_start""
+     )
+-    output_dir = store_stage / experiment_name / subject / in_arena_start.strftime(""%y%m%d_%H%M%S_%f"")
++    output_dir = (
++        store_stage
++        / experiment_name
++        / subject
++        / in_arena_start.strftime(""%y%m%d_%H%M%S_%f"")
++    )
+     output_dir.mkdir(parents=True, exist_ok=True)
+     return output_dir
+ ",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1758592490,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/402#discussion_r1758592490,48,53,11dfa868df9f598c7170ee1319c726f1f2475b24,a889dba13c07c7eb6142a8265b8d8de8c60cef9c,aeon/dj_pipeline/populate/worker.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The variable `experiment_names` is assigned but never used. This could lead to confusion for other developers reading the code, as they may spend time trying to find where it's used. If this variable is not needed, consider removing it.
+```diff
+-  experiment_names = AutomatedExperimentIngestion.fetch(""experiment_name"")
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","     """"""Extract and insert complete visits for experiments specified in AutomatedExperimentIngestion.""""""
+     experiment_names = AutomatedExperimentIngestion.fetch(""experiment_name"")
+     # analysis.ingest_environment_visits(experiment_names)
+-    pass
+ 
+ 
+ # ---- Define worker(s) ----","--- 
+
++++ 
+
+@@ -44,12 +44,6 @@
+
+         acquisition.Chunk.ingest_chunks(experiment_name)
+ 
+ 
+-def ingest_environment_visits():
+-    """"""Extract and insert complete visits for experiments specified in AutomatedExperimentIngestion.""""""
+-    experiment_names = AutomatedExperimentIngestion.fetch(""experiment_name"")
+-    # analysis.ingest_environment_visits(experiment_names)
+-
+-
+ # ---- Define worker(s) ----
+ # configure a worker to process `acquisition`-related tasks
+ acquisition_worker = DataJointWorker(
+@@ -62,7 +56,6 @@
+
+ acquisition_worker(ingest_epochs_chunks)
+ acquisition_worker(acquisition.EpochConfig)
+ acquisition_worker(acquisition.Environment)
+-# acquisition_worker(ingest_environment_visits)
+ acquisition_worker(block_analysis.BlockDetection)
+ 
+ # configure a worker to handle pyrat sync",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443118844,https://github.com/saiqulhaq/dynamic_links/pull/19#discussion_r1443118844,1,31,fcb1391bbdbc0a8e99d93d27bae941231960c0bb,67675ef2633001974317dae9fc570ecf17a48936,app/jobs/dynamic_links/shorten_url_job.rb,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `ShortenUrlJob` class seems to have a logical issue. The `client` object is passed as an argument to the `perform` method, but then it's overwritten on line 10 with `DynamicLinks::Client.find(client_id)`. However, `client_id` is not defined anywhere in this method. This will likely cause a NameError at runtime.
+
+Also, the `cache_key` used in lines 7 and 13 is not defined within this method. It's unclear where this key is coming from, which could lead to unexpected behavior or errors.
+
+```diff
+-      client = DynamicLinks::Client.find(client_id)
++      # Assuming client_id should be extracted from the client object
++      client = DynamicLinks::Client.find(client.id)
+
+-      data = cache_store.read(cache_key)
++      # Assuming cache_key should be constructed using some properties of the client or url
++      cache_key = ""some_key_derived_from_client_or_url""
++      data = cache_store.read(cache_key)
+
+-      cache_store.delete(cache_key)
++      # Same assumption for deleting the key
++      cache_store.delete(cache_key)
+```
+Please ensure that the `client_id` and `cache_key` are properly defined and used.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+module DynamicLinks
++  class ShortenUrlJob < ApplicationJob
++    queue_as :default
++
++    def perform(client, url, short_url)
++      cache_store = ActiveSupport::Cache.lookup_store(DynamicLinks.configuration.cache_store, DynamicLinks.configuration.redis_config)
++      data = cache_store.read(cache_key)
++      return unless data
++
++      client = DynamicLinks::Client.find(client_id)
++      DynamicLinks.process_url_synchronously(data[:url], data[:short_url], client, StrategyFactory.get_strategy(DynamicLinks.configuration.shortening_strategy))
++
++      cache_store.delete(cache_key)
++    end
++  end
++end","--- 
+
++++ 
+
+@@ -1,16 +1,31 @@
+
+ module DynamicLinks
++  # @author Saiqul Haq <saiqulhaq@gmail.com>
++  # This job is used to create a shortened url
+   class ShortenUrlJob < ApplicationJob
+     queue_as :default
+ 
+-    def perform(client, url, short_url)
+-      cache_store = ActiveSupport::Cache.lookup_store(DynamicLinks.configuration.cache_store, DynamicLinks.configuration.redis_config)
+-      data = cache_store.read(cache_key)
+-      return unless data
++    def perform(client, url, short_url, lock_key)
++      locker = DynamicLinks::Async::Locker.new
++      strategy = StrategyFactory.get_strategy(DynamicLinks.configuration.shortening_strategy)
+ 
+-      client = DynamicLinks::Client.find(client_id)
+-      DynamicLinks.process_url_synchronously(data[:url], data[:short_url], client, StrategyFactory.get_strategy(DynamicLinks.configuration.shortening_strategy))
++      begin
++        if strategy.always_growing?
++          storage.create!(client: client, url: url, short_url: short_url)
++        else
++          storage.find_or_create!(client, short_url, url)
++        end
++        locker.unlock(lock_key)
++        DynamicLinks::Logger.log_info(""Lock key #{lock_key} deleted after ShortenUrlJob"")
++      rescue => e
++        DynamicLinks::Logger.log_error(""Error in ShortenUrlJob: #{e.message}"")
++        raise e
++      end
++    end
+ 
+-      cache_store.delete(cache_key)
++    private
++
++    def storage
++      @storage ||= ShortenedUrl
+     end
+   end
+ end",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663257,https://github.com/brisen-app/brisen-client/pull/3#discussion_r1536663257,19,25,46793c649333414b445f1d42ca1ff4bd8d8a51a2,ccad80f2210c4994adca60df93cc4043733bbfe1,.github/workflows/quality-gate.yml,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Update the steps for SonarQube analysis and quality gate check.
+```diff
+-       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+-       - name: SonarQube Scan
+-         uses: sonarsource/sonarqube-scan-action@master
+-         env:
+-           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+-           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+- 
+-       # Check the Quality Gate status.
+-       - name: SonarQube Quality Gate check
+-         id: sonarqube-quality-gate-check
+-         uses: sonarsource/sonarqube-quality-gate-action@master
+-         # Force to fail step after specific time.
+-         timeout-minutes: 5
++       - name: 🔍 SonarQube Scan
++         uses: sonarsource/sonarqube-scan-action@master
++ 
++       - name: 📋 SonarQube Quality Gate check
++         uses: sonarsource/sonarqube-quality-gate-action@master
++         timeout-minutes: 5
+```
+
+This review addresses key issues related to workflow naming, triggering events, indentation, and step adjustments for SonarQube analysis and quality gate checks.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
++      - name: 🔍 SonarQube Scan
++        uses: sonarsource/sonarqube-scan-action@master
+ 
+-    # Optionally you can use the output from the Quality Gate in another step.
+-    # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+-    - name: ""Example show SonarQube Quality Gate Status value""
+-      run: echo ""The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}""
++      # Check the Quality Gate status.
++      - name: 📋 SonarQube Quality Gate check
++        uses: sonarsource/sonarqube-quality-gate-action@master","--- 
+
++++ 
+
+@@ -2,6 +2,10 @@
+
+ 
+ on:
+   pull_request:
++
++concurrency:
++  group: ${{ github.workflow }}-${{ github.ref }}
++  cancel-in-progress: true
+ 
+ jobs:
+   sonarqube:
+@@ -23,4 +27,14 @@
+
+       # Check the Quality Gate status.
+       - name: 📋 SonarQube Quality Gate check
+         uses: sonarsource/sonarqube-quality-gate-action@master
++        id: gate
+         timeout-minutes: 5
++
++      - name: 💬 Comment on PR
++        uses: peter-evans/create-or-update-comment@v4
++        if: failure()
++        with:
++          issue-number: ${{ github.event.number }}
++          body: |
++            # Quality Gate ${{ steps.gate.outputs.quality-gate-status }}
++            Check the results [here](${{ vars.SONAR_HOST_URL }}dashboard?id=${{ vars.SONAR_REPO_ID }})",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1307905830,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/228#discussion_r1307905830,41,58,ee354120784672bba17150612396476ebf2ca0b4,f1ab685e3701d9a830524ec16350cbd6f56cca32,.pre-commit-config.yaml,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The setup for pytest-py has been commented out. While it's understandable that running tests can be expensive in terms of time and resources, it's generally a good idea to run tests as part of the commit process to catch potential issues early. However, since this is commented out and not removed, it can be easily enabled when needed.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  # Pytest is expensive, so we show its set-up but leave it commented out.
++  # - repo: local
++  #   hooks:
++  #     - id: pytest-py
++  #       name: pytest-py
++  #       entry: pytest
++  #       language: system
++  #       pass_filenames: false
++  #       args:
++  #         - ""-v""
++  #         - ""-n""
++  #         - ""auto""","--- 
+
++++ 
+
+@@ -1,7 +1,8 @@
+
++# For info on running pre-commit manually, see `pre-commit run --help`
++
+ default_language_version:
+   python: python3.11
+ 
+-#default_stages: [commit, push]
+ files: ""^(docker|aeon\/dj_pipeline)\/.*$""
+ repos:
+   - repo: meta
+@@ -11,19 +12,24 @@
+
+   - repo: https://github.com/pre-commit/pre-commit-hooks
+     rev: v4.4.0
+     hooks:
++      - id: check-json
+       - id: check-yaml
++      - id: check-toml
++      - id: check-xml
++      - id: check-merge-conflict
+       - id: detect-private-key
+       - id: end-of-file-fixer
+         exclude: LICENSE
+       - id: no-commit-to-branch
++      - id: mixed-line-ending
++      - id: trailing-whitespace
++        args: [--markdown-linebreak-ext=md]
+ 
+   - repo: https://github.com/psf/black
+     rev: 23.7.0
+     hooks:
+       - id: black
+-        args:
+-          - ""--config""
+-          - ""./pyproject.toml""
++        args: [--check, --config, ./pyproject.toml]
+   
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+     rev: v0.0.286",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694359392,https://github.com/mt-krainski/yet-another-flight-scanner/pull/3#discussion_r1694359392,,13,87652e0cba73d01cac5adf4bd562bcbc11b5fbe2,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,nan,The change from `issues: write` to `pull-requests: write` should be reviewed for its implications on the workflow. Ensure that the permissions align with the intended functionality of the CI process.," 
+ permissions:
+   contents: write
++  pull-requests: write","--- 
+
++++ 
+
+@@ -7,10 +7,6 @@
+
+   pull_request:
+     branches:
+       - main
+-
+-permissions:
+-  contents: write
+-  pull-requests: write
+ 
+ jobs:
+   test-yafs:
+@@ -70,6 +66,8 @@
+
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write
+     steps:
+       - name: Check out repository
+         uses: actions/checkout@v4
+@@ -86,6 +84,8 @@
+
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
++    permissions:
++      contents: write
+     steps:
+       - name: Dependabot metadata
+         id: metadata",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378435,https://github.com/mt-krainski/yet-another-flight-scanner/pull/5#discussion_r1694378435,,25,7d98c79df1bcfbaf565b5f3105b65ee0af94b303,7e8ee7bb411fb0d96c412cf61768f44fc980de11,yafs/.pre-commit-config.yaml,nan,The version specified here (`v8.18.4`) should be checked for the latest stable release to ensure compatibility and security.,"     hooks:
+       - id: nb-clean
++  - repo: https://github.com/gitleaks/gitleaks
++    rev: v8.18.4","--- 
+
++++ 
+
+@@ -10,8 +10,8 @@
+
+       - id: check-added-large-files
+       - id: check-toml
+       - id: file-contents-sorter
+-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt
++        args: [./yafs/.spellcheck-allowlist.txt]
+   - repo: https://github.com/psf/black
+     rev: 24.4.2
+     hooks:",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1755686429,https://github.com/SainsburyWellcomeCentre/aeon_mecha/pull/407#discussion_r1755686429,24,26,dfd2d02ecf7f54ad82155bc7eeca43475b47c566,871f3422fe4bb61b2909ef4645b8b7d4ca87c679,tests/io/test_api.py,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Similar to the previous comment, the `downsample` parameter has been added to the `aeon.load` function call in the `test_load_end_only` test, but there is no assertion to verify the functionality of the downsampling feature when it's set to `None`.
+```diff
+    data = aeon.load(
+        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
+    )
++    # Add an assertion to check the frequency of the data
++    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+    data = aeon.load(
++        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++    )","--- 
+
++++ 
+
+@@ -29,9 +29,7 @@
+
+ 
+ @mark.api
+ def test_load_filter_nonchunked():
+-    data = aeon.load(
+-        nonmonotonic_path, exp02.Metadata, start=pd.Timestamp(""2022-06-06T09:00:00""), downsample=None
+-    )
++    data = aeon.load(nonmonotonic_path, exp02.Metadata, start=pd.Timestamp(""2022-06-06T09:00:00""))
+     assert len(data) > 0
+ 
+ 
+@@ -47,5 +45,27 @@
+
+     assert not data.index.is_monotonic_increasing
+ 
+ 
++@mark.api
++def test_load_encoder_with_downsampling():
++    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
++    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++
++    # Check that the length of the downsampled data is less than the raw data
++    assert len(data) < len(raw_data)
++
++    # Check that the first timestamp of the downsampled data is within 20ms of the raw data
++    assert abs(data.index[0] - raw_data.index[0]).total_seconds() <= 0.02
++
++    # Check that the last timestamp of the downsampled data is within 20ms of the raw data
++    assert abs(data.index[-1] - raw_data.index[-1]).total_seconds() <= 0.02
++
++    # Check that the minimum difference between consecutive timestamps in the downsampled data
++    # is at least 20ms (50Hz)
++    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
++
++    # Check that the timestamps in the downsampled data are strictly increasing
++    assert data.index.is_monotonic_increasing
++
++
+ if __name__ == ""__main__"":
+     pytest.main()",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420681,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174420681,,240,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Consider adding a comment to explain the purpose of this `else` block and why the event is unsupported.,"+    } else {
++      diff = null;
++    }
++  } else {","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706969846,https://github.com/Dev-FE-1/Toy_Project_II_team4/pull/114#discussion_r1706969846,19,67,c247479f1d9c92a4f41287485af590575cc1219a,51a969f932776fb4f631aac81807d796c13e6f0d,src/pages/salaryList/SalaryListPage.tsx,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The code looks good overall, but there's a potential performance issue. You're sorting the salary list twice: once for `sortedData` and once for `latestSalaryList`. If the salary list is large, this could be inefficient. Consider optimizing this by sorting the list only once and then deriving both `sortedData` and `latestSalaryList` from the sorted list.
+
+Also, you are using `Number()` to convert strings to numbers at multiple places. It would be better to use unary plus (`+`) operator for this purpose as it is faster and more concise.
+
+Here's how you can do it:
+
+```diff
+- const filteredItem = salaryList.filter((item) => Number(item.payday.slice(0,4)) === Number(selectedYear))
++ const filteredItem = salaryList.filter((item) => +item.payday.slice(0,4) === +selectedYear)
+- const sortedData = [...filteredItem].sort((a,b) => b.id-a.id)
++ const sortedData = [...filteredItem].sort((a,b) => b.id - a.id)
+- const latestSalaryList = [...salaryList].sort((a, b) => new Date(b.payday).getTime() - new Date(a.payday).getTime());
++ const latestSalaryList = [...sortedData]
+- const latestData = latestSalaryList.length > 0 ? [latestSalaryList[0]] : [];
++ const latestData = sortedData.length > 0 ? [sortedData[0]] : [];
+```
+
+In the `handleApplicationBtn` function, you're searching through `sortedData` to find an item with a matching id. This operation has a time complexity of O(n). If you expect to have a large number of items in `sortedData`, consider using a data structure that allows for faster lookups, like a Set or a Map.
+
+```diff
+- const handleApplicationBtn = (id:number) => {
+-   if(sortedData.find((item) => item.id === id)){
+-      navigate(`/salary-detail/${id}`)
+-    }else{
+-     navigate('/payments')
+-    }
+-  }
+
++ const salaryIdSet = new Set(sortedData.map(item => item.id));
++ const handleApplicationBtn = (id:number) => {
++   if(salaryIdSet.has(id)){
++     navigate(`/salary-detail/${id}`)
++   }else{
++     navigate('/payments')
++   }
++ }
+```
+This way, you can check for the existence of an id in constant time.
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","+  const [selectedYear, setSelectedYear] = useState<number>(2024)
+   const {data, error, isLoading} = useSalaryDetails()
+ 
+   if (isLoading) {return <div>Loading...</div>}
+   if (error) {return <div>Error: {error.message}</div>}
+ 
+   const salaryList = data?.salaryDetails[userId] || [] 
+-  const sortedSalaryList = [...salaryList].sort((a,b) => b.id-a.id)
++  const filteredItem = salaryList.filter((item) => Number(item.payday.slice(0,4)) === Number(selectedYear))
++  const sortedData = [...filteredItem].sort((a,b) => b.id-a.id)
++  const latestSalaryList = [...salaryList].sort((a, b) => new Date(b.payday).getTime() - new Date(a.payday).getTime());
++  const latestData = latestSalaryList.length > 0 ? [latestSalaryList[0]] : [];
+ 
+   const handleApplicationBtn = (id:number) => {
+-    if(sortedSalaryList.find((item) => item.id === id)){
++    if(sortedData.find((item) => item.id === id)){
+       navigate(`/salary-detail/${id}`)
+     }else{
+-          console.error('급여 명세서가 없습니다.')
++      navigate('/payments')
+     }
+   }
+ 
+   return(
+     <Styled.Salary>
+       <Heading title=""급여정산""/>
+-      <NoticeCard salaryList={sortedSalaryList}/>
++      <NoticeCard salaryList={latestData}/>
+         <Styled.YearSelect>
+         <SelectBox 
+           labelId=""SalaryYear"" 
+           id=""year-select"" 
+           label=""year"" 
+           menuItems={years}
++          value={selectedYear}
++          onChange={(e) => setSelectedYear(Number(e.target.value))
++          }
++          sx={{'& .MuiInputLabel-root': {
++              fontSize: 'var(--font-size-primary)', 
++            },
++            '& .MuiSelect-select': {
++              fontSize: 'var(--font-size-small)', 
++            },
++            '& .MuiSelect-icon': {
++              fontSize: '2rem',
++              right: '2rem',
++              transform: 'translateY(-50%)',
++              top: '40%'
++            }
++          }}
+         />
+       </Styled.YearSelect>
+-        {sortedSalaryList.map((el)=>
++        {sortedData.map((el)=>","--- 
+
++++ 
+
+@@ -1,11 +1,11 @@
+
+-import SelectBox from ""../../components/selectBox/SelectBox"";
+-import Btn from ""../../components/button/Button"";
++import SelectBox from '../../components/selectBox/SelectBox';
++import Btn from '../../components/button/Button';
+ import * as Styled from './SalaryList.style';
+-import { useNavigate } from ""react-router-dom"";
+-import NoticeCard from ""./NoticeCard"";
+-import useSalaryDetails from ""./useSalaryDetails"";
+-import Heading from ""../../components/Heading/Heading"";
+-import { useState } from ""react"";
++import { useNavigate } from 'react-router-dom';
++import NoticeCard from './NoticeCard';
++import useSalaryDetails from './useSalaryDetails';
++import Heading from '../../components/Heading/Heading';
++import { useState } from 'react';
+ 
+ const years = [
+   { value: '2022', text: '2022' },
+@@ -13,72 +13,89 @@
+
+   { value: '2024', text: '2024' },
+ ];
+ 
+-export default function SalaryListPage(){
+-  const navigate = useNavigate()
+-  const userId = ""sajo1234567""
+-  const [selectedYear, setSelectedYear] = useState<number>(2024)
+-  const {data, error, isLoading} = useSalaryDetails()
++export default function SalaryListPage() {
++  const navigate = useNavigate();
++  const userId = 'sajo1234567';
++  const [selectedYear, setSelectedYear] = useState<number>(2024);
++  const { data, error, isLoading } = useSalaryDetails();
+ 
+-  if (isLoading) {return <div>Loading...</div>}
+-  if (error) {return <div>Error: {error.message}</div>}
++  if (isLoading) {
++    return <div>Loading...</div>;
++  }
++  if (error) {
++    return <div>Error: {error.message}</div>;
++  }
+ 
+-  const salaryList = data?.salaryDetails[userId] || [] 
+-  const filteredItem = salaryList.filter((item) => Number(item.payday.slice(0,4)) === Number(selectedYear))
+-  const sortedData = [...filteredItem].sort((a,b) => b.id-a.id)
+-  const latestSalaryList = [...salaryList].sort((a, b) => new Date(b.payday).getTime() - new Date(a.payday).getTime());
++  const salaryList = data?.salaryDetails[userId] || [];
++
++  //목록에 활용되는 데이터
++  const filteredItem = salaryList.filter((item) => +item.payday.slice(0, 4) === +selectedYear);
++  const sortedData = [...filteredItem].sort((a, b) => b.id - a.id);
++
++  //카드에 활용되는 데이터
++  const latestSalaryList = [...salaryList].sort(
++    (a, b) => new Date(b.payday).getTime() - new Date(a.payday).getTime()
++  );
+   const latestData = latestSalaryList.length > 0 ? [latestSalaryList[0]] : [];
+ 
+-  const handleApplicationBtn = (id:number) => {
+-    if(sortedData.find((item) => item.id === id)){
+-      navigate(`/salary-detail/${id}`)
+-    }else{
+-      navigate('/payments')
++  const salaryIdSet = new Set(sortedData.map((item) => item.id));
++  const handleApplicationBtn = (id: number) => {
++    if (salaryIdSet.has(id)) {
++      navigate(`/salary-detail/${id}`);
++    } else {
++      navigate('/payments');
+     }
+-  }
++  };
+ 
+-  return(
++  return (
+     <Styled.Salary>
+-      <Heading title=""급여정산""/>
+-      <NoticeCard salaryList={latestData}/>
+-        <Styled.YearSelect>
+-        <SelectBox 
+-          labelId=""SalaryYear"" 
+-          id=""year-select"" 
+-          label=""year"" 
++      <Heading title=""급여정산"" />
++      <NoticeCard salaryList={latestData} />
++      <Styled.YearSelect>
++        <SelectBox
++          labelId=""SalaryYear""
++          id=""year-select""
++          label=""year""
+           menuItems={years}
+           value={selectedYear}
+-          onChange={(e) => setSelectedYear(Number(e.target.value))
+-          }
+-          sx={{'& .MuiInputLabel-root': {
+-              fontSize: 'var(--font-size-primary)', 
++          onChange={(e) => setSelectedYear(Number(e.target.value))}
++          sx={{
++            '& .MuiInputLabel-root': {
++              fontSize: 'var(--font-size-primary)',
+             },
+             '& .MuiSelect-select': {
+-              fontSize: 'var(--font-size-small)', 
++              fontSize: 'var(--font-size-small)',
+             },
+             '& .MuiSelect-icon': {
+               fontSize: '2rem',
+               right: '2rem',
+               transform: 'translateY(-50%)',
+-              top: '40%'
+-            }
++              top: '40%',
++            },
+           }}
+         />
+       </Styled.YearSelect>
+-        {sortedData.map((el)=>
+-          (<Styled.ListCardBox key={el.id} $state={el.state} 
+-            onClick={()=>{handleApplicationBtn(el.id)}}>
+-            <Styled.List $state={el.state}>
++      {sortedData.map((el) => (
++        <Styled.ListCardBox
++          key={el.id}
++          $state={el.state}
++          onClick={() => {
++            handleApplicationBtn(el.id);
++          }}
++        >
++          <Styled.List $state={el.state}>
+             <span className=""title"">{el.title}</span>
+             <span className=""date"">{el.state === true ? '지급예정' : el.payday}</span>
+-            </Styled.List>
+-            <Styled.Btn>
+-              {el.state === true ? 
+-              <Btn round ='true' btntype='outlined' size='lg' label='신청가능'/> 
+-              : 
+-              <Btn round='true' disabled size='lg' label='지급완료'/> 
+-              }
+-            </Styled.Btn>
+-        </Styled.ListCardBox>))}
++          </Styled.List>
++          <Styled.Btn>
++            {el.state === true ? (
++              <Btn round=""true"" btntype=""outlined"" size=""lg"" label=""신청가능"" />
++            ) : (
++              <Btn round=""true"" disabled size=""lg"" label=""지급완료"" />
++            )}
++          </Styled.Btn>
++        </Styled.ListCardBox>
++      ))}
+     </Styled.Salary>
+-    )
++  );
+ }",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425080,https://github.com/villesau/ai-codereviewer/pull/10#discussion_r1174425080,,263,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,nan,Consider using a more descriptive function name instead of `main`. This will improve code readability and make it easier to understand the purpose of the function.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;",,,,
+coderabbitai/ai-pr-reviewer,https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1893912122,https://github.com/lightspeedwp/tour-operator/pull/463#discussion_r1893912122,,2,c5479a61c7b8e9d8fa90c7ff6ca98ce116223f36,e8eacd5dd2d29bfe380c7a4bf508da6d9622fc14,templates/single-region.html,nan,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The theme reference ""lsx-tour-operator"" has been removed from the header template part. This could potentially cause issues if there are styles or scripts specifically tied to this theme in your WordPress setup. If the removal is intentional and you've ensured that no dependencies are broken, then it's fine. Otherwise, you might want to reconsider this change.
+```diff
+- <!-- wp:template-part {""slug"":""header-2-0"",""theme"":""lsx-tour-operator""} /-->
++ <!-- wp:template-part {""slug"":""header"",""area"":""header""} /-->
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->","@@ -1,5 +1,5 @@
+ <!-- wp:group {""style"":{""position"":{""type"":""sticky"",""top"":""0px""}},""layout"":{""type"":""default""}} -->
+-<div class=""wp-block-group""><!-- wp:template-part {""slug"":""header-2-0"",""theme"":""lsx-tour-operator""} /--></div>
++<div class=""wp-block-group""><!-- wp:template-part {""slug"":""header"",""area"":""header""} /--></div>","--- 
+
++++ 
+
+@@ -42,7 +42,7 @@
+
+ <div class=""wp-block-group""><!-- wp:group {""metadata"":{""name"":""Country""},""className"":""facts-country-query-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap""}} -->
+ <div class=""wp-block-group facts-country-query-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""width"":""20px"",""sizeSlug"":""large""} -->
+-<figure class=""wp-block-image size-large is-resized""><img src=""https://tour-operator.lightspeedwp.dev/wp-content/uploads/2024/09/destinations-icon-black-20px.png"" alt="""" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-large is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/destinations-icon-black-20px.png"" alt="""" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""0"",""bottom"":""0""}}},""fontSize"":""x-small""} -->
+@@ -60,7 +60,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Travel Styles""},""className"":""lsx-travel-style-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""},""layout"":{""type"":""constrained""}},""layout"":{""type"":""constrained""}} -->
+ <div class=""wp-block-group lsx-travel-style-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":61710,""width"":""20px"",""sizeSlug"":""full"",""linkDestination"":""none"",""className"":""is-resized""} -->
+-<figure class=""wp-block-image size-full is-resized""><img src=""https://tour-operator.lightspeedwp.dev/wp-content/uploads/2024/06/image-1.png"" alt="""" class=""wp-image-61710"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-full is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/image-1.png"" alt="""" class=""wp-image-61710"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}},""fontSize"":""x-small""} -->
+@@ -76,7 +76,7 @@
+
+ <!-- wp:group {""metadata"":{""name"":""Best Time to Visit""},""className"":""lsx-best-time-to-visit-wrapper"",""style"":{""spacing"":{""blockGap"":""5px""},""layout"":{""type"":""constrained""}},""layout"":{""type"":""constrained""}} -->
+ <div class=""wp-block-group lsx-best-time-to-visit-wrapper""><!-- wp:group {""style"":{""spacing"":{""blockGap"":""5px""}},""layout"":{""type"":""flex"",""flexWrap"":""nowrap"",""verticalAlignment"":""top""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""id"":61709,""width"":""20px"",""sizeSlug"":""full"",""linkDestination"":""none"",""className"":""is-resized""} -->
+-<figure class=""wp-block-image size-full is-resized""><img src=""https://tour-operator.lightspeedwp.dev/wp-content/uploads/2024/06/image.png"" alt="""" class=""wp-image-61709"" style=""width:20px""/></figure>
++<figure class=""wp-block-image size-full is-resized""><img src=""/wp-content/plugins/tour-operator/assets/img/image.png"" alt="""" class=""wp-image-61709"" style=""width:20px""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:paragraph {""style"":{""spacing"":{""padding"":{""top"":""2px"",""bottom"":""2px""}}},""fontSize"":""x-small""} -->
+@@ -200,7 +200,7 @@
+
+ <div class=""wp-block-query alignwide""><!-- wp:post-template {""style"":{""spacing"":{""blockGap"":""var:preset|spacing|small""}},""layout"":{""type"":""grid"",""columnCount"":2}} -->
+ <!-- wp:group {""style"":{""spacing"":{""blockGap"":""var:preset|spacing|x-small""}},""layout"":{""type"":""constrained""}} -->
+ <div class=""wp-block-group""><!-- wp:image {""sizeSlug"":""large"",""align"":""center""} -->
+-<figure class=""wp-block-image aligncenter size-large""><img src=""https://tour-operator.lightspeedwp.dev/wp-content/uploads/2024/09/review-testominal-quote-mark-TO-tertiary-32px.png"" alt=""""/></figure>
++<figure class=""wp-block-image aligncenter size-large""><img src=""/wp-content/plugins/tour-operator/assets/img/review-testominal-quote-mark-TO-tertiary-32px.png"" alt=""""/></figure>
+ <!-- /wp:image -->
+ 
+ <!-- wp:post-excerpt {""textAlign"":""center"",""showMoreOnNewLine"":false,""excerptLength"":40} /-->",,,,
+aidar-freeed(merged)/ai-codereviewer,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1155327110,https://github.com/villesau/ai-codereviewer/pull/9#discussion_r1155327110,,67,1e217661a4f9393e302de28009f42683be42fd09,32f7a8317cc7ad6064db526bde25a956f6c96309,src/main.ts,nan,Consider adding a comment above this line to explain why deleted files are being ignored in the review process.,"   const comments: Array<{ body: string; path: string; line: number }> = [];
+ 
+   for (const file of parsedDiff) {
++    if (file.to === ""/dev/null"") continue; // Ignore deleted files","--- 
+
++++ 
+
+@@ -82,7 +82,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Refrain from suggesting to comment on the code.
++- Do not recommend adding comments to the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code.",,,,

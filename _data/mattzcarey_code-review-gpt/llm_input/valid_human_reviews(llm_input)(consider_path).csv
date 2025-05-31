@@ -1,0 +1,1245 @@
+Comment_URL,Review_Start_Line,Review_End_Line,Original_Commit_id,Merge_Commit_id,Diff_path,New_path,Body,Diff_hunk,Change_Until_Merged
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1838179217,,36,f127198e354fe976f4e7450332b96d4e5bc193fe,6d4de2c317d170acca2250443ba60a80d034d723,orchestration/dags/dependencies/firebase/import_firebase.py,,"pas sur de comprendre pourquoi ne pas reprendre le template du dessous: 
+GCP_PROJECT_NATIVE_DEFAULT_ENV = ""passculture-native.analytics_267263535""
+GCP_PROJECT_NATIVE_ENV = {
+    ""dev"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native-testing.analytics_451612566""],
+    ""stg"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native-staging.analytics_450776578""],
+    ""prod"": [GCP_PROJECT_NATIVE_DEFAULT_ENV + ""pc-native.production.analytics_450774560""]
+}[ENV_SHORT_NAME]","-    ""prod"": [GCP_PROJECT_NATIVE_DEFAULT_ENV],
++    ""dev"": GCP_PROJECT_NATIVE_DEFAULT_ENV + [""pc-native-testing.analytics_451612566""],
++    ""stg"": GCP_PROJECT_NATIVE_DEFAULT_ENV + [""pc-native-staging.analytics_450776578""],
++    ""prod"": GCP_PROJECT_NATIVE_DEFAULT_ENV,",
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867275285,,2,6406a12f4b97bc799799244c5278d30ec58b81e8,1ea84616c72609a350065dc680ef0748377b1088,orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/intermediate/brevo/description__int_brevo__transactional_native.md,,native,"@@ -0,0 +1,18 @@
++---
++title: Transactional jeune","--- 
+
++++ 
+
+@@ -1,5 +1,5 @@
+
+ ---
+-title: Transactional jeune
++title: Transactional native
+ description: Description of the `int_brevo__transactional_native` table.
+ ---
+ "
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1852414625,36.0,42,e959c1321c69050d38ced4608512def586623083,e0cf6ea71f89e0b4bacf5dcf362b341e0a364491,orchestration/dags/data_gcp_dbt/models/machine_learning/linkage/artist/input/ml_linkage__artist_name_to_link.sql,,"offer_is_synchronised / z
+total_offer_count
+total_item_count
+artist_type","+    artist_name,
++    offer_category_id,
++    is_synchronised,
++    offer_number,
++    item_number,
++    total_booking_count,
++    artist_type","--- 
+
++++ 
+
+@@ -3,9 +3,9 @@
+
+         select
+             author as artist_name,
+             offer_category_id,
+-            is_synchronised,
+-            count(distinct offer_id) as offer_number,
+-            count(distinct item_id) as item_number,
++            is_synchronised as offer_is_synchronised,
++            count(distinct offer_id) as total_offer_count,
++            count(distinct item_id) as total_item_count,
+             sum(ifnull(total_individual_bookings, 0)) as total_booking_count,
+             'author' as artist_type
+         from {{ ref(""mrt_global__offer"") }}
+@@ -14,15 +14,15 @@
+
+             in (""CINEMA"", ""MUSIQUE_LIVE"", ""SPECTACLE"", ""MUSIQUE_ENREGISTREE"", ""LIVRE"")
+             and author is not null
+             and author != """"
+-        group by author, offer_category_id, is_synchronised
++        group by author, offer_category_id, offer_is_synchronised
+     ),
+     performers_table as (
+         select
+             performer as artist_name,
+             offer_category_id,
+-            is_synchronised,
+-            count(distinct offer_id) as offer_number,
+-            count(distinct item_id) as item_number,
++            is_synchronised as offer_is_synchronised,
++            count(distinct offer_id) as total_offer_count,
++            count(distinct item_id) as total_item_count,
+             sum(ifnull(total_individual_bookings, 0)) as total_booking_count,
+             'performer' as artist_type
+         from {{ ref(""mrt_global__offer"") }}
+@@ -30,14 +30,14 @@
+
+             offer_category_id in (""MUSIQUE_LIVE"", ""SPECTACLE"", ""MUSIQUE_ENREGISTREE"")
+             and performer is not null
+             and performer != """"
+-        group by performer, offer_category_id, is_synchronised
++        group by performer, offer_category_id, offer_is_synchronised
+     )
+ select
+     artist_name,
+     offer_category_id,
+-    is_synchronised,
+-    offer_number,
+-    item_number,
++    offer_is_synchronised,
++    total_offer_count,
++    total_item_count,
+     total_booking_count,
+     artist_type
+ from authors_table
+@@ -45,9 +45,9 @@
+
+ select
+     artist_name,
+     offer_category_id,
+-    is_synchronised,
+-    offer_number,
+-    item_number,
++    offer_is_synchronised,
++    total_offer_count,
++    total_item_count,
+     total_booking_count,
+     artist_type
+ from performers_table"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1866134804,,14,9d8ee14b8dbb90359d0b0116a0e0023b7c4a40e0,d7c01963ee36abb1375d541672b581c199d8efeb,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__institution.md,,urban," {% docs column__institution_epci %} EPCI code of the educational institution. {% enddocs %}
+ {% docs column__institution_density_label %} Density label of the educational institution's area. {% enddocs %}
+-{% docs column__institution_macro_density_label %} Macro density label of the educational institution's area. {% enddocs %}
++{% docs column__institution_macro_density_label %} Macro density label of the educational institution : rural or urbain. {% enddocs %}","--- 
+
++++ 
+
+@@ -11,7 +11,7 @@
+
+ {% docs column__institution_city %} City where the educational institution is located. {% enddocs %}
+ {% docs column__institution_epci %} EPCI code of the educational institution. {% enddocs %}
+ {% docs column__institution_density_label %} Density label of the educational institution's area. {% enddocs %}
+-{% docs column__institution_macro_density_label %} Macro density label of the educational institution : rural or urbain. {% enddocs %}
++{% docs column__institution_macro_density_label %} Macro density label of the educational institution : rural or urban. {% enddocs %}
+ {% docs column__institution_density_level %} Density level of the educational institution's area. {% enddocs %}
+ {% docs column__institution_type %} Type of institution. {% enddocs %}
+ {% docs column__macro_institution_type %} Type of macro institution. Values can be : COLLEGE; ECOLE; LYCEE. {% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1866135760,,78,9d8ee14b8dbb90359d0b0116a0e0023b7c4a40e0,d7c01963ee36abb1375d541672b581c199d8efeb,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,,based on all booking status ?," {% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
++{% docs column__ratio_current_credit_utilization %}The ratio of current credit utilization for the educational institution.{% enddocs %}","--- 
+
++++ 
+
+@@ -75,5 +75,5 @@
+
+ {% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
+-{% docs column__ratio_current_credit_utilization %}The ratio of current credit utilization for the educational institution.{% enddocs %}
++{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational institution based on validated bookings {% enddocs %}
+ {% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863763334,,11,289f48f1000fd5ad4507c5200453e75ea8351104,c4180ded4591ab50c55a304858bd4c94f9bed01d,orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/mart/global/description__mrt_global__cultural_partner.md,,players ?," # Table: Cultural Partner
+ 
+ The `mrt_global__cultural_partner` table is designed to store information about the cultural partner concept that is between venue and offerer concept.
++A cultural partner is an in-house concept created to better record and monitor the activity of cultural players registered on the pass Culture.","--- 
+
++++ 
+
+@@ -8,12 +8,12 @@
+
+ # Table: Cultural Partner
+ 
+ The `mrt_global__cultural_partner` table is designed to store information about the cultural partner concept that is between venue and offerer concept.
+-A cultural partner is an in-house concept created to better record and monitor the activity of cultural players registered on the pass Culture.
++A cultural partner is an in-house concept created to better record and monitor the activity of cultural institutions and companies registered on the pass Culture.
+ 
+ 
+ {% enddocs %}
+ 
+-Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution).
++Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as cultural entities which have no permanent venue (which are not open to the public nor belong to the institution).
+ 
+ Example: The Opéra National de Paris structure corresponds to 3 institutions opened to the public and therefore 3 cultural partners. The We Love Green Festival corresponds to several non-permanent venues, not owned by the festival, and is therefore a single cultural partner.
+ "
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,,16,289f48f1000fd5ad4507c5200453e75ea8351104,c4180ded4591ab50c55a304858bd4c94f9bed01d,orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/mart/global/description__mrt_global__cultural_partner.md,,structures -> cultural entities," 
+ {% enddocs %}
+ 
++Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution).","--- 
+
++++ 
+
+@@ -8,12 +8,12 @@
+
+ # Table: Cultural Partner
+ 
+ The `mrt_global__cultural_partner` table is designed to store information about the cultural partner concept that is between venue and offerer concept.
+-A cultural partner is an in-house concept created to better record and monitor the activity of cultural players registered on the pass Culture.
++A cultural partner is an in-house concept created to better record and monitor the activity of cultural institutions and companies registered on the pass Culture.
+ 
+ 
+ {% enddocs %}
+ 
+-Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution).
++Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as cultural entities which have no permanent venue (which are not open to the public nor belong to the institution).
+ 
+ Example: The Opéra National de Paris structure corresponds to 3 institutions opened to the public and therefore 3 cultural partners. The We Love Green Festival corresponds to several non-permanent venues, not owned by the festival, and is therefore a single cultural partner.
+ "
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,,103,bf8deef12fda58e360f2198987a26c2b6c92e3e5,17b1a6dcc9852af137b9918ce5c1e73b5454d97d,orchestration/dags/jobs/ml/algo_default_deployment.py,,typo,"-
+-        deploy_model.set_upstream(seq_task)
+-        seq_task = deploy_model
++    deploy_model_taks = {}","--- 
+
++++ 
+
+@@ -100,8 +100,6 @@
+
+         retries=2,
+     )
+ 
+-    deploy_model_taks = {}
+-    seq_task = fetch_install_code
+     with TaskGroup(""deploy_models"", dag=dag) as deploy_models:
+         for model_params in models_to_deploy:
+             experiment_name = model_params[""experiment_name""]
+@@ -121,7 +119,7 @@
+
+                     --max-nodes {max_nodes}
+             """"""
+ 
+-            deploy_model_taks[endpoint_name] = SSHGCEOperator(
++            SSHGCEOperator(
+                 task_id=f""deploy_model_{experiment_name}_{endpoint_name}"",
+                 instance_name=GCE_INSTANCE,
+                 base_dir=BASE_DIR,"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880502361,,34,0eb108082546d487e228405c39dd35cfe0356fd6,06ffdf6c145e118742277acdfe325d4fe389158d,orchestration/dags/dependencies/sendinblue/sql/raw/sendinblue_transactional.sql,,"du coup COALESCE(venue_emails.offerer_id, co.offerer_id) non ? ","     tag,
+     user_id,
+-    venue_id,
++    offerer_id,","--- 
+
++++ 
+
+@@ -31,7 +31,7 @@
+
+     template,
+     tag,
+     user_id,
+-    offerer_id,
++    coalesce(venue_emails.offerer_id, co.offerer_id) as offerer_id,
+     event_date,
+     delivered_count,
+     opened_count,"
+https://api.github.com/repos/hyochan/react-native-iap/pulls/comments/1640807011,,9,26f8dee8e23aef4f66271563de1cf152e65c95da,20010581bc5cdcbe90589f0d19c890210cc32a64,android/gradle.properties,,https://github.com/dooboolab-community/react-native-iap/issues/2755#issuecomment-2166852914," RNIap_playServicesVersion=18.1.0
+ RNIap_amazonSdkVersion=3.0.4
+-RNIap_playBillingSdkVersion=6.1.0
++RNIap_playBillingSdkVersion=7.0.0",
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1834604766,,62,b558eb16dd4516670e705c5c5ad7b1659d430701,ee5ccca292be93e97405f1afd86f1f7f42542de9,orchestration/dags/data_gcp_dbt/models/mart/global/mrt_global__user.sql,,Add field here to check if CI fails correctly.,"     date_diff(
+         date('{{ ds() }}'), cast(user_activation_date as date), day
+-    ) as user_seniority
++    ) as user_seniority,","--- 
+
++++ 
+
+@@ -59,7 +59,6 @@
+
+     user_is_current_beneficiary,
+     date_diff(
+         date('{{ ds() }}'), cast(user_activation_date as date), day
+-    ) as user_seniority,
+-    ""user"" as entity
++    ) as user_seniority
+ from {{ ref(""int_global__user"") }}
+ where (user_is_active or user_suspension_reason = 'upon user request')"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1834610247,,1,ab99828ce80e167535d616e4bf860bf3d0d8f960,ee5ccca292be93e97405f1afd86f1f7f42542de9,orchestration/dags/data_gcp_dbt/models/mart/global/mrt_global__not_documented_model.sql,,Add fake model to check if CI fails correctly.,"@@ -0,0 +1,3 @@
++select user_id, user_department_code, user_department_name",File_Deleted
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880400242,,1,803e3ac83b9b69a7dd017fb25f3ca18faa34c443,6b3f4fdbc132ab7191b9cd725cc2ab8db3af6246,jobs/ml_jobs/algo_training/two_towers_model/README.md,,:heart,"@@ -0,0 +1,20 @@
++## Two towers model","--- 
+
++++ 
+
+@@ -7,14 +7,16 @@
+
+ * `two_tower_user_embedding` : contains all information about the model (experiment_id, run_id, etc) and the vector embedding (64,) for each user.
+ * `two_tower_item_embedding`: contains all information about the model (experiment_id, run_id, etc) and the vector embedding (64,) for each item.
+ 
+-**-> How the historization task was implemented?**
+-* `upload_embeddings_to_bq.py`: contains the main script of the historization task, here is the logic of the script:
+-    1. Load trained model of the latest MLFlow experiment which contains the url to the GCS bucket that contain the model weights
+-    2. Extract  user (resp item) id list and user (resp item) embedding from model layers.
+-    3. Create two dataframes one for users and another for item which contains all data we need to upload
+-    4. Through a BigQuery Client, create a schema for apartionned table. Specify data types for each column. For the embedding column, specify a datatyepe of type `FLOAT` with a `mode='repeated'`  which garanttess that the column is of type `ARRAY` and compatible with GCP functions to create `VECTOR INDEX` and later run a `VECTOR SEARCH` function over tis column (which runs faster if you create a `VECTOR INDEX` on your `ARRAY` column, see doc for more information).
+-    5. Export tables to BigQuery
++##### `upload_embeddings_to_bq.py` overview:
+ 
+-* Added a task to `algo_training_two_tower.py` DAG called `upload_embeddings_to_bq` which executes after evaluation and calles the previous script.
++1. Load trained model of the latest MLFlow experiment which contains the url to the GCS bucket that contains the model weights.
++2. Extract user (resp item) id list and user (resp item) embedding from model layers.
++3. Create two dataframes one for users and another for items, each will contain all data we need to upload.
++4. Use BigQuery Client to create a schema for a partionned table and specify requiered data type for each column.
++5. For the data type of the embedding column, the datatype should be of type `FLOAT` with a `mode='repeated'` which guarantees that :
++    * the embedding column is of type `ARRAY`
++    * the embedding column is compatible with GCP functions to create `VECTOR INDEX` and later run a `VECTOR SEARCH` function over the column (which runs faster if you create a `VECTOR INDEX` on your `ARRAY` column, see doc for more information).
++6. Export tables to BigQuery
+ 
+-To run a VECTOR SEARCH function, please refer to this [Notion page ](https://www.notion.so/passcultureapp/Vector-Search-with-BigQuery-81952e07282c41f1a3640aa8bcbe0c3c?pvs=4 )and/or [GCP documentation] (https://cloud.google.com/bigquery/docs/vector-index?hl=fr)
++
++For more info on how to run a `VECTOR SEARCH` function, please refer to this [Notion page ](https://www.notion.so/passcultureapp/Vector-Search-with-BigQuery-81952e07282c41f1a3640aa8bcbe0c3c?pvs=4 )and/or [GCP documentation](https://cloud.google.com/bigquery/docs/vector-index?hl=fr)"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,,141,c86a607c5bf52e36fe61345bbaeaa2e94e9823e6,13c3b6b8038a39870d70a22e8821d52b9b944f8b,orchestration/dags/data_gcp_dbt/models/intermediate/pcapi/int_pcapi__log.sql,,"`offer_data_api_call_id` ⇾ `jsonpayload.extra.offer_data_api_call_id`
+Pourrait-on expliciter ce que contient ce champ ainsi que les suivants : 
+
+Here are some alternative column name suggestions :
+offer_suggestion_api_id
+subcategory_predict_api_id
+predictive_model_call_id
+suggested_offer_api_id
+api_call_subcat_suggestion_id
+predictive_offer_call_id
+subcat_offer_api_id
+suggestion_model_api_id
+api_offer_prediction_id
+offer_creation_api_id
+","+    jsonpayload.extra.status as user_status,
++    cast(jsonpayload.extra.user_satisfaction as string) as user_satisfaction,
++    cast(jsonpayload.extra.user_comment as string) as user_comment,
++    cast(offer_data_api_call_id as string) as offer_data_api_call_id,","--- 
+
++++ 
+
+@@ -138,9 +138,11 @@
+
+     jsonpayload.extra.status as user_status,
+     cast(jsonpayload.extra.user_satisfaction as string) as user_satisfaction,
+     cast(jsonpayload.extra.user_comment as string) as user_comment,
+-    cast(offer_data_api_call_id as string) as offer_data_api_call_id,
+-    cast(jsonpayload.extra.offer_subcategory as string) as offer_subcategory_chosen,
++    cast(jsonpayload.extra.offer_data_api_call_id as string) as suggested_offer_api_id,
++    cast(
++        jsonpayload.extra.offer_subcategory as string
++    ) as suggested_offer_api_subcategory,
+     array_to_string(
+         jsonpayload.extra.offer_subcategories, "",""
+-    ) as offer_subcategories_suggested
++    ) as suggested_offer_api_subcategories
+ from {{ source(""raw"", ""stdout"") }}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881698653,,32,2e204f354512e44d0b4406033c9d3806428730e6,0f875fb80aa4fa9cc40a11847fc9fc4df5422276,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,,theoretic ? -> expected revenue ?,"-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
++the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current","--- 
+
++++ 
+
+@@ -4,12 +4,10 @@
+
+ ---
+ 
+ {% docs column__total_actual_amount_spent %} Total actual amount spent, reflecting real transactions. {% enddocs %}
+-{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){%
+-enddocs %}
++{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){% enddocs %}
+ {% docs column__total_bookable_collective_offers %} Total number of collective offers that are bookable. {% enddocs %}
+ {% docs column__total_bookable_individual_offers %} Total number of individual offers that are bookable. {% enddocs %}
+-{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {%
+-enddocs %}
++{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {% enddocs %}
+ {% docs column__total_bookings %} Total number of bookings, both individual and collective. {% enddocs %}
+ {% docs column__total_cancelled_bookings %}Total number of cancelled bookings.{% enddocs %}
+ {% docs column__total_cancelled_individual_bookings %} Total number of cancelled individual bookings. {% enddocs %}
+@@ -21,26 +19,19 @@
+
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
+-current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
+-current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
+-the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
+-year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
+-enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
+-enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
+-{% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+@@ -48,60 +39,41 @@
+
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
+-deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
+-collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
+-{% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
+-enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the
+-user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
+ {% docs column__total_non_cancelled_tickets %} Total number of tickets that were not cancelled. {% enddocs %}
+ {% docs column__total_paid_bookings %}Total number of paid bookings.{% enddocs %}
+-{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{%
+-enddocs %}
+-{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{%
+-enddocs %}
++{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{% enddocs %}
++{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{% enddocs %}
+ {% docs column__total_real_revenue %} Total actual revenue from all bookings. {% enddocs %}
+-{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs
+-%}
++{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs %}
+ {% docs column__total_stock_quantity %} Total remaining stock quantity. {% enddocs %}
+ {% docs column__total_students %}The total number of students for the educational institution.{% enddocs %}
+ {% docs column__total_theoretic_revenue %} Total theoretical revenue from all bookings. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected
+-transactions. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based
+-on expected transactions. {% enddocs %}
+-{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the
+-user. {% enddocs %}
+-{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {%
+-enddocs %}
+-{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the
+-user. {% enddocs %}
++{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the user. {% enddocs %}
++{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {% enddocs %}
++{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the user. {% enddocs %}
+ {% docs column__total_theoretical_remaining_credit %} Total theoretical remaining credit for the user. {% enddocs %}
+ {% docs column__total_tickets %}The total number of tickets for the educational institution.{% enddocs %}
+ {% docs column__total_used_bookings %} Total number of bookings that were used. {% enddocs %}
+ {% docs column__total_used_collective_bookings %} Total number of collective bookings that were used. {% enddocs %}
+ {% docs column__total_used_individual_bookings %} Total number of used individual bookings. {% enddocs %}
+ {% docs column__total_users %} The total number of users {% enddocs %}
+-{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or
+-more. {% enddocs %}
++{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or more. {% enddocs %}
+ {% docs column__total_amount_spent %} The total amount of credit spent by the user. {% enddocs %}
+ {% docs column__total_item_consulted %} The total number of items consulted by the user. {% enddocs %}
+ {% docs column__total_venue_consulted %} The total number of venues consulted by the user. {% enddocs %}
+-{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {%
+-enddocs %}
+-{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit
+-creation date and the user first booking date. {% enddocs %}
++{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {% enddocs %}
++{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit creation date and the user first booking date. {% enddocs %}
+ {% docs column__total_diversification_score %} The total diversification score of the users. {% enddocs %}
+-{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are
+-excluded. {% enddocs %}
++{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
+-{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational
+-institution based on validated bookings {% enddocs %}
+-{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{%
+-enddocs %}
++{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational institution based on validated bookings {% enddocs %}
++{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{% enddocs %}
+ {% docs column__mean_stock_price_per_item %} The average stock price for the item. {% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881702097,,34,2e204f354512e44d0b4406033c9d3806428730e6,0f875fb80aa4fa9cc40a11847fc9fc4df5422276,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,,Total collective bookings used for the current year.,"+the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
++year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%","--- 
+
++++ 
+
+@@ -4,12 +4,10 @@
+
+ ---
+ 
+ {% docs column__total_actual_amount_spent %} Total actual amount spent, reflecting real transactions. {% enddocs %}
+-{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){%
+-enddocs %}
++{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){% enddocs %}
+ {% docs column__total_bookable_collective_offers %} Total number of collective offers that are bookable. {% enddocs %}
+ {% docs column__total_bookable_individual_offers %} Total number of individual offers that are bookable. {% enddocs %}
+-{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {%
+-enddocs %}
++{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {% enddocs %}
+ {% docs column__total_bookings %} Total number of bookings, both individual and collective. {% enddocs %}
+ {% docs column__total_cancelled_bookings %}Total number of cancelled bookings.{% enddocs %}
+ {% docs column__total_cancelled_individual_bookings %} Total number of cancelled individual bookings. {% enddocs %}
+@@ -21,26 +19,19 @@
+
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
+-current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
+-current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
+-the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
+-year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
+-enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
+-enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
+-{% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+@@ -48,60 +39,41 @@
+
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
+-deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
+-collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
+-{% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
+-enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the
+-user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
+ {% docs column__total_non_cancelled_tickets %} Total number of tickets that were not cancelled. {% enddocs %}
+ {% docs column__total_paid_bookings %}Total number of paid bookings.{% enddocs %}
+-{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{%
+-enddocs %}
+-{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{%
+-enddocs %}
++{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{% enddocs %}
++{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{% enddocs %}
+ {% docs column__total_real_revenue %} Total actual revenue from all bookings. {% enddocs %}
+-{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs
+-%}
++{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs %}
+ {% docs column__total_stock_quantity %} Total remaining stock quantity. {% enddocs %}
+ {% docs column__total_students %}The total number of students for the educational institution.{% enddocs %}
+ {% docs column__total_theoretic_revenue %} Total theoretical revenue from all bookings. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected
+-transactions. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based
+-on expected transactions. {% enddocs %}
+-{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the
+-user. {% enddocs %}
+-{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {%
+-enddocs %}
+-{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the
+-user. {% enddocs %}
++{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the user. {% enddocs %}
++{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {% enddocs %}
++{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the user. {% enddocs %}
+ {% docs column__total_theoretical_remaining_credit %} Total theoretical remaining credit for the user. {% enddocs %}
+ {% docs column__total_tickets %}The total number of tickets for the educational institution.{% enddocs %}
+ {% docs column__total_used_bookings %} Total number of bookings that were used. {% enddocs %}
+ {% docs column__total_used_collective_bookings %} Total number of collective bookings that were used. {% enddocs %}
+ {% docs column__total_used_individual_bookings %} Total number of used individual bookings. {% enddocs %}
+ {% docs column__total_users %} The total number of users {% enddocs %}
+-{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or
+-more. {% enddocs %}
++{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or more. {% enddocs %}
+ {% docs column__total_amount_spent %} The total amount of credit spent by the user. {% enddocs %}
+ {% docs column__total_item_consulted %} The total number of items consulted by the user. {% enddocs %}
+ {% docs column__total_venue_consulted %} The total number of venues consulted by the user. {% enddocs %}
+-{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {%
+-enddocs %}
+-{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit
+-creation date and the user first booking date. {% enddocs %}
++{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {% enddocs %}
++{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit creation date and the user first booking date. {% enddocs %}
+ {% docs column__total_diversification_score %} The total diversification score of the users. {% enddocs %}
+-{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are
+-excluded. {% enddocs %}
++{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
+-{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational
+-institution based on validated bookings {% enddocs %}
+-{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{%
+-enddocs %}
++{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational institution based on validated bookings {% enddocs %}
++{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{% enddocs %}
+ {% docs column__mean_stock_price_per_item %} The average stock price for the item. {% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881704450,,57,2e204f354512e44d0b4406033c9d3806428730e6,0f875fb80aa4fa9cc40a11847fc9fc4df5422276,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,,rajouter un commentaire (duo -> individual booking only),"+collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
++{% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%","--- 
+
++++ 
+
+@@ -4,12 +4,10 @@
+
+ ---
+ 
+ {% docs column__total_actual_amount_spent %} Total actual amount spent, reflecting real transactions. {% enddocs %}
+-{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){%
+-enddocs %}
++{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){% enddocs %}
+ {% docs column__total_bookable_collective_offers %} Total number of collective offers that are bookable. {% enddocs %}
+ {% docs column__total_bookable_individual_offers %} Total number of individual offers that are bookable. {% enddocs %}
+-{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {%
+-enddocs %}
++{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {% enddocs %}
+ {% docs column__total_bookings %} Total number of bookings, both individual and collective. {% enddocs %}
+ {% docs column__total_cancelled_bookings %}Total number of cancelled bookings.{% enddocs %}
+ {% docs column__total_cancelled_individual_bookings %} Total number of cancelled individual bookings. {% enddocs %}
+@@ -21,26 +19,19 @@
+
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
+-current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
+-current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
+-the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
+-year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
+-enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
+-enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
+-{% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+@@ -48,60 +39,41 @@
+
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
+-deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
+-collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
+-{% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
+-enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the
+-user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
+ {% docs column__total_non_cancelled_tickets %} Total number of tickets that were not cancelled. {% enddocs %}
+ {% docs column__total_paid_bookings %}Total number of paid bookings.{% enddocs %}
+-{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{%
+-enddocs %}
+-{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{%
+-enddocs %}
++{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{% enddocs %}
++{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{% enddocs %}
+ {% docs column__total_real_revenue %} Total actual revenue from all bookings. {% enddocs %}
+-{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs
+-%}
++{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs %}
+ {% docs column__total_stock_quantity %} Total remaining stock quantity. {% enddocs %}
+ {% docs column__total_students %}The total number of students for the educational institution.{% enddocs %}
+ {% docs column__total_theoretic_revenue %} Total theoretical revenue from all bookings. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected
+-transactions. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based
+-on expected transactions. {% enddocs %}
+-{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the
+-user. {% enddocs %}
+-{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {%
+-enddocs %}
+-{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the
+-user. {% enddocs %}
++{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the user. {% enddocs %}
++{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {% enddocs %}
++{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the user. {% enddocs %}
+ {% docs column__total_theoretical_remaining_credit %} Total theoretical remaining credit for the user. {% enddocs %}
+ {% docs column__total_tickets %}The total number of tickets for the educational institution.{% enddocs %}
+ {% docs column__total_used_bookings %} Total number of bookings that were used. {% enddocs %}
+ {% docs column__total_used_collective_bookings %} Total number of collective bookings that were used. {% enddocs %}
+ {% docs column__total_used_individual_bookings %} Total number of used individual bookings. {% enddocs %}
+ {% docs column__total_users %} The total number of users {% enddocs %}
+-{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or
+-more. {% enddocs %}
++{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or more. {% enddocs %}
+ {% docs column__total_amount_spent %} The total amount of credit spent by the user. {% enddocs %}
+ {% docs column__total_item_consulted %} The total number of items consulted by the user. {% enddocs %}
+ {% docs column__total_venue_consulted %} The total number of venues consulted by the user. {% enddocs %}
+-{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {%
+-enddocs %}
+-{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit
+-creation date and the user first booking date. {% enddocs %}
++{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {% enddocs %}
++{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit creation date and the user first booking date. {% enddocs %}
+ {% docs column__total_diversification_score %} The total diversification score of the users. {% enddocs %}
+-{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are
+-excluded. {% enddocs %}
++{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
+-{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational
+-institution based on validated bookings {% enddocs %}
+-{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{%
+-enddocs %}
++{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational institution based on validated bookings {% enddocs %}
++{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{% enddocs %}
+ {% docs column__mean_stock_price_per_item %} The average stock price for the item. {% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881704830,,59,2e204f354512e44d0b4406033c9d3806428730e6,0f875fb80aa4fa9cc40a11847fc9fc4df5422276,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/applicative_database/column__metric.md,,"duo, included ?","+{% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
++enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the","--- 
+
++++ 
+
+@@ -4,12 +4,10 @@
+
+ ---
+ 
+ {% docs column__total_actual_amount_spent %} Total actual amount spent, reflecting real transactions. {% enddocs %}
+-{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){%
+-enddocs %}
++{% docs column__total_available_stock %} Quantity of remaining stock. (stock_quantity - non cancelled bookings){% enddocs %}
+ {% docs column__total_bookable_collective_offers %} Total number of collective offers that are bookable. {% enddocs %}
+ {% docs column__total_bookable_individual_offers %} Total number of individual offers that are bookable. {% enddocs %}
+-{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {%
+-enddocs %}
++{% docs column__total_bookable_offers %} Total number of offers that are bookable, both individual and collective. {% enddocs %}
+ {% docs column__total_bookings %} Total number of bookings, both individual and collective. {% enddocs %}
+ {% docs column__total_cancelled_bookings %}Total number of cancelled bookings.{% enddocs %}
+ {% docs column__total_cancelled_individual_bookings %} Total number of cancelled individual bookings. {% enddocs %}
+@@ -21,26 +19,19 @@
+
+ {% docs column__total_created_individual_offers %} Total number of individual offers created. {% enddocs %}
+ {% docs column__total_created_offers %} Total number of offers created, both individual and collective. {% enddocs %}
+ {% docs column__total_credited_beneficiaries %}The total number of credited beneficiaries.{% enddocs %}
+-{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the
+-current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the
+-current year. {% enddocs %}
++{% docs column__total_current_year_collective_real_revenue %}The total real revenue from collective bookings for the current year.{% enddocs %}
++{% docs column__total_current_year_non_cancelled_tickets %} Total number of tickets that were not cancelled in the current year. {% enddocs %}
+ {% docs column__total_current_year_real_revenue %} Total real revenue for the current year. {% enddocs %}
+ {% docs column__total_current_year_tickets %}The total number of tickets for the current year.{% enddocs %}
+-{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for
+-the current year. {% enddocs %}
+-{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current
+-year. {% enddocs %}
+-{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {%
+-enddocs %}
++{% docs column__total_current_year_non_cancelled_collective_bookings %} The total non cancelled collective bookings for the current year. {% enddocs %}
++{% docs column__total_current_year_collective_theoretic_revenue %} Total collective theoretical revenue for the current year. {% enddocs %}
++{% docs column__total_current_year_used_collective_bookings %} Total collective used bookings for the current year. {% enddocs %}
+ 
+ {% docs column__total_deposit_actual_amount_spent %} Total actual amount spent from deposits. {% enddocs %}
+ {% docs column__total_deposit_amount %} Total amount deposited by the user. {% enddocs %}
+ {% docs column__total_deposits %}The total number of deposits for the educational institution.{% enddocs %}
+-{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {%
+-enddocs %}
+-{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit.
+-{% enddocs %}
++{% docs column__total_grant_18_subcategory_booked %} The total number of subcategory booked on grant_18 deposit. {% enddocs %}
++{% docs column__total_grant_15_17_subcategory_booked %} The total number of subcategory booked on grant_15_17 deposit. {% enddocs %}
+ {% docs column__total_favorites %} Total number of times this offer was favorited. {% enddocs %}
+ {% docs column__total_first_bookings %} Total number of bookings that are first bookings. {% enddocs %}
+ {% docs column__total_free_bookings %} Total number of free bookings made by the user. {% enddocs %}
+@@ -48,60 +39,41 @@
+
+ {% docs column__total_individual_offers %}The total number of individual offers.{% enddocs %}
+ {% docs column__total_individual_real_revenue %} Total actual revenue from individual bookings. {% enddocs %}
+ {% docs column__total_individual_theoretic_revenue %} Total theoretical revenue from individual bookings. {% enddocs %}
+-{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last
+-deposit. {% enddocs %}
+-{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and
+-collective. {% enddocs %}
+-{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled.
+-{% enddocs %}
+-{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {%
+-enddocs %}
+-{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the
+-user. {% enddocs %}
++{% docs column__total_last_deposit_digital_goods_amount_spent %} Total amount spent on digital goods from the last deposit. {% enddocs %}
++{% docs column__total_non_cancelled_bookings %} Total number of bookings that were not cancelled, both individual and collective. {% enddocs %}
++{% docs column__total_non_cancelled_collective_bookings %} Total number of collective bookings that were not cancelled. {% enddocs %}
++{% docs column__total_non_cancelled_duo_bookings %} Total number of non-cancelled duo bookings made by the user. {% enddocs %}
++{% docs column__total_non_cancelled_individual_bookings %} Total number of non-cancelled individual bookings made by the user. {% enddocs %}
+ {% docs column__total_non_cancelled_tickets %} Total number of tickets that were not cancelled. {% enddocs %}
+ {% docs column__total_paid_bookings %}Total number of paid bookings.{% enddocs %}
+-{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{%
+-enddocs %}
+-{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{%
+-enddocs %}
++{% docs column__total_permanent_managed_venues %}The total number of permanent venues managed by the local authority.{% enddocs %}
++{% docs column__total_physical_managed_venues %}The total number of physical venues managed by the local authority.{% enddocs %}
+ {% docs column__total_real_revenue %} Total actual revenue from all bookings. {% enddocs %}
+-{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs
+-%}
++{% docs column__total_reimbursement_points %}The total number of reimbursement points for the local authority.{% enddocs %}
+ {% docs column__total_stock_quantity %} Total remaining stock quantity. {% enddocs %}
+ {% docs column__total_students %}The total number of students for the educational institution.{% enddocs %}
+ {% docs column__total_theoretic_revenue %} Total theoretical revenue from all bookings. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected
+-transactions. {% enddocs %}
+-{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based
+-on expected transactions. {% enddocs %}
+-{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the
+-user. {% enddocs %}
+-{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {%
+-enddocs %}
+-{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the
+-user. {% enddocs %}
++{% docs column__total_theoretical_amount_spent %} Total theoretical amount that would have been spent based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_amount_spent_in_digital_goods %} Total theoretical amount spent on digital goods based on expected transactions. {% enddocs %}
++{% docs column__total_theoretical_digital_goods_amount_spent %} Total theoretical amount spent on digital goods by the user. {% enddocs %}
++{% docs column__total_theoretical_outings_amount_spent %} Total theoretical amount spent on outings by the user. {% enddocs %}
++{% docs column__total_theoretical_physical_goods_amount_spent %} Total theoretical amount spent on physical goods by the user. {% enddocs %}
+ {% docs column__total_theoretical_remaining_credit %} Total theoretical remaining credit for the user. {% enddocs %}
+ {% docs column__total_tickets %}The total number of tickets for the educational institution.{% enddocs %}
+ {% docs column__total_used_bookings %} Total number of bookings that were used. {% enddocs %}
+ {% docs column__total_used_collective_bookings %} Total number of collective bookings that were used. {% enddocs %}
+ {% docs column__total_used_individual_bookings %} Total number of used individual bookings. {% enddocs %}
+ {% docs column__total_users %} The total number of users {% enddocs %}
+-{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or
+-more. {% enddocs %}
++{% docs column__total_3_category_booked_users %} The total number of users who made bookings in three categories or more. {% enddocs %}
+ {% docs column__total_amount_spent %} The total amount of credit spent by the user. {% enddocs %}
+ {% docs column__total_item_consulted %} The total number of items consulted by the user. {% enddocs %}
+ {% docs column__total_venue_consulted %} The total number of venues consulted by the user. {% enddocs %}
+-{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {%
+-enddocs %}
+-{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit
+-creation date and the user first booking date. {% enddocs %}
++{% docs column__total_venue_type_label_consulted %} The total number of venues type label consulted by the user. {% enddocs %}
++{% docs column__total_day_between_deposit_and_first_booking %} The total number of days elapsed between the user deposit creation date and the user first booking date. {% enddocs %}
+ {% docs column__total_diversification_score %} The total diversification score of the users. {% enddocs %}
+-{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are
+-excluded. {% enddocs %}
++{% docs column__total_venue_id_booked %} The total number of distinct venues booked by the users. Virtual venues are excluded. {% enddocs %}
+ {% docs column__total_venue_type_booked %} The total number of distinct venue type booked by the users. {% enddocs %}
+ {% docs column__total_category_booked %} The total number of distinct categories booked by the users. {% enddocs %}
+-{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational
+-institution based on validated bookings {% enddocs %}
+-{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{%
+-enddocs %}
++{% docs column__ratio_current_credit_utilization %} The ratio of current credit utilization for the educational institution based on validated bookings {% enddocs %}
++{% docs column__ratio_beneficiary_students %}The ratio of beneficiary students for the educational institution.{% enddocs %}
+ {% docs column__mean_stock_price_per_item %} The average stock price for the item. {% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1881744827,,55,2e204f354512e44d0b4406033c9d3806428730e6,0f875fb80aa4fa9cc40a11847fc9fc4df5422276,orchestration/dags/data_gcp_dbt/models/_dbt_docs/glossary/tracking/column__event.md,,type?,"+{% docs column__event_type %}The type of the interaction event.{% enddocs %}
++{% docs column__event_hour %}The hour of the interaction event.{% enddocs %}
++{% docs column__event_day %}The day of the interaction event.{% enddocs %}
++{% docs column__event_month %}The month of the interaction event.{% enddocs %}","--- 
+
++++ 
+
+@@ -7,8 +7,7 @@
+
+ 
+ 
+ {% docs column__event_date %}The date when the event occurred, used for partitioning the data.{% enddocs %}
+-{% docs column__event_name %}The name of the event. For screen views, it concatenates the event name with the Firebase
+-screen name.{% enddocs %}
++{% docs column__event_name %}The name of the event. For screen views, it concatenates the event name with the Firebase screen name.{% enddocs %}
+ {% docs column__page_name %}The name of the page where the event occurred, providing context for the event.{% enddocs %}
+ {% docs column__event_timestamp %}The exact timestamp when the event was recorded.{% enddocs %}
+ {% docs column__user_pseudo_id %}A pseudo identifier for the user, used for tracking purposes.{% enddocs %}
+@@ -16,40 +15,30 @@
+
+ {% docs column__platform %}The platform on which the event was recorded, such as iOS or Android.{% enddocs %}
+ {% docs column__app_version %}The version of the application where the event was recorded.{% enddocs %}
+ {% docs column__traffic_campaign %}The name of the marketing campaign that generated the session.{% enddocs %}
+-{% docs column__traffic_source %}The source of the marketing campaign (Instagram, Snapchat ...) that generated the
+-session.{% enddocs %}
+-{% docs column__traffic_medium %}The medium of the marketing campaign (email, push notification ...)that generated the
+-session.{% enddocs %}
+-{% docs column__session_id %}Deprecated: use unique_session_id. The session identifier during which the event was
+-recorded.{% enddocs %}
++{% docs column__traffic_source %}The source of the marketing campaign (Instagram, Snapchat ...) that generated the session.{% enddocs %}
++{% docs column__traffic_medium %}The medium of the marketing campaign (email, push notification ...)that generated the session.{% enddocs %}
++{% docs column__session_id %}Deprecated: use unique_session_id. The session identifier during which the event was recorded.{% enddocs %}
+ {% docs column__unique_session_id %}A unique identifier for the session, ensuring no duplicates.{% enddocs %}
+ 
+ 
+ {% hide columns %}
+ 
+-{% docs column__session_number %}The number of the session during which the visit occurred, indicating the sequence of
+-user sessions.{% enddocs %}
+-{% docs column__first_event_date %}The date of the first event in the session, used for partitioning the data.{% enddocs
+-%}
++{% docs column__session_number %}The number of the session during which the visit occurred, indicating the sequence of user sessions.{% enddocs %}
++{% docs column__first_event_date %}The date of the first event in the session, used for partitioning the data.{% enddocs %}
+ {% docs column__first_event_timestamp %}The exact timestamp of the first event in the session.{% enddocs %}
+ {% docs column__last_event_timestamp %}The exact timestamp of the last event in the session.{% enddocs %}
+-{% docs column__visit_duration_seconds %}The duration of the visit in seconds, calculated from the first to the last
+-event.{% enddocs %}
+-{% docs column__destination %}The destination associated with the event, if applicable, indicating the target location
+-or page.{% enddocs %}
+-{% docs column__user_device_category %}The category of the user's device, such as mobile, tablet, or desktop.{% enddocs
+-%}
+-{% docs column__user_device_operating_system %}The operating system of the user's device, such as Windows, macOS, iOS,
+-or Android.{% enddocs %}
+-{% docs column__user_device_operating_system_version %}The version of the operating system on the user's device.{%
+-enddocs %}
++{% docs column__visit_duration_seconds %}The duration of the visit in seconds, calculated from the first to the last event.{% enddocs %}
++{% docs column__destination %}The destination associated with the event, if applicable, indicating the target location or page.{% enddocs %}
++{% docs column__user_device_category %}The category of the user's device, such as mobile, tablet, or desktop.{% enddocs %}
++{% docs column__user_device_operating_system %}The operating system of the user's device, such as Windows, macOS, iOS, or Android.{% enddocs %}
++{% docs column__user_device_operating_system_version %}The version of the operating system on the user's device.{% enddocs %}
+ {% docs column__user_web_browser %}The web browser used by the user, such as Chrome, Firefox, or Safari.{% enddocs %}
+ {% docs column__user_web_browser_version %}The version of the web browser used by the user.{% enddocs %}
+ {% docs column__page_location %}The location of the page where the event occurred, typically a URL or path.{% enddocs %}
+ {% docs column__url_path_extract %}The extracted path from the URL where the event occurred.{% enddocs %}
+ {% docs column__page_referrer %}The referrer page that led to the current page where the event occurred.{% enddocs %}
+ {% docs column__page_number %}The number of the page in a sequence, if applicable.{% enddocs %}
+-{% docs column__event_type %}The type of the interaction event.{% enddocs %}
++{% docs column__event_type %}The type of the interaction event (booking / click / favorite).{% enddocs %}
+ {% docs column__event_hour %}The hour of the interaction event.{% enddocs %}
+ {% docs column__event_day %}The day of the interaction event.{% enddocs %}
+ {% docs column__event_month %}The month of the interaction event.{% enddocs %}"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1890541508,,18,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,5e1bf170b09d6e6320e3bb1e7efad8b1ae0d938d,jobs/etl_jobs/external/dms/utils.py,,Ajoute une doc: `Warning: function not symetrical: dict_2 cannot contain any list),"         return default
++
++
++def mergeDictionary(dict_1, dict_2):",
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1890541885,23.0,24,c0f90e2112a4cef532cc6bbb82785a484c74ed2d,5e1bf170b09d6e6320e3bb1e7efad8b1ae0d938d,jobs/etl_jobs/external/dms/utils.py,,if value is list => raise,"+                list_value = [value]
++                dict_3[key] = list_value + dict_1[key]",
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1445004593,,61,21eb8331f39e0a6b4fdef55e4d56d9b07493be7e,db0862d1cde8463090533a16458c32ddc995f3ed,packages/graphic-walker/src/components/computedField/index.tsx,,manual batch since it can be used in react 17,"+                while (vizStore.allFields.find((x) => x.name === `Computed ${idx}`)) {
++                    idx++;
++                }
++                setName(`Computed ${idx}`);","--- 
+
++++ 
+
+@@ -8,15 +8,15 @@
+
+ import { highlightField } from '../highlightField';
+ import { aggFuncs, reservedKeywords, sqlFunctions } from '../../lib/sql';
+ import { COUNT_FIELD_ID, MEA_KEY_ID, MEA_VAL_ID, PAINT_FIELD_ID } from '../../constants';
++import { unstable_batchedUpdates } from 'react-dom';
+ 
+-// 构建正则表达式
+ const keywordRegex = new RegExp(`\\b(${Array.from(reservedKeywords).join('|')})\\b`, 'gi');
+ const bulitInRegex = new RegExp(`\\b(${Array.from(sqlFunctions).join('|')})(\\s*)\\(`, 'gi');
+ const aggBultinRegex = new RegExp(`\\b(${Array.from(aggFuncs).join('|')})(\\s*)\\(`, 'gi');
+ 
+ const stringRegex = /('[^']*'?)/g;
+ 
+-const ComputedFieldCreation: React.FC = observer(() => {
++const ComputedFieldDialog: React.FC = observer(() => {
+     const vizStore = useVizStore();
+     const { editingComputedFieldFid } = vizStore;
+     const [name, setName] = useState<string>('');
+@@ -28,7 +28,7 @@
+
+         const fieldRegex = new RegExp(
+             `\\b(${vizStore.allFields
+                 .filter((x) => ![COUNT_FIELD_ID, MEA_KEY_ID, MEA_VAL_ID, PAINT_FIELD_ID].includes(x.fid))
+-                .map((x) => x.name)
++                .map((x) => x.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+                 .join('|')})\\b`,
+             'gi'
+         );
+@@ -59,9 +59,11 @@
+
+                 while (vizStore.allFields.find((x) => x.name === `Computed ${idx}`)) {
+                     idx++;
+                 }
+-                setName(`Computed ${idx}`);
+-                setSql('');
+-                setError('');
++                unstable_batchedUpdates(() => {
++                    setName(`Computed ${idx}`);
++                    setSql('');
++                    setError('');
++                });
+                 ref.current?.clear();
+             } else {
+                 const f = vizStore.allFields.find((x) => x.fid === editingComputedFieldFid);
+@@ -74,9 +76,11 @@
+
+                     vizStore.setComputedFieldFid('');
+                     return;
+                 }
+-                setName(f.name);
+-                setSql(sql.value);
+-                setError('');
++                unstable_batchedUpdates(() => {
++                    setName(f.name);
++                    setSql(sql.value);
++                    setError('');
++                });
+                 ref.current?.setValue(sql.value);
+             }
+         }
+@@ -136,4 +140,4 @@
+
+     );
+ });
+ 
+-export default ComputedFieldCreation;
++export default ComputedFieldDialog;"
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1464354636,,253,3d0836821c52241213eeb61995e1b66438fcf745,915781a02edeb7a4c41e4d6a6f7f13c8495c42d4,packages/graphic-walker/src/components/pivotTable/index.tsx,,"You can directly use `numberFormat={layout.format.numberFormat}` to pass the numberFormat, so that the table content will change immediately after modifying the numberFormat.","                         />
+                     )}
+-                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} />}
++                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} numberFormat={format} />}","--- 
+
++++ 
+
+@@ -35,15 +35,7 @@
+
+     const [topTree, setTopTree] = useState<INestNode | null>(null);
+     const [metricTable, setMetricTable] = useState<any[][]>([]);
+     const [isLoading, setIsLoading] = useState<boolean>(false);
+-
+     const vizStore = useVizStore();
+-    
+-    const [format, setFormat] = useState<IVisualConfig['format']>({
+-        numberFormat: layout.format.numberFormat,
+-        timeFormat: layout.format.timeFormat,
+-        normalizedNumberFormat: layout.format.normalizedNumberFormat,
+-    });
+-    
+     const enableCollapse = !!vizStore;
+     const tableCollapsedHeaderMap = vizStore?.tableCollapsedHeaderMap ?? emptyMap;
+     const { rows, columns } = draggableFieldState;
+@@ -84,11 +76,6 @@
+
+         } else {
+             aggregateThenGenerate();
+         }
+-        setFormat({
+-            numberFormat: layout.format.numberFormat,
+-            timeFormat: layout.format.timeFormat,
+-            normalizedNumberFormat: layout.format.normalizedNumberFormat,
+-        });
+     }, [data, enableCollapse, vizStore]);
+ 
+     useEffect(() => {
+@@ -166,8 +153,19 @@
+
+         appRef.current?.updateRenderStatus('computing');
+         const groupbyPromises: Promise<IRow[]>[] = groupbyCombList.map((dimComb) => {
+             if (!vizStore) return Promise.resolve([]);
+-            const { viewFilters, allFields, viewMeasures, sort, limit } = vizStore;
+-            const workflow = toWorkflow(viewFilters, allFields, dimComb, viewMeasures, defaultAggregated, sort, folds ?? [], limit > 0 ? limit : undefined);
++            const { viewFilters, allFields, viewMeasures, sort, limit, config } = vizStore;
++            const { timezoneDisplayOffset } = config;
++            const workflow = toWorkflow(
++                viewFilters,
++                allFields,
++                dimComb,
++                viewMeasures,
++                defaultAggregated,
++                sort,
++                folds ?? [],
++                limit > 0 ? limit : undefined,
++                timezoneDisplayOffset
++            );
+             return dataQuery(computation, workflow, limit > 0 ? limit : undefined)
+                 .then((res) => fold2(res, defaultAggregated, allFields, viewMeasures, dimComb, folds))
+                 .catch((err) => {
+@@ -250,7 +248,7 @@
+
+                             enableCollapse={enableCollapse}
+                         />
+                     )}
+-                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} numberFormat={format} />}
++                    {metricTable && <MetricTable matrix={metricTable} meaInColumns={measInColumn} meaInRows={measInRow} numberFormat={layout.format.numberFormat || ''} />}
+                 </table>
+             </div>
+         </div>"
+https://api.github.com/repos/Kanaries/graphic-walker/pulls/comments/1464362084,,26,3d0836821c52241213eeb61995e1b66438fcf745,915781a02edeb7a4c41e4d6a6f7f13c8495c42d4,packages/graphic-walker/src/components/pivotTable/metricTable.tsx,,"There may be non-number content in the table, so when the value is not a number, it should return the value itself.
+In addition, the function appears to be a bit bloated, so it is recommended to write it in the following form:
+```
+const numberFormatter = useMemo<(value: unknown) => string>(() => {
+    const numberFormatter = numberFormat ? format(numberFormat) : (v: number) => v.toLocaleString();
+    return (value: unknown) => {
+        if (typeof value !== ""number"") {
+            return `${value}`;
+        }
+        return numberFormatter(value);
+    };
+}, [numberFormat]);
+ ```","-    const { matrix, meaInRows, meaInColumns } = props;
++    const { matrix, meaInRows, meaInColumns, numberFormat } = props;
++
++    const numberFormatter = useMemo<(value: unknown) => string>(() => {","--- 
+
++++ 
+
+@@ -8,7 +8,7 @@
+
+     matrix: any[][];
+     meaInRows: IField[];
+     meaInColumns: IField[];
+-    numberFormat: IVisualConfig['format']
++    numberFormat: string;
+ }
+ 
+ function getCellData (cell: IRow, measure: IField, formatter: (value: unknown) => string) {
+@@ -20,25 +20,17 @@
+
+     const formattedValue = formatter(cell[meaKey]);
+     return formattedValue;
+ }
++
+ const MetricTable: React.FC<MetricTableProps> = React.memo((props) => {
+     const { matrix, meaInRows, meaInColumns, numberFormat } = props;
+ 
+     const numberFormatter = useMemo<(value: unknown) => string>(() => {
+-        if (!numberFormat) {
+-            return (value: unknown) => {
+-                if (typeof value !== 'number') {
+-                    return '';
+-                }
+-                return value.toLocaleString();
+-            };
+-        }
+-        const numF = numberFormat.numberFormat || '';
+-        const nf = format(numF);
++        const numberFormatter = numberFormat ? format(numberFormat) : (v: number) => v.toLocaleString();
+         return (value: unknown) => {
+-            if (typeof value !== 'number') {
+-                return '';
++            if (typeof value !== ""number"") {
++                return `${value}`;
+             }
+-            return nf(value);
++            return numberFormatter(value);
+         };
+     }, [numberFormat]);
+ 
+@@ -127,7 +119,7 @@
+
+         </tbody>
+     );
+ }, function areEqual(prevProps, nextProps) {
+-    if (JSON.stringify(prevProps.matrix) === JSON.stringify(nextProps.matrix)) {
++    if (JSON.stringify(prevProps.matrix) === JSON.stringify(nextProps.matrix) && prevProps.numberFormat === nextProps.numberFormat) {
+         return true;
+     }
+     "
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1891567516,,64,a6b16aeeba52c9dc9af4f0a577f52483110c5729,49e563c50e7577290c86a094c951e682ac091fe2,jobs/etl_jobs/external/zendesk/extract.py,,"I suggest changing
+ ```
++            updated_at (str): The creation date filter for tickets.
+```
+ to
+```
++            updated_at (str): The modification date filter for tickets.
+```"," 
+         Args:
+-            created_at (str): The creation date filter for tickets.
++            updated_at (str): The creation date filter for tickets.","--- 
+
++++ 
+
+@@ -58,10 +58,10 @@
+
+ 
+     def fetch_tickets(self, updated_at: str) -> List[Dict[str, Any]]:
+         """"""
+-        Fetches closed tickets created after the specified date.
++        Fetches closed tickets udpdated after the specified date.
+ 
+         Args:
+-            updated_at (str): The creation date filter for tickets.
++            updated_at (str): The modification date filter for tickets.
+ 
+         Returns:
+             List[Dict[str, Any]]: List of ticket dictionaries."
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1858770122,,186,3fbb182fc5c5e18df1ce987c1aff5b2ec24d834a,e5077da2e832932f15cb985518ef168a05ed2649,orchestration/dags/data_gcp_dbt/models/sources.yml,,artist_linked ( ?) ,"       - name: item_embedding_reduced_32
+       - name: item_embedding_reduced_16
+       - name: item_embedding_reduced_5
++      - name: linked_artists","--- 
+
++++ 
+
+@@ -83,6 +83,7 @@
+
+       - name: applicative_database_pricing_line
+       - name: applicative_database_pricing_log
+       - name: applicative_database_product
++      - name: applicative_database_product_mediation
+       - name: applicative_database_product_whitelist
+       - name: applicative_database_provider
+       - name: applicative_database_recredit
+@@ -183,5 +184,6 @@
+
+       - name: item_embedding_reduced_32
+       - name: item_embedding_reduced_16
+       - name: item_embedding_reduced_5
+-      - name: linked_artists
++      - name: artist_linked
++        description: This table contains the artist_linkage dag
+       - name: unconstrained_item_cluster"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1860420245,,65,dc2ff5b92fb6f5465cc1d468fd27c2a6e742f98c,e5077da2e832932f15cb985518ef168a05ed2649,orchestration/dags/jobs/ml/artist_linkage.py,,delete," LINK_FROM_SCRATCH_TASK_ID = ""link_from_scratch""
+ LINK_NEW_PRODUCTS_TO_ARTISTS_TASK_ID = ""link_new_products_to_artists""
+ 
++# DBT","--- 
+
++++ 
+
+@@ -61,13 +61,6 @@
+
+ 
+ LINK_FROM_SCRATCH_TASK_ID = ""link_from_scratch""
+ LINK_NEW_PRODUCTS_TO_ARTISTS_TASK_ID = ""link_new_products_to_artists""
+-
+-# DBT
+-DBT_MODELS_TO_RUN = [
+-    ""ml_linkage__artist+"",
+-    ""ml_linkage__product_artist_link+"",
+-    ""ml_linkage__artist_alias+"",
+-]
+ 
+ 
+ def _choose_linkage(**context):"

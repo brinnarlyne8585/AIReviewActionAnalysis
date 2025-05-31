@@ -1,0 +1,4364 @@
+Comment_URL,Review_Start_Line,Review_End_Line,Original_Commit_id,Merge_Commit_id,Diff_path,New_path,Body,Diff_hunk,Change_Until_Merged
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858427,,15,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,.github/workflows/code_review.yml,,"Consider pinning the version of `ai-codereviewer` to a specific release or commit instead of using a branch name, to ensure stability and reproducibility of the workflow.","         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@comment-individual-lines-and-do-not-give-positive-comments","--- 
+
++++ 
+
+@@ -12,7 +12,7 @@
+
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@comment-individual-lines-and-do-not-give-positive-comments
++        uses: freeedcom/ai-codereviewer@main
+         with:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858429,,67,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,Consider removing the `console.log` statements used for debugging before merging the code.,"@@ -66,46 +66,57 @@ async function analyzeCode(
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858431,,79,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,Consider removing the `console.log` statements used for debugging before merging the code.,"   }
++  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858432,,101,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"It's better to use a more specific return type for the `getAIResponse` function. Instead of `Promise<Array<{ lineNumber: string; reviewComment: string; }> | null>`, consider using `Promise<Array<{ lineNumber: number; reviewComment: string; }> | null>` since line numbers are integers."," 
+-Please provide comments and suggestions ONLY if there is something to improve, write the answer in Github markdown. If the code looks good, DO NOT return any text (leave the response completely empty)
++Git diff to review:
+ ","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858435,,133,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,Avoid using `console.log` for debugging purposes in production code. Consider using a proper logging library or remove the debugging statements.,"     });
+ 
+-    return response.data.choices[0].message?.content?.trim() || null;
++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858436,,146,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,Consider renaming `aiResponses` to `aiReviewComments` for better clarity.,"-  if (lastAddChange && file.to) {
++  aiResponses: Array<{
++    lineNumber: string;
++    reviewComment: string;","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858439,,148,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"Instead of using `flatMap`, you can use `map` and then `filter` to remove empty elements. This would make the code more readable.","+    lineNumber: string;
++    reviewComment: string;
++  }>
++): Array<{ body: string; path: string; line: number }> {","--- 
+
++++ 
+
+@@ -66,8 +66,6 @@
+
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
+-      console.log(""PROMPT:"");
+-      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+         const newComments = createComment(file, chunk, aiResponse);
+@@ -77,7 +75,6 @@
+
+       }
+     }
+   }
+-  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+@@ -134,8 +131,6 @@
+
+     });
+ 
+     const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    console.log(""AI Response:"");
+-    console.log(res);
+     return JSON.parse(res);
+   } catch (error) {
+     console.error(""Error:"", error);"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858445,,1,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/sketchy-code.ts,,The function name `divideBySeven` does not match its implementation. Consider renaming it to better reflect its purpose.,"@@ -0,0 +1,8 @@
++const divideBySeven = () => {",File_Deleted
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858448,,3,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/sketchy-code.ts,,"The `code` variable is assigned a string value, but it is being multiplied by a number in the next line. This will result in `NaN`. Consider using a numeric value instead.","@@ -0,0 +1,8 @@
++const divideBySeven = () => {
++  const code = ""code"";
++  return code * 5;",File_Deleted
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858451,,6,ad866ee7f308986b165f3ef92dc5a9460e170f10,ea61d39797252e53528289d79a466e863c2f3c9b,src/sketchy-code.ts,,"The `divideBySeven` function does not accept any arguments, but it is being called with an argument `95`. Consider updating the function to accept an argument if needed.","+  return code * 5;
++};
++
++const result = divideBySeven(95);",File_Deleted
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862636,,73,7a06f49c682db6cc7f11f290b33b389d3219610a,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"I suggest renaming the `newComments` variable to `generatedComments` for better clarity:
+
+```diff
+- const newComments = createComment(file, chunk, aiResponse);
++ const generatedComments = createComment(file, chunk, aiResponse);
+- if (newComments) {
++ if (generatedComments) {
+-   comments.push(...newComments);
++   comments.push(...generatedComments);
+  }
+```","-          comments.push(comment);
++        const newComments = createComment(file, chunk, aiResponse);
++        if (newComments) {
++          comments.push(...newComments);",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862637,,116,7a06f49c682db6cc7f11f290b33b389d3219610a,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"- On line 97, consider changing the `max_tokens` value back to `400` if the increased value of `700` does not provide a significant improvement in the quality of the generated comments. This would help in reducing the response time and resource usage.","     model: ""gpt-4"",
+     temperature: 0.2,
+-    max_tokens: 400,
++    max_tokens: 700,",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862640,,134,7a06f49c682db6cc7f11f290b33b389d3219610a,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"I suggest changing
+ ```
++    return JSON.parse(res);
+```
+ to
+```
+++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+++    return JSON.parse(res);
+```"," 
+-    return response.data.choices[0].message?.content?.trim() || null;
++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
++    return JSON.parse(res);",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862641,,158,7a06f49c682db6cc7f11f290b33b389d3219610a,ea61d39797252e53528289d79a466e863c2f3c9b,src/main.ts,,"I have a suggestion to improve the code readability:
+
+Instead of using `flatMap`, you can use `map` and then `filter` to remove the empty arrays. This makes the code more readable and easier to understand.
+
+```typescript
+return aiResponses
+  .map((aiResponse) => {
+    if (!file.to) {
+      return null;
+    }
+    return {
+      body: aiResponse.reviewComment,
+      path: file.to,
+      line: Number(aiResponse.lineNumber),
+    };
+  })
+  .filter((response) => response !== null);
+```
+
+This way, the code is more explicit about its intent to filter out the `null` values.","     };
+-  }
+-  return null;
++  });",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420675,,88,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding error handling for the API call in case it fails or returns an unexpected response.,"+  baseSha: string,
++  headSha: string
++): Promise<string | null> {
++  const response = await octokit.repos.compareCommits({","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420676,,102,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,"Similar to the previous API call, consider adding error handling for this API call as well.","+  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420677,,221,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a comment to explain the purpose of checking the `GITHUB_EVENT_NAME`.,"+
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420680,,228,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a comment to explain the purpose of this `else if` block and how it handles the `push` event.,"+      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const diffUrl = await getChangedFiles(","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420681,,240,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a comment to explain the purpose of this `else` block and why the event is unsupported.,"+    } else {
++      diff = null;
++    }
++  } else {","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420682,,274,dbf427f89f480fa2efb400bd0bc3df974bab6f87,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using a more descriptive function name instead of `main()` to better indicate the purpose of the function.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -79,21 +79,6 @@
+
+   return comments;
+ }
+ 
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+-}
+-
+ async function getBaseAndHeadShas(
+   owner: string,
+   repo: string,
+@@ -113,7 +98,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421182,,15,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,.github/workflows/code_review.yml,,There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,"         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421183,,87,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a type definition for the return value of `getChangedFiles` function for better type safety and readability.,"+  repo: string,
++  baseSha: string,
++  headSha: string
++): Promise<string | null> {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421184,,101,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a type definition for the return value of `getBaseAndHeadShas` function for better type safety and readability.,"+  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421185,,221,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding an empty line before this `if` statement for better readability.,"+
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421186,,227,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding an empty line before this `else if` statement for better readability.,"+      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421187,,240,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding an empty line before this `else` statement for better readability.,"+    } else {
++      diff = null;
++    }
++  } else {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421188,,252,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding an empty line before this constant declaration for better readability.," 
+   const parsedDiff = parseDiff(diff);
++
+   const excludePatterns = core","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421190,,274,3413a8e8a082b170aa5d684ec7d4842a7951df68,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using a more descriptive function name instead of `main` to better indicate its purpose.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -77,21 +77,6 @@
+
+     }
+   }
+   return comments;
+-}
+-
+-async function getChangedFiles(
+-  owner: string,
+-  repo: string,
+-  baseSha: string,
+-  headSha: string
+-): Promise<string | null> {
+-  const response = await octokit.repos.compareCommits({
+-    owner,
+-    repo,
+-    base: baseSha,
+-    head: headSha,
+-  });
+-  return response.data.diff_url;
+ }
+ 
+ async function getBaseAndHeadShas(
+@@ -210,33 +195,33 @@
+
+ 
+ async function main() {
+   const prDetails = await getPRDetails();
+-  const { baseSha, headSha } = await getBaseAndHeadShas(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+ 
+-  let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const diffUrl = await getChangedFiles(
+-      prDetails.owner,
+-      prDetails.repo,
+-      baseSha,
+-      headSha
+-    );
+-    if (diffUrl) {
+-      const diffResponse = await octokit.request({ url: diffUrl });
+-      diff = diffResponse.data;
+-    } else {
+-      diff = null;
+-    }
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425072,,15,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,.github/workflows/code_review.yml,,There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,"         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425074,,82,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a comment to briefly explain the purpose of the `getBaseAndHeadShas` function.,"   return comments;
+ }
+ 
++async function getBaseAndHeadShas(","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425075,,100,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Replace `85 --` with `85 -` to maintain consistency in the list formatting.,"+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425076,,103,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Replace `87 --` with `87 -` to maintain consistency in the list formatting.,"+- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+-- Write the comment in GitHub markdown.
++- Write the comment in GitHub Markdown format.","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425077,,200,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding an `else` block to handle cases when the `GITHUB_EVENT_NAME` is not `pull_request` or `push`.,"-  );
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425078,,208,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Use `fs.readFileSync` instead of `readFileSync` to avoid confusion with the imported `fs` module.,"+    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425079,,241,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,It is recommended to trim the input values after splitting to avoid issues with leading or trailing spaces.," 
+   const parsedDiff = parseDiff(diff);
++
+   const excludePatterns = core","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425080,,263,a6762eb22361f5d5978299a1fd939390905403ab,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using a more descriptive function name instead of `main`. This will improve code readability and make it easier to understand the purpose of the function.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -196,21 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -224,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425501,,15,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,.github/workflows/code_review.yml,,There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,"         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425502,,82,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding a comment to briefly explain the purpose of the `getBaseAndHeadShas` function.,"   return comments;
+ }
+ 
++async function getBaseAndHeadShas(","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425503,,99,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Replace `Do not give positive comments or compliments.` with `Avoid giving positive comments or compliments.` for a more polite tone.,"+}
++
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425504,,199,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425505,,200,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425506,,202,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"+  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425507,,209,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"+      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425508,,213,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"+    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425509,,230,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,"+          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425510,,233,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.warning()` instead of `console.log()` for better integration with GitHub Actions and to indicate a warning.,"+    console.log(""Diff:"");
++    console.log(diff);
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425511,,266,97bdebd58573233576537253b7e2c3870acda9b1,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using a more descriptive function name instead of `main` to better indicate the purpose of the function.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -196,24 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426189,,15,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,.github/workflows/code_review.yml,,"There is a typo in the branch name, change `reveiw-changed-files-only` to `review-changed-files-only`.","         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426193,,85,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider updating the comment to clarify that it refers to not recommending adding comments to the code.,"+async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426196,,87,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Update the comment to consistently use 'GitHub Markdown format' instead of 'GitHub markdown'.,"+  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426198,,200,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426201,,201,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426204,,202,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426207,,203,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426209,,204,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426210,,211,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426212,,212,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426214,,215,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426216,,216,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426217,,232,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426219,,233,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426220,,234,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+      : null;
++    console.log(""Diff:"");
++    console.log(diff);
++  } else {","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426222,,235,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,"+    console.log(""Diff:"");
++    console.log(diff);
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426224,,268,29cd406230ccb4a2195f87945e1c6321aedf7293,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider using a more descriptive function name instead of `main` to better convey the purpose of the function.,"-})().catch((error) => {
++}
++
++main().catch((error) => {","--- 
+
++++ 
+
+@@ -196,26 +196,19 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+-  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
+-  console.log(""PR event path:"");
+-  console.log(process.env.GITHUB_EVENT_PATH);
+-  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
+-    console.log(""Pull request event"");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
++  );
++
++  if (eventData.action === ""opened"") {
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+-  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
+-    console.log(""Push event"");
+-    const pushEvent = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
+-    console.log(""Push event:"");
+-    console.log(pushEvent);
+-    const newBaseSha = pushEvent.before;
+-    const newHeadSha = pushEvent.after;
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
+ 
+     const response = await octokit.repos.compareCommits({
+       owner: prDetails.owner,
+@@ -229,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426411,,201,6454621f447453823a61c1c3cbebf87559342edb,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Consider adding error handling for the case when `process.env.GITHUB_EVENT_PATH` is not available or the file cannot be read.,"+  let diff: string | null;
++  console.log(""Running the action..."");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")","--- 
+
++++ 
+
+@@ -196,22 +196,17 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+   const eventData = JSON.parse(
+     readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+-  console.log(""Event data:"");
+-  console.log(eventData);
++
+   if (eventData.action === ""opened"") {
+-    console.log(""Pull request event"");
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+   } else if (eventData.action === ""synchronize"") {
+-    console.log(""Push event"");
+-    console.log(eventData);
+     const newBaseSha = eventData.before;
+     const newHeadSha = eventData.after;
+ 
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426413,,205,6454621f447453823a61c1c3cbebf87559342edb,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Replace the hardcoded string `'opened'` with a constant variable for better maintainability.,"   );
++  console.log(""Event data:"");
++  console.log(eventData);
++  if (eventData.action === ""opened"") {","--- 
+
++++ 
+
+@@ -196,22 +196,17 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+   const eventData = JSON.parse(
+     readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+-  console.log(""Event data:"");
+-  console.log(eventData);
++
+   if (eventData.action === ""opened"") {
+-    console.log(""Pull request event"");
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+   } else if (eventData.action === ""synchronize"") {
+-    console.log(""Push event"");
+-    console.log(eventData);
+     const newBaseSha = eventData.before;
+     const newHeadSha = eventData.after;
+ 
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426414,,213,6454621f447453823a61c1c3cbebf87559342edb,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Replace the hardcoded string `'synchronize'` with a constant variable for better maintainability.,"+      prDetails.pull_number
++    );
++  } else if (eventData.action === ""synchronize"") {
++    console.log(""Push event"");","--- 
+
++++ 
+
+@@ -196,22 +196,17 @@
+
+ async function main() {
+   const prDetails = await getPRDetails();
+   let diff: string | null;
+-  console.log(""Running the action..."");
+   const eventData = JSON.parse(
+     readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
+-  console.log(""Event data:"");
+-  console.log(eventData);
++
+   if (eventData.action === ""opened"") {
+-    console.log(""Pull request event"");
+     diff = await getDiff(
+       prDetails.owner,
+       prDetails.repo,
+       prDetails.pull_number
+     );
+   } else if (eventData.action === ""synchronize"") {
+-    console.log(""Push event"");
+-    console.log(eventData);
+     const newBaseSha = eventData.before;
+     const newHeadSha = eventData.after;
+ 
+@@ -227,8 +222,6 @@
+
+           .request({ url: response.data.diff_url })
+           .then((res) => res.data)
+       : null;
+-    console.log(""Diff:"");
+-    console.log(diff);
+   } else {
+     console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
+     return;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426810,,199,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,"Consider removing the commented out `console.log` statement, as it is not needed in the production code.","-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426811,,203,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,Remove the empty line to maintain consistency in the code formatting.,"+    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++
++  if (eventData.action === ""opened"") {",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426812,,213,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,"Consider removing the commented out `console.log` statements, as they are not needed in the production code.","+    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426813,,230,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,07b4e53660f659896135241f708e9811a19cb8e6,src/main.ts,,"Consider removing the commented-out `console.log` statements, as they are not necessary for the final code.","+    return;
++  }
++
+   if (!diff) {",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264464,,12,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,src/style.css,,"Consider using a more descriptive variable name for the background color, such as `backgroundBlue`, to improve readability.","   align-items: center;
+ 
+-  background: lightgray;
++  background: steelblue;",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264471,,16,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,src/style.css,,"Similarly, consider using a more descriptive variable name for the text color, such as `textColorAzure`, to improve readability."," 
+ h1 {
+-  color: slategray;
++  color: azure;",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264473,,2,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,src/weeknumber.js,,Consider creating a new variable for the modified date instead of modifying the input parameter directly.," function getWeekNumber(date = new Date()) {
+-  const onejan = new Date(date.getFullYear(), 0, 1);
+-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
++  date.setHours(0, 0, 0, 0);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264476,,4,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,src/weeknumber.js,,"Use a more descriptive variable name instead of `startOfYear`, such as `firstWeekStart`.","-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
++  date.setHours(0, 0, 0, 0);
++  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
++  const startOfYear = new Date(date.getFullYear(), 0, 4);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264477,,5,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,src/weeknumber.js,,Consider breaking down the calculation of `weekNumber` into smaller steps for better readability.,"+  date.setHours(0, 0, 0, 0);
++  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
++  const startOfYear = new Date(date.getFullYear(), 0, 4);
++  const weekNumber = 1 + Math.round(((date - startOfYear) / 86400000 - 3 + (startOfYear.getDay() + 6) % 7) / 7);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1238264481,,25,9b342f545735a95053e27e3a49bd7bb0e0d7307b,781d67e10ce6378c00070e92620645ff0748fecf,test/weeknumber.test.js,,"Consider using a more descriptive test case name, such as 'should return week 25 for June 25th, 2023'.","     expect(weeknumber.getWeekNumber(date)).toEqual(1);
+   });
++
++  it('should return week 25 for midsummer sunday on 2023', () => {",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790494,,31,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,"The removal of the test print statement is fine, but ensure that any necessary debugging or testing code is not inadvertently removed. Consider keeping a placeholder or a comment indicating where testing code might be added back in the future.","-    ""print(\""this is a test\"")""
+-   ]
+-  },
+   {","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790498,,141,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,"Using `str.replace` without specifying a regex pattern may lead to unexpected behavior if the input data contains other commas that should not be removed. Consider using `str.replace(',', '', regex=False)` to ensure only the intended commas are removed.","+    ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
++    ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
++    ""# This removes the unnecessary comma.\n"",
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790499,,367,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,The comment `# <extra></extra> is used to omit the trace name.` is unnecessary and should be removed as it does not contribute to the understanding of the code.,"+    ""    \""price_unit\"",\n"",
++    ""]\n"",
++    ""\n"",
++    ""# <extra></extra> is used to omit the trace name.\n"",","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790501,,414,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,"The assignment of `custom_data` should ensure that `custom_data_columns` is defined and contains the expected data structure. If it's not defined earlier in the code, this will lead to runtime errors.","-    ""        \""price_currency\"",\n"",
+-    ""        \""price_unit\"",\n"",
+-    ""    ],\n"",
++    ""    custom_data=custom_data_columns,\n"",","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790504,,418,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,The TODO comment should be more specific about the implementation details or the approach to be taken for the visualisation. This will help in understanding the next steps needed for this feature.,"-    ""Price: %{customdata[5]} %{customdata[6]}\n"",
+-    ""\""\""\""\n"",
+     ""\n"",
+     ""# TODO: add some visualisation for how good the price/duration is relative to others\n"",","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790506,,388,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,"The removal of the code cell seems abrupt. If this code is no longer needed, consider providing context in the commit message or PR description to clarify why it was removed.","-    ""df_filtered.iloc[1]""
++    ""fig = px.scatter(\n"",
++    ""    df_filtered,\n"",
++    ""    y=\""price_unit\"",\n"",","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790509,,424,6ca85a2bdc5742dfb9e239618022b0a4970141eb,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7,yafs/notebooks/analysis.ipynb,,"The line `""fig.show()""` appears to be a string rather than an executable command. If this is intended to be executed, it should not be enclosed in quotes.","@@ -385,50 +424,42 @@
+     ""fig.show()""","--- 
+
++++ 
+
+@@ -138,7 +138,7 @@
+
+     ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
+     ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
+     ""# This removes the unnecessary comma.\n"",
+-    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"", regex=False)""
+    ]
+   },
+   {"
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310865,,8,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,.github/workflows/ai-code-review.yml,,The `permissions` field is set to `write-all` which gives full access to all permissions. This is a security risk and it's recommended to only provide the necessary permissions.,"+    types:
++      - opened
++      - synchronize
++permissions: write-all",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310877,,14,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,.github/workflows/ai-code-review.yml,,It's recommended to pin the `actions/checkout` to a specific version instead of using `v3` to avoid potential issues if the action is updated.,"+    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310880,,17,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,.github/workflows/ai-code-review.yml,,"Similar to the `actions/checkout`, it's recommended to pin the `ai-codereviewer` to a specific version instead of using `main` to avoid potential issues if the action is updated.","+        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310886,,2,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"Instead of checking for falsy values, it would be better to check if `x` is not a number. This way, you can avoid unexpected behavior when `x` is `0`.","@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310895,,3,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"Similar to the previous comment, it would be better to check if `y` is not a string. This way, you can avoid unexpected behavior when `y` is an empty string.","@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; ",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310898,,5,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,Consider using `let` instead of `var` for block scope variable declaration.,"+    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310902,,13,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"This line assumes that `x` is an array and `y` is a number, which might not always be the case. Consider adding type checks before this operation.","+
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310909,,16,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,Avoid using `console.log` for error handling. Consider throwing an error or rejecting a promise.,"+        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310913,,17,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"Dividing by zero will return `Infinity`, which might not be the expected behavior. Consider adding a check to prevent division by zero.","+    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310917,,19,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"Returning without a value will return `undefined`. If this is the expected behavior, consider making it explicit by returning `undefined`.","+    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310920,,23,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,test.js,,"The function `doStuff` expects two arguments: a number and a string. Here, `undefined` is being passed as the second argument, which might lead to unexpected behavior.","+}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310926,,8,890e96a821e3f080bb79b298c7ece61d10fc9e9a,23219fdcdaa5899638181380a077937bb3b40bd1,workflow-scripts/slackify-release.workflow.mjs,,The `console.log('testing...');` seems to be a debug statement. It's generally a good practice to remove debug statements before committing the code to maintain clean and production-ready codebase.,"-console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
+\ No newline at end of file
++console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
++console.log('testing...');",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872856,,3,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,,Directly importing `OpenAI` without destructuring may lead to potential issues if the library expects specific imports. Ensure that the `OpenAI` import aligns with the library's updated export structure for gpt-4-1106-preview and json mode.," import { readFileSync } from ""fs"";
+ import * as core from ""@actions/core"";
+-import { Configuration, OpenAIApi } from ""openai"";
++import OpenAI from ""openai"";","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872857,,83,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,,The JSON format provided in the updated line does not match the standard JSON array format. It should be an array of objects within square brackets `[]`.," function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+-- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872858,,130,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,,"The `response_format` object structure seems incorrect. The `response_format` should be a string, not an object. It should be `'response_format': 'json'` if you want to specify JSON format.","+    const response = await openai.chat.completions.create({
+       ...queryConfig,
++      // return JSON if the model supports it:
++      ...(OPENAI_API_MODEL === ""gpt-4-1106-preview""","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872860,,141,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,,The fallback value for `res` should be an empty array `[]` instead of an empty object `{}` to match the expected return type of the function.," 
+-    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    return JSON.parse(res);
++    const res = response.choices[0].message?.content?.trim() || ""{}"";","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872861,,142,739f0b429b8c11af8fe166cf1245bac8193c11ec,8dff11715837750379472ead710753262e2ca65f,src/main.ts,,Ensure that the property `reviews` exists on the parsed object to avoid potential runtime errors. Consider adding a check before accessing `reviews` property.,"-    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    return JSON.parse(res);
++    const res = response.choices[0].message?.content?.trim() || ""{}"";
++    return JSON.parse(res).reviews;","--- 
+
++++ 
+
+@@ -78,27 +78,11 @@
+
+   return comments;
+ }
+ 
+-async function getBaseAndHeadShas(
+-  owner: string,
+-  repo: string,
+-  pull_number: number
+-): Promise<{ baseSha: string; headSha: string }> {
+-  const prResponse = await octokit.pulls.get({
+-    owner,
+-    repo,
+-    pull_number,
+-  });
+-  return {
+-    baseSha: prResponse.data.base.sha,
+-    headSha: prResponse.data.head.sha,
+-  };
+-}
+-
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}
+ - Do not give positive comments or compliments.
+-- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Provide comments and suggestions ONLY if there is something to improve, otherwise ""reviews"" should be an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
+ - IMPORTANT: NEVER suggest adding comments to the code."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232235,,15,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,9f3b507340c8422efb9a6147aa34907a045c783e,.github/workflows/code_review.yml,,Consider using a specific version or commit hash instead of the branch name `improve-the-AI-output` to ensure stability and reproducibility of the workflow.,"         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@improve-the-AI-output",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232242,,83,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider rephrasing this line to: `- Avoid providing positive comments or compliments.` for better clarity.," 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.","--- 
+
++++ 
+
+@@ -81,7 +81,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting on the code.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code.
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232243,,84,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider rephrasing this line to: `- Refrain from suggesting to comment on the code.` for better clarity.," function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Do not suggest commenting on the code.","--- 
+
++++ 
+
+@@ -81,7 +81,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting on the code.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code.
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232250,,87,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,"This line seems to be removed, but it contains important information about calculating line numbers. Consider adding it back or incorporating the information into another part of the instructions."," - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.","--- 
+
++++ 
+
+@@ -81,7 +81,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting on the code.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code.
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232253,,106,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider adding a comment to explain the purpose of the `@ts-expect-error` directive and why it's necessary in this case.,"-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)","--- 
+
++++ 
+
+@@ -81,7 +81,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not suggest commenting on the code.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code.
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150245930,,15,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,.github/workflows/code_review.yml,,Consider pinning the action version to a specific release or commit instead of using the branch name `improve-the-AI-output`. This ensures stability and prevents unexpected behavior changes in the future.,"         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@improve-the-AI-output",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246003,,83,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider rephrasing this line to: `- Avoid giving positive comments or compliments.` for better clarity.," 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.","--- 
+
++++ 
+
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246008,,84,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider rephrasing this line to: `- Avoid suggesting to comment on the code.` for better clarity.," function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.","--- 
+
++++ 
+
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246013,,87,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,"This line seems to be removed, but it contains important information about calculating the line number. Consider adding it back or incorporating the information in another part of the instructions."," - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.","--- 
+
++++ 
+
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246018,,106,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider using a ternary operator instead of two separate string templates for better readability: `${c.ln ? c.ln : c.ln2} ${c.content}`.,"-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)","--- 
+
++++ 
+
+@@ -103,7 +103,7 @@
+
+ ${chunk.content}
+ ${chunk.changes
+   // @ts-expect-error - ln and ln2 exists where needed
+-  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+   .join(""\n"")}
+ \`\`\`
+ `;"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248894,,83,08e3201b551c74f43ef067e668db296bc175e867,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider rephrasing the sentence to avoid using a double negative: 'Avoid giving positive comments or compliments.'," 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248902,,84,08e3201b551c74f43ef067e668db296bc175e867,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Rephrase the sentence to make it clearer: 'Avoid suggesting to add comments to the code.'," function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248906,,87,08e3201b551c74f43ef067e668db296bc175e867,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,"This line seems to be removed, but it contains important information about calculating line numbers. Consider keeping this instruction or incorporating it into another part of the prompt."," - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248909,,106,08e3201b551c74f43ef067e668db296bc175e867,9f3b507340c8422efb9a6147aa34907a045c783e,src/main.ts,,Consider adding a comment to explain the purpose of this line and why the `@ts-expect-error` is necessary.,"-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378086,,13,8c5215259e219fdcdb489a0f79b3a17081757efb,9fd4a977fc3114cc34218e3e1489e5262ebaff85,yafs/.pre-commit-config.yaml,,The filename in the `files` field should match the new name exactly. Ensure that the change from `whitelist.txt` to `.spellcheck-allowlist.txt` is consistent with the intended naming convention.,"       - id: file-contents-sorter
+-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378087,,14,8c5215259e219fdcdb489a0f79b3a17081757efb,9fd4a977fc3114cc34218e3e1489e5262ebaff85,yafs/.pre-commit-config.yaml,,"Similarly, the path in the `args` field should also reflect the new filename accurately. Verify that the change from `whitelist.txt` to `.spellcheck-allowlist.txt` is intentional and correct.","-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt
++        args: [./yafs/.spellcheck-allowlist.txt]",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378088,,63,8c5215259e219fdcdb489a0f79b3a17081757efb,9fd4a977fc3114cc34218e3e1489e5262ebaff85,yafs/pyproject.toml,,The key `whitelist` should be renamed to `spellcheck-allowlist.txt` to match the pull request title and description.,"     main.py: D103
+     **/tests/*: S101,D103
+ """"""
++whitelist = "".spellcheck-allowlist.txt""",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694359392,,13,87652e0cba73d01cac5adf4bd562bcbc11b5fbe2,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,,The change from `issues: write` to `pull-requests: write` should be reviewed for its implications on the workflow. Ensure that the permissions align with the intended functionality of the CI process.," 
+ permissions:
+   contents: write
++  pull-requests: write","--- 
+
++++ 
+
+@@ -7,10 +7,6 @@
+
+   pull_request:
+     branches:
+       - main
+-
+-permissions:
+-  contents: write
+-  pull-requests: write
+ 
+ jobs:
+   test-yafs:
+@@ -70,6 +66,8 @@
+
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write
+     steps:
+       - name: Check out repository
+         uses: actions/checkout@v4
+@@ -86,6 +84,8 @@
+
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
++    permissions:
++      contents: write
+     steps:
+       - name: Dependabot metadata
+         id: metadata"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360257,,11,d945ed5c1f3077dffe5c1c795e00dc41279707fd,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,,The removal of the `permissions` section may lead to unintended consequences regarding access control. Ensure that the necessary permissions are still granted for the workflow to function as intended.,"-permissions:
+-  contents: write
+-
+ jobs:",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360259,,70,d945ed5c1f3077dffe5c1c795e00dc41279707fd,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,,"The `permissions` key should be defined at the job level, not within the `steps`. Consider moving it outside of the `steps` section.","+    runs-on: ubuntu-latest
++    if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360260,,86,d945ed5c1f3077dffe5c1c795e00dc41279707fd,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,,The condition in the `if` statement is quite specific to the `dependabot[bot]`. Consider whether this condition is necessary or if it could be generalized to accommodate other scenarios.,"     name: ""Dependabot""
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360261,,88,d945ed5c1f3077dffe5c1c795e00dc41279707fd,086369f50abefac5fe84f6551540c2cf3531ffa3,.github/workflows/ci.yml,,The `permissions` setting grants write access to contents. Ensure that this level of access is necessary for the job and does not pose a security risk.,"     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
++    permissions:
++      contents: write",
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378435,,25,7d98c79df1bcfbaf565b5f3105b65ee0af94b303,7e8ee7bb411fb0d96c412cf61768f44fc980de11,yafs/.pre-commit-config.yaml,,The version specified here (`v8.18.4`) should be checked for the latest stable release to ensure compatibility and security.,"     hooks:
+       - id: nb-clean
++  - repo: https://github.com/gitleaks/gitleaks
++    rev: v8.18.4","--- 
+
++++ 
+
+@@ -10,8 +10,8 @@
+
+       - id: check-added-large-files
+       - id: check-toml
+       - id: file-contents-sorter
+-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt
++        args: [./yafs/.spellcheck-allowlist.txt]
+   - repo: https://github.com/psf/black
+     rev: 24.4.2
+     hooks:"
+https://api.github.com/repos/mrako/week-number/pulls/comments/1236833517,,7,08089113741645198a42138ba3811f0943703b21,15488b2b5b414d3f41e183afbb1114cd17966f10,src/index.js,,Consider initializing `date` with `null` in `useState` to make it more explicit.,"-  <h1>{ getWeekNumber ? getWeekNumber() : '-' }</h1>
+-);
++const App = () => {
++  const [date, setDate] = useState();","--- 
+
++++ 
+
+@@ -8,9 +8,9 @@
+
+ 
+   useEffect(() => {
+     const searchParams = new URLSearchParams(window.location.search);
+-    const date = Date.parse(searchParams.get('date'));
++    const dateParam = Date.parse(searchParams.get('date'));
+ 
+-    setDate(isNaN(date) ? new Date() : new Date(date));
++    setDate(isNaN(dateParam) ? new Date() : new Date(dateParam));
+   }, []);
+ 
+   if (date) {"
+https://api.github.com/repos/mrako/week-number/pulls/comments/1236833540,,11,08089113741645198a42138ba3811f0943703b21,15488b2b5b414d3f41e183afbb1114cd17966f10,src/index.js,,It's better to use `const dateParam = searchParams.get('date');` and then parse it in the next line to avoid confusion with the state variable `date`.,"+
++  useEffect(() => {
++    const searchParams = new URLSearchParams(window.location.search);
++    const date = Date.parse(searchParams.get('date'));","--- 
+
++++ 
+
+@@ -8,9 +8,9 @@
+
+ 
+   useEffect(() => {
+     const searchParams = new URLSearchParams(window.location.search);
+-    const date = Date.parse(searchParams.get('date'));
++    const dateParam = Date.parse(searchParams.get('date'));
+ 
+-    setDate(isNaN(date) ? new Date() : new Date(date));
++    setDate(isNaN(dateParam) ? new Date() : new Date(dateParam));
+   }, []);
+ 
+   if (date) {"
+https://api.github.com/repos/mrako/week-number/pulls/comments/1236833555,,16,08089113741645198a42138ba3811f0943703b21,15488b2b5b414d3f41e183afbb1114cd17966f10,src/index.js,,"Instead of checking for `date`, you can use a ternary operator inside the JSX to conditionally render the week number or a default value.","+    setDate(isNaN(date) ? new Date() : new Date(date));
++  }, []);
++
++  if (date) {","--- 
+
++++ 
+
+@@ -8,9 +8,9 @@
+
+ 
+   useEffect(() => {
+     const searchParams = new URLSearchParams(window.location.search);
+-    const date = Date.parse(searchParams.get('date'));
++    const dateParam = Date.parse(searchParams.get('date'));
+ 
+-    setDate(isNaN(date) ? new Date() : new Date(date));
++    setDate(isNaN(dateParam) ? new Date() : new Date(dateParam));
+   }, []);
+ 
+   if (date) {"
+https://api.github.com/repos/mrako/week-number/pulls/comments/1236844931,,11,c1b9c76486940d566a492d1f2be7c464e51e90e6,15488b2b5b414d3f41e183afbb1114cd17966f10,src/index.js,,"Consider using a more descriptive variable name, such as `parsedDate`, to better convey its purpose.","+
++  useEffect(() => {
++    const searchParams = new URLSearchParams(window.location.search);
++    const dateParam = Date.parse(searchParams.get('date'));",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490072,,39,f80c0fad0c99d711efbc96a21d239556469b1f70,f3bfd9a657270d8369bc93901faf35232b0fc108,src/main.ts,,"```diff
+@@ -20,16 +20,23 @@ interface PRDetails {
+-    owner: string;
+-    repo: string;
+-    pull_number: number;
++ +  description: string;
+-  }
+-  
+-  async function getPRDetails(): Promise<PRDetails> {
+-    const { repository, number } = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
++ +  const prResponse = await octokit.pulls.get({
++ +    owner: repository.owner.login,
++ +    repo: repository.name,
++ +    pull_number: number,
++ +  });
+-    return {
+-      owner: repository.owner.login,
+-      repo: repository.name,
+-      pull_number: number,
++ +    description: prResponse.data.body ?? """",
+-    };
+-  }
+-  
+```
+- Consider adding a comment above the `getPRDetails` function to briefly explain its purpose.
+- It's a good practice to handle possible errors when using `await`. You can wrap the `await octokit.pulls.get()` call in a try-catch block to handle any errors that might occur during the API call.","     owner: repository.owner.login,
+     repo: repository.name,
+     pull_number: number,
++    description: prResponse.data.body ?? """",",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490077,,66,f80c0fad0c99d711efbc96a21d239556469b1f70,f3bfd9a657270d8369bc93901faf35232b0fc108,src/main.ts,,"```diff
+@@ -49,13 +56,14 @@ async function getDiff(
+  }
+  
+  async function analyzeCode(
+-    parsedDiff: File[]
++    parsedDiff: File[],
++    prDescription: string
+  ): Promise<Array<{ body: string; path: string; line: number }>> {
+    const comments: Array<{ body: string; path: string; line: number }> = [];
+  
+    for (const file of parsedDiff) {
+      for (const chunk of file.chunks) {
+-        const prompt = createPrompt(file, chunk);
++        const prompt = createPrompt(file, chunk, prDescription);
+        const aiResponse = await getAIResponse(prompt);
+        if (aiResponse) {
+          const comment = createComment(file, chunk, aiResponse);
+```","   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+-      const prompt = createPrompt(file, chunk);
++      const prompt = createPrompt(file, chunk, prDescription);",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490079,,186,f80c0fad0c99d711efbc96a21d239556469b1f70,f3bfd9a657270d8369bc93901faf35232b0fc108,src/main.ts,,"```diff
+@@ -167,7 +183,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff);
++ +  const comments = await analyzeCode(filteredDiff, prDetails.description);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```
+
+I would suggest adding a comment to explain why the `prDetails.description` parameter was added to the `analyzeCode` function. This will help other developers understand the purpose of this change. For example:
+
+```diff
+@@ -167,7 +183,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff);
++ +  // Pass the PR description to analyzeCode for additional context
++ +  const comments = await analyzeCode(filteredDiff, prDetails.description);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```","   });
+ 
+-  const comments = await analyzeCode(filteredDiff);
++  const comments = await analyzeCode(filteredDiff, prDetails.description);",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307887,,8,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,.github/workflows/ai-code-review.yml,,The `permissions` field is set to `write-all` which grants all permissions. It's a good practice to follow the principle of least privilege and only grant the permissions that are necessary for the workflow.,"+    types:
++      - opened
++      - synchronize
++permissions: write-all",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307889,,14,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,.github/workflows/ai-code-review.yml,,You are using `actions/checkout@v3` which is not a valid version. The latest version is `v2`. Please update this.,"+    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307898,,17,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,.github/workflows/ai-code-review.yml,,You are using `freeedcom/ai-codereviewer@main`. It's recommended to use a specific version of the action instead of `main` to avoid unexpected changes.,"+        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307904,,2,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,Avoid using loose equality (`==`) and use strict equality (`===`) instead. This will avoid unexpected type coercion.,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307906,,6,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,Avoid using loose equality (`==`) and use strict equality (`===`) instead. This will avoid unexpected type coercion.,"+    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307909,,13,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,The function `doStuff` assumes that `x` is an array and `y` is a number. This could lead to unexpected behavior if different types are passed. Consider adding type checks.,"+
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307910,,16,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,"Avoid using `console.log` in production code. If you need to log, consider using a logging library that can be toggled for development/production.","+        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307912,,17,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,"Dividing by zero will return `Infinity` in JavaScript, which might not be the expected behavior. Consider adding a check to prevent division by zero.","+    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307913,,19,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,"Returning without a value will return `undefined`. If this is the intended behavior, consider making it explicit for readability.","+    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307914,,23,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,test.js,,The function `doStuff` is being called with `data.value` and `undefined`. This could lead to unexpected behavior if the function does not handle these inputs correctly.,"+}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307919,,8,145ac99349039a247ed5c7dfc50a1af4a5b283e1,890e96a821e3f080bb79b298c7ece61d10fc9e9a,workflow-scripts/slackify-release.workflow.mjs,,"The `console.log('testing...');` statement seems to be a debugging line. If it's not necessary for the final code, consider removing it to keep the code clean.","-console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
+\ No newline at end of file
++console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
++console.log('testing...');",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1343124553,,2,b24c840ada6006cda19334df0d454ef807a35e7d,a3b4090187847b254609d1cc8a13d532395aa546,src/weeknumber.js,,Consider using a more descriptive variable name instead of `firstDayOfYear`. It could be something like `firstDayOfGivenYear` to make it clear that it's the first day of the year of the provided date.,"-    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+-
+-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1343124556,,3,b24c840ada6006cda19334df0d454ef807a35e7d,a3b4090187847b254609d1cc8a13d532395aa546,src/weeknumber.js,,The variable name `pastDaysOfYear` is not very clear. Consider renaming it to something more descriptive like `daysPassedInYear`.,"-
+-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
++  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1343124558,,4,b24c840ada6006cda19334df0d454ef807a35e7d,a3b4090187847b254609d1cc8a13d532395aa546,src/weeknumber.js,,The calculation in the return statement is a bit complex and hard to understand. Consider breaking it down into smaller parts with well-named variables for better readability.,"-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
++  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
++  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636318,,99,6176ca5693891dcd3259d20784c72b3c229e4d37,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9,src/main.ts,,Consider rephrasing the first sentence to: `Your task is to review pull requests.` for better clarity.," 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++  return `Your job is to review pull requests. Instructions:","--- 
+
++++ 
+
+@@ -96,7 +96,7 @@
+
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `Your job is to review pull requests. Instructions:
++  return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636320,,105,6176ca5693891dcd3259d20784c72b3c229e4d37,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9,src/main.ts,,Replace `IMPORTANT:` with `Note:` to maintain consistency with the tone of the instructions.," - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
++- IMPORTANT: NEVER suggest adding comments to the code.","--- 
+
++++ 
+
+@@ -96,7 +96,7 @@
+
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `Your job is to review pull requests. Instructions:
++  return `Your task is to review pull requests. Instructions:
+ - Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636560,,99,a2b67879fef9383df263fc63dcde7be2236b63b7,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9,src/main.ts,,Consider rephrasing the sentence to `Your task is to review the pull requests. Instructions:` for better clarity.," 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++  return `Your task is to review pull requests. Instructions:",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801289249,,20,2c40f0ef3ab247963fd8c5ffb815c4ba5d6ca5f4,145ac99349039a247ed5c7dfc50a1af4a5b283e1,.github/workflows/ai-code-review.yml,,It's a good practice to end a file with a newline to avoid any unexpected behavior. Please add a newline at the end of the file.,"+        uses: freeedcom/ai-codereviewer@main
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801289255,,20,2c40f0ef3ab247963fd8c5ffb815c4ba5d6ca5f4,145ac99349039a247ed5c7dfc50a1af4a5b283e1,.github/workflows/ai-code-review.yml,,"The `OPENAI_API_MODEL` parameter has been removed. If this model specification is not needed anymore, this change is fine. However, if it's still required, please add it back.","+        uses: freeedcom/ai-codereviewer@main
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302484,,2,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,Consider using default parameters to set default values for `x` and `y` instead of checking and assigning inside the function. This will make the code cleaner and more readable.,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302569,,5,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,"Avoid using `var` for variable declaration, use `let` or `const` instead to avoid hoisting and other potential issues.","+    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302571,,7,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,Returning a string message when hitting a certain condition in a loop might not be the best approach. Consider throwing an error or using a different mechanism to abort the operation.,"+
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302574,,13,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,"This line assumes `x` is an array and `y` is a number, which might not always be the case. Consider adding type checks or handling potential errors when `x` and `y` are not the expected types.","+
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302575,,16,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,Avoid using `console.log` for error handling. Consider throwing an error or using a more robust logging system.,"+        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302576,,17,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,"Dividing by zero will result in `Infinity`, which might not be the expected behavior. Consider adding a check to prevent division by zero.","+    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302578,,19,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,"Returning `undefined` implicitly can lead to confusion. If there's no meaningful value to return, consider returning `null` explicitly to indicate the absence of a value.","+    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",
+https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302579,,23,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,145ac99349039a247ed5c7dfc50a1af4a5b283e1,test.js,,Passing wrong data types can lead to unexpected behavior or errors. Consider adding type checks or using TypeScript for static type checking.,"+}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496519,,23,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,4152906beba1249aba9659555dfefde20c91cf13,src/main.ts,,"```diff
+@@ -20,6 +20,7 @@ interface PRDetails {
+-    owner: string;
+-    repo: string;
+-    pull_number: number;
++ +  title: string;
+-    description: string;
+-  }
+-  
+```
+
+I suggest removing the extra `+` before the `title` property:
+
+```diff
+@@ -20,6 +20,7 @@ interface PRDetails {
+    owner: string;
+    repo: string;
+    pull_number: number;
+- +  title: string;
++    title: string;
+    description: string;
+  }
+```","   owner: string;
+   repo: string;
+   pull_number: number;
++  title: string;",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496522,,40,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,4152906beba1249aba9659555dfefde20c91cf13,src/main.ts,,"```diff
+@@ -36,6 +37,7 @@ async function getPRDetails(): Promise<PRDetails> {
+-      owner: repository.owner.login,
+-      repo: repository.name,
+-      pull_number: number,
++ +    title: prResponse.data.title ?? """",
+-      description: prResponse.data.body ?? """",
+-    };
+-  }
+```","     owner: repository.owner.login,
+     repo: repository.name,
+     pull_number: number,
++    title: prResponse.data.title ?? """",",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496525,,68,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,4152906beba1249aba9659555dfefde20c91cf13,src/main.ts,,"```diff
+@@ -57,13 +59,13 @@ async function getDiff(
+  
+  async function analyzeCode(
+    parsedDiff: File[],
+- -  prDescription: string
++ +  prDetails: PRDetails
+  ): Promise<Array<{ body: string; path: string; line: number }>> {
+    const comments: Array<{ body: string; path: string; line: number }> = [];
+  
+    for (const file of parsedDiff) {
+      for (const chunk of file.chunks) {
+- -      const prompt = createPrompt(file, chunk, prDescription);
++ +      const prompt = createPrompt(file, chunk, prDetails);
+        const aiResponse = await getAIResponse(prompt);
+        if (aiResponse) {
+          const comment = createComment(file, chunk, aiResponse);
+```","   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+-      const prompt = createPrompt(file, chunk, prDescription);
++      const prompt = createPrompt(file, chunk, prDetails);",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496527,,190,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,4152906beba1249aba9659555dfefde20c91cf13,src/main.ts,,"```diff
+@@ -183,7 +187,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff, prDetails.description);
++ +  const comments = await analyzeCode(filteredDiff, prDetails);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```
+
+I suggest adding a comment to explain why the change was made from `prDetails.description` to `prDetails`. This will help future developers understand the reasoning behind the change.","   });
+ 
+-  const comments = await analyzeCode(filteredDiff, prDetails.description);
++  const comments = await analyzeCode(filteredDiff, prDetails);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1311552217,,1,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,0a10c53521260befa4ee7621dd02f948b5e2c741,src/weeknumber.js,,"Consider adding a JSDoc comment to describe the function, its parameters, and its return value.","@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1311552221,,2,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,0a10c53521260befa4ee7621dd02f948b5e2c741,src/weeknumber.js,,It's not necessary to create a copy of the date object. You can directly use the date object passed as a parameter.,"@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {
++    // Create a copy of the date object",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1311552223,,13,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,0a10c53521260befa4ee7621dd02f948b5e2c741,src/weeknumber.js,,"The magic number 86400000 is used here, which represents the number of milliseconds in a day. It would be better to create a constant with a meaningful name for this value to improve readability.","+    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
++
++    // Calculate full weeks to nearest Thursday
++    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);",
+https://api.github.com/repos/mrako/week-number/pulls/comments/1311552224,,18,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,0a10c53521260befa4ee7621dd02f948b5e2c741,src/weeknumber.js,,Consider using ES6 export syntax for exporting functions.,"+    return weekNo;
++}
++
++module.exports = { getWeekNumber };",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1153218100,,84,8f38d09f7d6432838c3ffd04d0d4fe34c6c54716,cc0ff7a63b8b85007abfbae0364eb93a70522f74,src/main.ts,,Consider rephrasing to `Avoid recommending the addition of comments to the code.` for better clarity.,"   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Refrain from suggesting to comment on the code.
++- Do not recommend adding comments to the code.",
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1155327110,,67,1e217661a4f9393e302de28009f42683be42fd09,32f7a8317cc7ad6064db526bde25a956f6c96309,src/main.ts,,Consider adding a comment above this line to explain why deleted files are being ignored in the review process.,"   const comments: Array<{ body: string; path: string; line: number }> = [];
+ 
+   for (const file of parsedDiff) {
++    if (file.to === ""/dev/null"") continue; // Ignore deleted files","--- 
+
++++ 
+
+@@ -82,7 +82,7 @@
+
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Refrain from suggesting to comment on the code.
++- Do not recommend adding comments to the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+ - Use the given description only for the overall context and only comment the code."
+https://api.github.com/repos/mrako/week-number/pulls/comments/1389361588,,8,ad443875563a2588a0cca28b721855098c004e1e,61055146808fe05fcb203d1dabd00f0cb73761f3,src/weeknumber.js,,Please maintain consistent spacing. There should be a space before the closing brace.," }
+ 
+-module.exports = { getWeekNumber };
++module.exports = { getWeekNumber};",

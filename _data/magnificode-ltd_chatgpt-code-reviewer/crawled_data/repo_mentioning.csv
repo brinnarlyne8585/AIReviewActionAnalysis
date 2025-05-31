@@ -1,0 +1,5 @@
+Repository,Count,File Paths
+matteobaccan/VUEdashboard,1,.github/workflows/chatgpt-code-reviewer.yml
+wbat/wbat-terraform,1,.github/workflows/chatgpt_ci.yml
+untillpro/qs,1,.github/workflows/gpt-code-review1.yml
+doooss/mono-tailwind-template,1,.github/workflows/code-reviewer.yml

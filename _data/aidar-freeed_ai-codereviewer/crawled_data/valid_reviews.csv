@@ -1,0 +1,2860 @@
+Body,Comment_URL,Commit_id,Created_At,Diff_hunk,Diff_path,Original_Commit_id,Updated_At,Start_Line,Original_Start_Line,Start_Side,Line,Original_Line,Side,Original_Position,Position,Subject_Type,Affiliated_PR_URL,Repository,project,Merge_Commit_SHA
+"Consider pinning the version of `ai-codereviewer` to a specific release or commit instead of using a branch name, to ensure stability and reproducibility of the workflow.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858427,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@comment-individual-lines-and-do-not-give-positive-comments",.github/workflows/code_review.yml,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,,15,RIGHT,5,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+Consider removing the `console.log` statements used for debugging before merging the code.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858429,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -66,46 +66,57 @@ async function analyzeCode(
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,,67,RIGHT,2,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+Consider removing the `console.log` statements used for debugging before merging the code.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858431,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -66,46 +66,57 @@ async function analyzeCode(
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
++      console.log(""PROMPT:"");
++      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+-        const comment = createComment(file, chunk, aiResponse);
+-        if (comment) {
+-          comments.push(comment);
++        const newComments = createComment(file, chunk, aiResponse);
++        if (newComments) {
++          comments.push(...newComments);
+         }
+       }
+     }
+   }
++  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,79.0,79,RIGHT,20,14.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"It's better to use a more specific return type for the `getAIResponse` function. Instead of `Promise<Array<{ lineNumber: string; reviewComment: string; }> | null>`, consider using `Promise<Array<{ lineNumber: number; reviewComment: string; }> | null>` since line numbers are integers.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858432,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -66,46 +66,57 @@ async function analyzeCode(
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+       const prompt = createPrompt(file, chunk, prDetails);
++      console.log(""PROMPT:"");
++      console.log(prompt);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+-        const comment = createComment(file, chunk, aiResponse);
+-        if (comment) {
+-          comments.push(comment);
++        const newComments = createComment(file, chunk, aiResponse);
++        if (newComments) {
++          comments.push(...newComments);
+         }
+       }
+     }
+   }
++  console.log(""COMMENTS:"" + comments.length);
+   return comments;
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `
+-Review the following code changes in the file ""${
++  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Write the comment in GitHub markdown.
++- Don't give positive comments.
++- Use the given description only for the overall context and only comment the code.
++- Calculate the line number from \`@@ -WW,XX +YY,ZZ @@\` using following formula: \`YY + L = line_number\`, where \`YY\` is the starting line number from the diff hunk, and \`L\` is the number of lines (including unchanged lines) from the starting line until the line you want to comment on. Pay special attention to this instruction and ensure that you count lines accurately.
++  
++Review the following code diff in the file ""${
+     file.to
+   }"" and take the pull request title and description into account when writing the response.
+   
+-Title: ${prDetails.title}
+-
+-Description:
++Pull request title: ${prDetails.title}
++Pull request description:
+ 
+ ---
+ ${prDetails.description}
+ ---
+ 
+-Please provide comments and suggestions ONLY if there is something to improve, write the answer in Github markdown. If the code looks good, DO NOT return any text (leave the response completely empty)
++Git diff to review:
+ ",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,101.0,101,RIGHT,48,42.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+Avoid using `console.log` for debugging purposes in production code. Consider using a proper logging library or remove the debugging statements.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858435,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -122,7 +133,10 @@ async function getAIResponse(prompt: string): Promise<string | null> {
+       ],
+     });
+ 
+-    return response.data.choices[0].message?.content?.trim() || null;
++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,133.0,133,RIGHT,77,71.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+Consider renaming `aiResponses` to `aiReviewComments` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858436,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:10+00:00,"@@ -132,20 +146,21 @@ async function getAIResponse(prompt: string): Promise<string | null> {
+ function createComment(
+   file: File,
+   chunk: Chunk,
+-  aiResponse: string
+-): { body: string; path: string; line: number } | null {
+-  const lastAddChange = [...chunk.changes]
+-    .reverse()
+-    .find((c) => c.type === ""add"");
+-  if (lastAddChange && file.to) {
++  aiResponses: Array<{
++    lineNumber: string;
++    reviewComment: string;",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:11Z,,,,146.0,146,RIGHT,96,88.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"Instead of using `flatMap`, you can use `map` and then `filter` to remove empty elements. This would make the code more readable.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858439,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:11+00:00,"@@ -132,20 +146,21 @@ async function getAIResponse(prompt: string): Promise<string | null> {
+ function createComment(
+   file: File,
+   chunk: Chunk,
+-  aiResponse: string
+-): { body: string; path: string; line: number } | null {
+-  const lastAddChange = [...chunk.changes]
+-    .reverse()
+-    .find((c) => c.type === ""add"");
+-  if (lastAddChange && file.to) {
++  aiResponses: Array<{
++    lineNumber: string;
++    reviewComment: string;
++  }>
++): Array<{ body: string; path: string; line: number }> {",src/main.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:12Z,,,,148.0,148,RIGHT,98,90.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+The function name `divideBySeven` does not match its implementation. Consider renaming it to better reflect its purpose.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858445,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:11+00:00,"@@ -0,0 +1,8 @@
++const divideBySeven = () => {",src/sketchy-code.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:12Z,,,,,1,RIGHT,1,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"The `code` variable is assigned a string value, but it is being multiplied by a number in the next line. This will result in `NaN`. Consider using a numeric value instead.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858448,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:11+00:00,"@@ -0,0 +1,8 @@
++const divideBySeven = () => {
++  const code = ""code"";
++  return code * 5;",src/sketchy-code.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:12Z,,,,,3,RIGHT,3,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"The `divideBySeven` function does not accept any arguments, but it is being called with an argument `95`. Consider updating the function to accept an argument if needed.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858451,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:47:11+00:00,"@@ -0,0 +1,8 @@
++const divideBySeven = () => {
++  const code = ""code"";
++  return code * 5;
++};
++
++const result = divideBySeven(95);",src/sketchy-code.ts,ad866ee7f308986b165f3ef92dc5a9460e170f10,2023-03-27T22:47:12Z,,,,,6,RIGHT,6,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"I suggest renaming the `newComments` variable to `generatedComments` for better clarity:
+
+```diff
+- const newComments = createComment(file, chunk, aiResponse);
++ const generatedComments = createComment(file, chunk, aiResponse);
+- if (newComments) {
++ if (generatedComments) {
+-   comments.push(...newComments);
++   comments.push(...generatedComments);
+  }
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862636,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:54:47+00:00,"@@ -68,9 +68,9 @@ async function analyzeCode(
+       const prompt = createPrompt(file, chunk, prDetails);
+       const aiResponse = await getAIResponse(prompt);
+       if (aiResponse) {
+-        const comment = createComment(file, chunk, aiResponse);
+-        if (comment) {
+-          comments.push(comment);
++        const newComments = createComment(file, chunk, aiResponse);
++        if (newComments) {
++          comments.push(...newComments);",src/main.ts,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27T22:54:48Z,,,,73.0,73,RIGHT,9,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"- On line 97, consider changing the `max_tokens` value back to `400` if the increased value of `700` does not provide a significant improvement in the quality of the generated comments. This would help in reducing the response time and resource usage.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862637,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:54:48+00:00,"@@ -79,33 +79,41 @@ async function analyzeCode(
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `
+-Review the following code changes in the file ""${
++  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
++- Write the comment in GitHub markdown.
++- Don't give positive comments.
++- Use the given description only for the overall context and only comment the code.
++- Calculate the line number from \`@@ -WW,XX +YY,ZZ @@\` using following formula: \`YY + L = line_number\`, where \`YY\` is the starting line number from the diff hunk, and \`L\` is the number of lines (including unchanged lines) from the starting line until the line you want to comment on. Pay special attention to this instruction and ensure that you count lines accurately.
++  
++Review the following code diff in the file ""${
+     file.to
+   }"" and take the pull request title and description into account when writing the response.
+   
+-Title: ${prDetails.title}
+-
+-Description:
++Pull request title: ${prDetails.title}
++Pull request description:
+ 
+ ---
+ ${prDetails.description}
+ ---
+ 
+-Please provide comments and suggestions ONLY if there is something to improve, write the answer in Github markdown. If the code looks good, DO NOT return any text (leave the response completely empty)
++Git diff to review:
+ 
++\`\`\`diff
+ ${chunk.content}
+-${chunk.changes
+-  .map((c) => (c.type === ""add"" ? ""+"" : ""-"") + "" "" + c.content)
+-  .join(""\n"")}
++${chunk.changes.map((c) => c.content).join(""\n"")}
++\`\`\`
+ `;
+ }
+ 
+-async function getAIResponse(prompt: string): Promise<string | null> {
++async function getAIResponse(prompt: string): Promise<Array<{
++  lineNumber: string;
++  reviewComment: string;
++}> | null> {
+   const queryConfig = {
+     model: ""gpt-4"",
+     temperature: 0.2,
+-    max_tokens: 400,
++    max_tokens: 700,",src/main.ts,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27T22:54:48Z,,,,116.0,116,RIGHT,62,62.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"```suggestion
++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
++    return JSON.parse(res);
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862640,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:54:48+00:00,"@@ -122,7 +130,8 @@ async function getAIResponse(prompt: string): Promise<string | null> {
+       ],
+     });
+ 
+-    return response.data.choices[0].message?.content?.trim() || null;
++    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
++    return JSON.parse(res);",src/main.ts,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27T22:54:48Z,,,,134.0,134,RIGHT,72,72.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+"I have a suggestion to improve the code readability:
+
+Instead of using `flatMap`, you can use `map` and then `filter` to remove the empty arrays. This makes the code more readable and easier to understand.
+
+```typescript
+return aiResponses
+  .map((aiResponse) => {
+    if (!file.to) {
+      return null;
+    }
+    return {
+      body: aiResponse.reviewComment,
+      path: file.to,
+      line: Number(aiResponse.lineNumber),
+    };
+  })
+  .filter((response) => response !== null);
+```
+
+This way, the code is more explicit about its intent to filter out the `null` values.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149862641,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27 22:54:48+00:00,"@@ -132,20 +141,21 @@ async function getAIResponse(prompt: string): Promise<string | null> {
+ function createComment(
+   file: File,
+   chunk: Chunk,
+-  aiResponse: string
+-): { body: string; path: string; line: number } | null {
+-  const lastAddChange = [...chunk.changes]
+-    .reverse()
+-    .find((c) => c.type === ""add"");
+-  if (lastAddChange && file.to) {
++  aiResponses: Array<{
++    lineNumber: string;
++    reviewComment: string;
++  }>
++): Array<{ body: string; path: string; line: number }> {
++  return aiResponses.flatMap((aiResponse) => {
++    if (!file.to) {
++      return [];
++    }
+     return {
+-      body: aiResponse,
++      body: aiResponse.reviewComment,
+       path: file.to,
+-      // @ts-expect-error below properties exists on AddChange
+-      line: lastAddChange.ln || lastAddChange.ln1,
++      line: Number(aiResponse.lineNumber),
+     };
+-  }
+-  return null;
++  });",src/main.ts,7a06f49c682db6cc7f11f290b33b389d3219610a,2023-03-27T22:54:48Z,,,,158.0,158,RIGHT,105,105.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/4,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,ea61d39797252e53528289d79a466e863c2f3c9b
+Consider adding error handling for the API call in case it fails or returns an unexpected response.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420675,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -79,12 +79,43 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getChangedFiles(
++  owner: string,
++  repo: string,
++  baseSha: string,
++  headSha: string
++): Promise<string | null> {
++  const response = await octokit.repos.compareCommits({",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:22Z,,,,,88,RIGHT,10,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"Similar to the previous API call, consider adding error handling for this API call as well.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420676,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -79,12 +79,43 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getChangedFiles(
++  owner: string,
++  repo: string,
++  baseSha: string,
++  headSha: string
++): Promise<string | null> {
++  const response = await octokit.repos.compareCommits({
++    owner,
++    repo,
++    base: baseSha,
++    head: headSha,
++  });
++  return response.data.diff_url;
++}
++
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:22Z,,,,87.0,102,RIGHT,24,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a comment to explain the purpose of checking the `GITHUB_EVENT_NAME`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420677,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:22Z,,,,,221,RIGHT,62,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a comment to explain the purpose of this `else if` block and how it handles the `push` event.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420680,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const diffUrl = await getChangedFiles(",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:23Z,,,,,228,RIGHT,69,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a comment to explain the purpose of this `else` block and why the event is unsupported.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420681,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const diffUrl = await getChangedFiles(
++      prDetails.owner,
++      prDetails.repo,
++      baseSha,
++      headSha
++    );
++    if (diffUrl) {
++      const diffResponse = await octokit.request({ url: diffUrl });
++      diff = diffResponse.data;
++    } else {
++      diff = null;
++    }
++  } else {",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:23Z,,,,225.0,240,RIGHT,81,69.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using a more descriptive function name instead of `main()` to better indicate the purpose of the function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420682,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:09:22+00:00,"@@ -210,7 +269,9 @@ async function createReviewComment(
+       comments
+     );
+   }
+-})().catch((error) => {
++}
++
++main().catch((error) => {",src/main.ts,dbf427f89f480fa2efb400bd0bc3df974bab6f87,2023-04-22T14:09:23Z,,,,259.0,274,RIGHT,103,91.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421182,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:41+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",.github/workflows/code_review.yml,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a type definition for the return value of `getChangedFiles` function for better type safety and readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421183,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:41+00:00,"@@ -79,12 +79,43 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getChangedFiles(
++  owner: string,
++  repo: string,
++  baseSha: string,
++  headSha: string
++): Promise<string | null> {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,,87,RIGHT,9,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a type definition for the return value of `getBaseAndHeadShas` function for better type safety and readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421184,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:41+00:00,"@@ -79,12 +79,43 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getChangedFiles(
++  owner: string,
++  repo: string,
++  baseSha: string,
++  headSha: string
++): Promise<string | null> {
++  const response = await octokit.repos.compareCommits({
++    owner,
++    repo,
++    base: baseSha,
++    head: headSha,
++  });
++  return response.data.diff_url;
++}
++
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,86.0,101,RIGHT,23,8.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding an empty line before this `if` statement for better readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421185,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:41+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,,221,RIGHT,62,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding an empty line before this `else if` statement for better readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421186,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:42+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,,227,RIGHT,68,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding an empty line before this `else` statement for better readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421187,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:42+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const diffUrl = await getChangedFiles(
++      prDetails.owner,
++      prDetails.repo,
++      baseSha,
++      headSha
++    );
++    if (diffUrl) {
++      const diffResponse = await octokit.request({ url: diffUrl });
++      diff = diffResponse.data;
++    } else {
++      diff = null;
++    }
++  } else {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,225.0,240,RIGHT,81,69.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding an empty line before this constant declaration for better readability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421188,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:42+00:00,"@@ -177,19 +208,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
++  const { baseSha, headSha } = await getBaseAndHeadShas(
+     prDetails.owner,
+     prDetails.repo,
+     prDetails.pull_number
+   );
++
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const diffUrl = await getChangedFiles(
++      prDetails.owner,
++      prDetails.repo,
++      baseSha,
++      headSha
++    );
++    if (diffUrl) {
++      const diffResponse = await octokit.request({ url: diffUrl });
++      diff = diffResponse.data;
++    } else {
++      diff = null;
++    }
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
++    return;
++  }
++
+   if (!diff) {
+     console.log(""No diff found"");
+     return;
+   }
+ 
+   const parsedDiff = parseDiff(diff);
++
+   const excludePatterns = core",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,237.0,252,RIGHT,93,81.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using a more descriptive function name instead of `main` to better indicate its purpose.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421190,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:13:42+00:00,"@@ -210,7 +269,9 @@ async function createReviewComment(
+       comments
+     );
+   }
+-})().catch((error) => {
++}
++
++main().catch((error) => {",src/main.ts,3413a8e8a082b170aa5d684ec7d4842a7951df68,2023-04-22T14:13:42Z,,,,259.0,274,RIGHT,103,91.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425072,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:12+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",.github/workflows/code_review.yml,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a comment to briefly explain the purpose of the `getBaseAndHeadShas` function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425074,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,82.0,82,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Replace `85 --` with `85 -` to maintain consistency in the list formatting.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425075,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({
++    owner,
++    repo,
++    pull_number,
++  });
++  return {
++    baseSha: prResponse.data.base.sha,
++    headSha: prResponse.data.head.sha,
++  };
++}
++
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,100.0,100,RIGHT,22,22.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Replace `87 --` with `87 -` to maintain consistency in the list formatting.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425076,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({
++    owner,
++    repo,
++    pull_number,
++  });
++  return {
++    baseSha: prResponse.data.base.sha,
++    headSha: prResponse.data.head.sha,
++  };
++}
++
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Do not recommend adding comments to the code.
++- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+-- Write the comment in GitHub markdown.
++- Write the comment in GitHub Markdown format.",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,103.0,103,RIGHT,27,27.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding an `else` block to handle cases when the `GITHUB_EVENT_NAME` is not `pull_request` or `push`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425077,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -177,19 +193,51 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,,200,RIGHT,45,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Use `fs.readFileSync` instead of `readFileSync` to avoid confusion with the imported `fs` module.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425078,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -177,19 +193,51 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,,208,RIGHT,53,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+It is recommended to trim the input values after splitting to avoid issues with leading or trailing spaces.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425079,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -177,19 +193,51 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
++    return;
++  }
++
+   if (!diff) {
+     console.log(""No diff found"");
+     return;
+   }
+ 
+   const parsedDiff = parseDiff(diff);
++
+   const excludePatterns = core",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,237.0,241,RIGHT,86,81.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using a more descriptive function name instead of `main`. This will improve code readability and make it easier to understand the purpose of the function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425080,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:51:13+00:00,"@@ -210,7 +258,9 @@ async function createReviewComment(
+       comments
+     );
+   }
+-})().catch((error) => {
++}
++
++main().catch((error) => {",src/main.ts,a6762eb22361f5d5978299a1fd939390905403ab,2023-04-22T14:51:14Z,,,,259.0,263,RIGHT,96,91.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+There is a typo in the branch name. Change `reveiw-changed-files-only` to `review-changed-files-only`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425501,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:12+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",.github/workflows/code_review.yml,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding a comment to briefly explain the purpose of the `getBaseAndHeadShas` function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425502,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,82.0,82,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Replace `Do not give positive comments or compliments.` with `Avoid giving positive comments or compliments.` for a more polite tone.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425503,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({
++    owner,
++    repo,
++    pull_number,
++  });
++  return {
++    baseSha: prResponse.data.base.sha,
++    headSha: prResponse.data.head.sha,
++  };
++}
++
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,99.0,99,RIGHT,21,21.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425504,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,199,RIGHT,44,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425505,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,200,RIGHT,45,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425506,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,202,RIGHT,47,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425507,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,209,RIGHT,54,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425508,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:13+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,213,RIGHT,58,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.info()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425509,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:14+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,,230,RIGHT,75,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.warning()` instead of `console.log()` for better integration with GitHub Actions and to indicate a warning.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425510,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:14+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,226.0,233,RIGHT,78,70.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using a more descriptive function name instead of `main` to better indicate the purpose of the function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425511,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 14:55:14+00:00,"@@ -210,7 +261,9 @@ async function createReviewComment(
+       comments
+     );
+   }
+-})().catch((error) => {
++}
++
++main().catch((error) => {",src/main.ts,97bdebd58573233576537253b7e2c3870acda9b1,2023-04-22T14:55:14Z,,,,259.0,266,RIGHT,99,91.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"There is a typo in the branch name, change `reveiw-changed-files-only` to `review-changed-files-only`.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426189,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:41+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@reveiw-changed-files-only",.github/workflows/code_review.yml,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider updating the comment to clarify that it refers to not recommending adding comments to the code.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426193,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:41+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,85.0,85,RIGHT,7,7.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Update the comment to consistently use 'GitHub Markdown format' instead of 'GitHub markdown'.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426196,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:41+00:00,"@@ -79,12 +79,28 @@ async function analyzeCode(
+   return comments;
+ }
+ 
++async function getBaseAndHeadShas(
++  owner: string,
++  repo: string,
++  pull_number: number
++): Promise<{ baseSha: string; headSha: string }> {
++  const prResponse = await octokit.pulls.get({",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,87.0,87,RIGHT,9,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426198,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:41+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,,200,RIGHT,45,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426201,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,,201,RIGHT,46,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426204,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:43Z,,,,,202,RIGHT,47,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426207,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,203,RIGHT,48,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426209,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,204,RIGHT,49,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426210,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,211,RIGHT,56,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426212,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,212,RIGHT,57,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426214,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:42+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,215,RIGHT,60,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426216,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,216,RIGHT,61,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426217,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,232,RIGHT,77,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426219,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,,233,RIGHT,78,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426220,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);
++  } else {",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,225.0,234,RIGHT,79,69.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using `core.debug()` instead of `console.log()` for better integration with GitHub Actions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426222,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -177,19 +193,56 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
+-  );
++  let diff: string | null;
++  console.log(""Running the action..."");
++  console.log(""Event name:"", process.env.GITHUB_EVENT_NAME);
++  console.log(""PR event path:"");
++  console.log(process.env.GITHUB_EVENT_PATH);
++  if (process.env.GITHUB_EVENT_NAME === ""pull_request"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (process.env.GITHUB_EVENT_NAME === ""push"") {
++    console.log(""Push event"");
++    const pushEvent = JSON.parse(
++      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
++    );
++    console.log(""Push event:"");
++    console.log(pushEvent);
++    const newBaseSha = pushEvent.before;
++    const newHeadSha = pushEvent.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++    console.log(""Diff:"");
++    console.log(diff);
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,226.0,235,RIGHT,80,70.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider using a more descriptive function name instead of `main` to better convey the purpose of the function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426224,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:01:43+00:00,"@@ -210,7 +263,9 @@ async function createReviewComment(
+       comments
+     );
+   }
+-})().catch((error) => {
++}
++
++main().catch((error) => {",src/main.ts,29cd406230ccb4a2195f87945e1c6321aedf7293,2023-04-22T15:01:44Z,,,,259.0,268,RIGHT,101,91.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Consider adding error handling for the case when `process.env.GITHUB_EVENT_PATH` is not available or the file cannot be read.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426411,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:03:23+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  console.log(""Running the action..."");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")",src/main.ts,6454621f447453823a61c1c3cbebf87559342edb,2023-04-22T15:03:24Z,,,,200.0,201,RIGHT,45,44.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Replace the hardcoded string `'opened'` with a constant variable for better maintainability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426413,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:03:23+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  console.log(""Running the action..."");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++  console.log(""Event data:"");
++  console.log(eventData);
++  if (eventData.action === ""opened"") {",src/main.ts,6454621f447453823a61c1c3cbebf87559342edb,2023-04-22T15:03:24Z,,,,203.0,205,RIGHT,49,47.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Replace the hardcoded string `'synchronize'` with a constant variable for better maintainability.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426414,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:03:24+00:00,"@@ -177,19 +193,54 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  console.log(""Running the action..."");
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++  console.log(""Event data:"");
++  console.log(eventData);
++  if (eventData.action === ""opened"") {
++    console.log(""Pull request event"");
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (eventData.action === ""synchronize"") {
++    console.log(""Push event"");",src/main.ts,6454621f447453823a61c1c3cbebf87559342edb,2023-04-22T15:03:24Z,,,,,213,RIGHT,57,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"Consider removing the commented out `console.log` statement, as it is not needed in the production code.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426810,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:07:25+00:00,"@@ -177,19 +193,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(",src/main.ts,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22T15:07:26Z,,,,199.0,199,RIGHT,43,43.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+Remove the empty line to maintain consistency in the code formatting.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426811,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:07:26+00:00,"@@ -177,19 +193,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++
++  if (eventData.action === ""opened"") {",src/main.ts,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22T15:07:26Z,,,,203.0,203,RIGHT,47,47.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"Consider removing the commented out `console.log` statements, as they are not needed in the production code.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426812,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:07:26+00:00,"@@ -177,19 +193,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++
++  if (eventData.action === ""opened"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({",src/main.ts,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22T15:07:26Z,,,,213.0,213,RIGHT,57,57.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"Consider removing the commented-out `console.log` statements, as they are not necessary for the final code.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426813,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22 15:07:26+00:00,"@@ -177,19 +193,47 @@ async function createReviewComment(
+   });
+ }
+ 
+-(async function main() {
++async function main() {
+   const prDetails = await getPRDetails();
+-  const diff = await getDiff(
+-    prDetails.owner,
+-    prDetails.repo,
+-    prDetails.pull_number
++  let diff: string | null;
++  const eventData = JSON.parse(
++    readFileSync(process.env.GITHUB_EVENT_PATH ?? """", ""utf8"")
+   );
++
++  if (eventData.action === ""opened"") {
++    diff = await getDiff(
++      prDetails.owner,
++      prDetails.repo,
++      prDetails.pull_number
++    );
++  } else if (eventData.action === ""synchronize"") {
++    const newBaseSha = eventData.before;
++    const newHeadSha = eventData.after;
++
++    const response = await octokit.repos.compareCommits({
++      owner: prDetails.owner,
++      repo: prDetails.repo,
++      base: newBaseSha,
++      head: newHeadSha,
++    });
++
++    diff = response.data.diff_url
++      ? await octokit
++          .request({ url: response.data.diff_url })
++          .then((res) => res.data)
++      : null;
++  } else {
++    console.log(""Unsupported event:"", process.env.GITHUB_EVENT_NAME);
++    return;
++  }
++
+   if (!diff) {",src/main.ts,cc415382f70865113de0cd3d9fb2e5aaf68a3f6b,2023-04-22T15:07:26Z,,,,230.0,230,RIGHT,74,74.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/10,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,07b4e53660f659896135241f708e9811a19cb8e6
+"Consider using a more descriptive variable name for the background color, such as `backgroundBlue`, to improve readability.",https://api.github.com/repos/mrako/week-number/pulls/comments/1238264464,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -9,10 +9,10 @@ body {
+   justify-content: center;
+   align-items: center;
+ 
+-  background: lightgray;
++  background: steelblue;",src/style.css,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,12.0,12,RIGHT,5,5.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+"Similarly, consider using a more descriptive variable name for the text color, such as `textColorAzure`, to improve readability.",https://api.github.com/repos/mrako/week-number/pulls/comments/1238264471,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -9,10 +9,10 @@ body {
+   justify-content: center;
+   align-items: center;
+ 
+-  background: lightgray;
++  background: steelblue;
+ }
+ 
+ h1 {
+-  color: slategray;
++  color: azure;",src/style.css,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,16.0,16,RIGHT,10,10.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+Consider creating a new variable for the modified date instead of modifying the input parameter directly.,https://api.github.com/repos/mrako/week-number/pulls/comments/1238264473,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -1,6 +1,9 @@
+ function getWeekNumber(date = new Date()) {
+-  const onejan = new Date(date.getFullYear(), 0, 1);
+-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
++  date.setHours(0, 0, 0, 0);",src/weeknumber.js,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,2.0,2,RIGHT,4,4.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+"Use a more descriptive variable name instead of `startOfYear`, such as `firstWeekStart`.",https://api.github.com/repos/mrako/week-number/pulls/comments/1238264476,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -1,6 +1,9 @@
+ function getWeekNumber(date = new Date()) {
+-  const onejan = new Date(date.getFullYear(), 0, 1);
+-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
++  date.setHours(0, 0, 0, 0);
++  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
++  const startOfYear = new Date(date.getFullYear(), 0, 4);",src/weeknumber.js,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,4.0,4,RIGHT,6,6.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+Consider breaking down the calculation of `weekNumber` into smaller steps for better readability.,https://api.github.com/repos/mrako/week-number/pulls/comments/1238264477,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -1,6 +1,9 @@
+ function getWeekNumber(date = new Date()) {
+-  const onejan = new Date(date.getFullYear(), 0, 1);
+-  return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
++  date.setHours(0, 0, 0, 0);
++  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
++  const startOfYear = new Date(date.getFullYear(), 0, 4);
++  const weekNumber = 1 + Math.round(((date - startOfYear) / 86400000 - 3 + (startOfYear.getDay() + 6) % 7) / 7);",src/weeknumber.js,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,5.0,5,RIGHT,7,7.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+"Consider using a more descriptive test case name, such as 'should return week 25 for June 25th, 2023'.",https://api.github.com/repos/mrako/week-number/pulls/comments/1238264481,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22 09:31:52+00:00,"@@ -21,4 +21,9 @@ describe('getWeekNumber', () => {
+     const date = new Date(""2023-01-02T00:00:00.000"");
+     expect(weeknumber.getWeekNumber(date)).toEqual(1);
+   });
++
++  it('should return week 25 for midsummer sunday on 2023', () => {",test/weeknumber.test.js,9b342f545735a95053e27e3a49bd7bb0e0d7307b,2023-06-22T09:31:53Z,,,,25.0,25,RIGHT,5,5.0,line,https://api.github.com/repos/mrako/week-number/pulls/31,mrako/week-number,mrako/week-number,781d67e10ce6378c00070e92620645ff0748fecf
+"The removal of the test print statement is fine, but ensure that any necessary debugging or testing code is not inadvertently removed. Consider keeping a placeholder or a comment indicating where testing code might be added back in the future.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790494,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:40+00:00,"@@ -28,16 +28,6 @@
+     ""import numpy as np""
+    ]
+   },
+-  {
+-   ""cell_type"": ""code"",
+-   ""execution_count"": null,
+-   ""id"": ""fe086eca-23ad-4543-8bd4-5405bf06b560"",
+-   ""metadata"": {},
+-   ""outputs"": [],
+-   ""source"": [
+-    ""print(\""this is a test\"")""
+-   ]
+-  },
+   {",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,31.0,31,RIGHT,14,14.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+"Using `str.replace` without specifying a regex pattern may lead to unexpected behavior if the input data contains other commas that should not be removed. Consider using `str.replace(',', '', regex=False)` to ensure only the intended commas are removed.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790498,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:40+00:00,"@@ -110,6 +128,19 @@
+     ""df[\""stops_str\""] = df[\""stops\""].apply(lambda x: x if isinstance(x, str) else \""No\"")""
+    ]
+   },
++  {
++   ""cell_type"": ""code"",
++   ""execution_count"": null,
++   ""id"": ""6a9a4595"",
++   ""metadata"": {},
++   ""outputs"": [],
++   ""source"": [
++    ""# In current processing, if the price is like 'CA$ 1,200', the algorithm will split this\n"",
++    ""# into digits and characters, so we'll get 'CA$,' and '1200'.\n"",
++    ""# This removes the unnecessary comma.\n"",
++    ""df[\""price_currency\""] = df[\""price_currency\""].str.replace(\"",\"", \""\"")""",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,,141,RIGHT,77,,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+The comment `# <extra></extra> is used to omit the trace name.` is unnecessary and should be removed as it does not contribute to the understanding of the code.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790499,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:40+00:00,"@@ -319,28 +350,52 @@
+   {
+    ""cell_type"": ""code"",
+    ""execution_count"": null,
+-   ""id"": ""7b994d47-cb96-4518-a213-c13fcf045b75"",
++   ""id"": ""a98fd73e"",
+    ""metadata"": {},
+    ""outputs"": [],
+    ""source"": [
+-    ""px.scatter(\n"",
+-    ""    df_filtered,\n"",
+-    ""    y=\""price_unit\"",\n"",
+-    ""    x=\""flight_duration_hours\"",\n"",
+-    ""    color=\""direct_flight\"",\n"",
+-    ""    marginal_y=\""violin\"",\n"",
+-    ""    marginal_x=\""box\"",\n"",
+-    "")""
++    ""custom_data_columns = [\n"",
++    ""    \""connection\"",\n"",
++    ""    \""departure_dt\"",\n"",
++    ""    \""landing\"",\n"",
++    ""    \""duration\"",\n"",
++    ""    \""stops_str\"",\n"",
++    ""    \""price_currency\"",\n"",
++    ""    \""price_unit\"",\n"",
++    ""]\n"",
++    ""\n"",
++    ""# <extra></extra> is used to omit the trace name.\n"",",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,367.0,367,RIGHT,110,110.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+"The assignment of `custom_data` should ensure that `custom_data_columns` is defined and contains the expected data structure. If it's not defined earlier in the code, this will lead to runtime errors.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790501,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:40+00:00,"@@ -356,25 +411,9 @@
+     ""    y=\""price_unit\"",\n"",
+     ""    color=\""direct_flight\"",\n"",
+     ""    opacity=0.5,\n"",
+-    ""    custom_data=[\n"",
+-    ""        \""connection\"",\n"",
+-    ""        \""departure_dt\"",\n"",
+-    ""        \""landing\"",\n"",
+-    ""        \""duration\"",\n"",
+-    ""        \""stops_str\"",\n"",
+-    ""        \""price_currency\"",\n"",
+-    ""        \""price_unit\"",\n"",
+-    ""    ],\n"",
++    ""    custom_data=custom_data_columns,\n"",",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,414.0,414,RIGHT,160,160.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+The TODO comment should be more specific about the implementation details or the approach to be taken for the visualisation. This will help in understanding the next steps needed for this feature.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790504,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:40+00:00,"@@ -356,25 +411,9 @@
+     ""    y=\""price_unit\"",\n"",
+     ""    color=\""direct_flight\"",\n"",
+     ""    opacity=0.5,\n"",
+-    ""    custom_data=[\n"",
+-    ""        \""connection\"",\n"",
+-    ""        \""departure_dt\"",\n"",
+-    ""        \""landing\"",\n"",
+-    ""        \""duration\"",\n"",
+-    ""        \""stops_str\"",\n"",
+-    ""        \""price_currency\"",\n"",
+-    ""        \""price_unit\"",\n"",
+-    ""    ],\n"",
++    ""    custom_data=custom_data_columns,\n"",
+     "")\n"",
+     ""\n"",
+-    ""hovertemplate = \""\""\""\n"",
+-    ""<b>%{customdata[0]}</b><br>\n"",
+-    ""Departure: %{customdata[1]}<br>\n"",
+-    ""Landing: %{customdata[2]}<br>\n"",
+-    ""Duration: %{customdata[3]}<br>\n"",
+-    ""Stops: %{customdata[4]}<br>\n"",
+-    ""Price: %{customdata[5]} %{customdata[6]}\n"",
+-    ""\""\""\""\n"",
+     ""\n"",
+     ""# TODO: add some visualisation for how good the price/duration is relative to others\n"",",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,418.0,418,RIGHT,172,172.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+"The removal of the code cell seems abrupt. If this code is no longer needed, consider providing context in the commit message or PR description to clarify why it was removed.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790506,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:41+00:00,"@@ -319,28 +350,52 @@
+   {
+    ""cell_type"": ""code"",
+    ""execution_count"": null,
+-   ""id"": ""7b994d47-cb96-4518-a213-c13fcf045b75"",
++   ""id"": ""a98fd73e"",
+    ""metadata"": {},
+    ""outputs"": [],
+    ""source"": [
+-    ""px.scatter(\n"",
+-    ""    df_filtered,\n"",
+-    ""    y=\""price_unit\"",\n"",
+-    ""    x=\""flight_duration_hours\"",\n"",
+-    ""    color=\""direct_flight\"",\n"",
+-    ""    marginal_y=\""violin\"",\n"",
+-    ""    marginal_x=\""box\"",\n"",
+-    "")""
++    ""custom_data_columns = [\n"",
++    ""    \""connection\"",\n"",
++    ""    \""departure_dt\"",\n"",
++    ""    \""landing\"",\n"",
++    ""    \""duration\"",\n"",
++    ""    \""stops_str\"",\n"",
++    ""    \""price_currency\"",\n"",
++    ""    \""price_unit\"",\n"",
++    ""]\n"",
++    ""\n"",
++    ""# <extra></extra> is used to omit the trace name.\n"",
++    ""hovertemplate = \""\""\""\n"",
++    ""<b>%{customdata[0]}</b><br>\n"",
++    ""Departure: %{customdata[1]}<br>\n"",
++    ""Landing: %{customdata[2]}<br>\n"",
++    ""Duration: %{customdata[3]}<br>\n"",
++    ""Stops: %{customdata[4]}<br>\n"",
++    ""Price: %{customdata[5]} %{customdata[6]}\n"",
++    ""<extra></extra>\n"",
++    ""\""\""\""""
+    ]
+   },
+   {
+    ""cell_type"": ""code"",
+    ""execution_count"": null,
+-   ""id"": ""ac201f84-90b7-432a-ad98-1d41a07acc3f"",
++   ""id"": ""7b994d47-cb96-4518-a213-c13fcf045b75"",
+    ""metadata"": {},
+    ""outputs"": [],
+    ""source"": [
+-    ""df_filtered.iloc[1]""
++    ""fig = px.scatter(\n"",
++    ""    df_filtered,\n"",
++    ""    y=\""price_unit\"",\n"",",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,388.0,388,RIGHT,133,133.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+"The line `""fig.show()""` appears to be a string rather than an executable command. If this is intended to be executed, it should not be enclosed in quotes.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1697790509,9306e0446181236be5ab88854459f711acdb3dcc,2024-07-31 01:48:41+00:00,"@@ -385,50 +424,42 @@
+     ""fig.show()""",yafs/notebooks/analysis.ipynb,6ca85a2bdc5742dfb9e239618022b0a4970141eb,2024-07-31T01:48:41Z,,,,424.0,424,RIGHT,175,175.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/9,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,3dd1a2d54c1979352ed9dbe5ccd05b6ce422ebf7
+The `permissions` field is set to `write-all` which gives full access to all permissions. This is a security risk and it's recommended to only provide the necessary permissions.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310865,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:24+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all",.github/workflows/ai-code-review.yml,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,8.0,8,RIGHT,8,8.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+It's recommended to pin the `actions/checkout` to a specific version instead of using `v3` to avoid potential issues if the action is updated.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310877,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:24+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3",.github/workflows/ai-code-review.yml,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,14.0,14,RIGHT,14,14.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"Similar to the `actions/checkout`, it's recommended to pin the `ai-codereviewer` to a specific version instead of using `main` to avoid potential issues if the action is updated.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310880,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:24+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main",.github/workflows/ai-code-review.yml,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,17.0,17,RIGHT,17,17.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"Instead of checking for falsy values, it would be better to check if `x` is not a number. This way, you can avoid unexpected behavior when `x` is `0`.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310886,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,2.0,2,RIGHT,2,2.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"Similar to the previous comment, it would be better to check if `y` is not a string. This way, you can avoid unexpected behavior when `y` is an empty string.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310895,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; ",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,3.0,3,RIGHT,3,3.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+Consider using `let` instead of `var` for block scope variable declaration.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310898,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,5.0,5,RIGHT,5,5.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"This line assumes that `x` is an array and `y` is a number, which might not always be the case. Consider adding type checks before this operation.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310902,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,13.0,13,RIGHT,13,13.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+Avoid using `console.log` for error handling. Consider throwing an error or rejecting a promise.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310909,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,16.0,16,RIGHT,16,16.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"Dividing by zero will return `Infinity`, which might not be the expected behavior. Consider adding a check to prevent division by zero.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310913,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,17.0,17,RIGHT,17,17.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"Returning without a value will return `undefined`. If this is the expected behavior, consider making it explicit by returning `undefined`.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310917,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,19.0,19,RIGHT,19,19.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+"The function `doStuff` expects two arguments: a number and a string. Here, `undefined` is being passed as the second argument, which might lead to unexpected behavior.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310920,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly
++}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",test.js,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,23.0,23,RIGHT,23,23.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+The `console.log('testing...');` seems to be a debug statement. It's generally a good practice to remove debug statements before committing the code to maintain clean and production-ready codebase.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801310926,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15 14:37:25+00:00,"@@ -4,5 +4,5 @@ import slackify from 'slackify-markdown';
+ const releaseNotes = process.env.RELEASE_NOTES || '';
+ const formattedReleaseNotes = slackify(releaseNotes);
+ 
+-// Output the formatted notes as a single line, replacing newlines with spaces
+-console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
+\ No newline at end of file
++console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
++console.log('testing...');",workflow-scripts/slackify-release.workflow.mjs,890e96a821e3f080bb79b298c7ece61d10fc9e9a,2024-10-15T14:37:25Z,,,,8.0,8,RIGHT,8,8.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/262,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,23219fdcdaa5899638181380a077937bb3b40bd1
+Directly importing `OpenAI` without destructuring may lead to potential issues if the library expects specific imports. Ensure that the `OpenAI` import aligns with the library's updated export structure for gpt-4-1106-preview and json mode.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872856,5c13a26204b18fc9903b4353f8a18ebd7b2f022b,2023-12-02 20:59:37+00:00,"@@ -1,6 +1,6 @@
+ import { readFileSync } from ""fs"";
+ import * as core from ""@actions/core"";
+-import { Configuration, OpenAIApi } from ""openai"";
++import OpenAI from ""openai"";",src/main.ts,739f0b429b8c11af8fe166cf1245bac8193c11ec,2023-12-02T20:59:37Z,,,,3.0,3,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/32,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,8dff11715837750379472ead710753262e2ca65f
+The JSON format provided in the updated line does not match the standard JSON array format. It should be an array of objects within square brackets `[]`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872857,5c13a26204b18fc9903b4353f8a18ebd7b2f022b,2023-12-02 20:59:37+00:00,"@@ -98,7 +96,7 @@ async function getBaseAndHeadShas(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `Your task is to review pull requests. Instructions:
+-- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Provide the response in following JSON format:  {""reviews"": [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]}",src/main.ts,739f0b429b8c11af8fe166cf1245bac8193c11ec,2023-12-02T20:59:37Z,,,,83.0,83,RIGHT,27,45.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/32,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,8dff11715837750379472ead710753262e2ca65f
+"The `response_format` object structure seems incorrect. The `response_format` should be a string, not an object. It should be `'response_format': 'json'` if you want to specify JSON format.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872858,5c13a26204b18fc9903b4353f8a18ebd7b2f022b,2023-12-02 20:59:37+00:00,"@@ -142,8 +140,12 @@ async function getAIResponse(prompt: string): Promise<Array<{
+   };
+ 
+   try {
+-    const response = await openai.createChatCompletion({
++    const response = await openai.chat.completions.create({
+       ...queryConfig,
++      // return JSON if the model supports it:
++      ...(OPENAI_API_MODEL === ""gpt-4-1106-preview""",src/main.ts,739f0b429b8c11af8fe166cf1245bac8193c11ec,2023-12-02T20:59:37Z,,,,130.0,130,RIGHT,39,60.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/32,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,8dff11715837750379472ead710753262e2ca65f
+The fallback value for `res` should be an empty array `[]` instead of an empty object `{}` to match the expected return type of the function.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872860,5c13a26204b18fc9903b4353f8a18ebd7b2f022b,2023-12-02 20:59:37+00:00,"@@ -152,8 +154,8 @@ async function getAIResponse(prompt: string): Promise<Array<{
+       ],
+     });
+ 
+-    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    return JSON.parse(res);
++    const res = response.choices[0].message?.content?.trim() || ""{}"";",src/main.ts,739f0b429b8c11af8fe166cf1245bac8193c11ec,2023-12-02T20:59:37Z,,,,141.0,141,RIGHT,51,72.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/32,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,8dff11715837750379472ead710753262e2ca65f
+Ensure that the property `reviews` exists on the parsed object to avoid potential runtime errors. Consider adding a check before accessing `reviews` property.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872861,5c13a26204b18fc9903b4353f8a18ebd7b2f022b,2023-12-02 20:59:37+00:00,"@@ -152,8 +154,8 @@ async function getAIResponse(prompt: string): Promise<Array<{
+       ],
+     });
+ 
+-    const res = response.data.choices[0].message?.content?.trim() || ""[]"";
+-    return JSON.parse(res);
++    const res = response.choices[0].message?.content?.trim() || ""{}"";
++    return JSON.parse(res).reviews;",src/main.ts,739f0b429b8c11af8fe166cf1245bac8193c11ec,2023-12-02T20:59:37Z,,,,142.0,142,RIGHT,52,73.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/32,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,8dff11715837750379472ead710753262e2ca65f
+Consider using a specific version or commit hash instead of the branch name `improve-the-AI-output` to ensure stability and reproducibility of the workflow.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232235,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:37:12+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@improve-the-AI-output",.github/workflows/code_review.yml,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,2023-03-28T08:37:13Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider rephrasing this line to: `- Avoid providing positive comments or compliments.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232242,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:37:12+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.",src/main.ts,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,2023-03-28T08:37:13Z,,,,83.0,83,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider rephrasing this line to: `- Refrain from suggesting to comment on the code.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232243,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:37:13+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Do not suggest commenting on the code.",src/main.ts,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,2023-03-28T08:37:13Z,,,,,84,RIGHT,5,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+"This line seems to be removed, but it contains important information about calculating line numbers. Consider adding it back or incorporating the information into another part of the instructions.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232250,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:37:13+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Do not suggest commenting on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.",src/main.ts,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,2023-03-28T08:37:13Z,,,,87.0,87,RIGHT,9,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider adding a comment to explain the purpose of the `@ts-expect-error` directive and why it's necessary in this case.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150232253,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:37:13+00:00,"@@ -101,7 +101,10 @@ Git diff to review:
+ 
+ \`\`\`diff
+ ${chunk.content}
+-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)",src/main.ts,7bb1dfdb988551aa7d30bb12eb34f61a749e0b3d,2023-03-28T08:37:13Z,,,,,106,RIGHT,23,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider pinning the action version to a specific release or commit instead of using the branch name `improve-the-AI-output`. This ensures stability and prevents unexpected behavior changes in the future.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150245930,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:47:48+00:00,"@@ -12,7 +12,7 @@ jobs:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+       - name: Code Review
+-        uses: freeedcom/ai-codereviewer@main
++        uses: freeedcom/ai-codereviewer@improve-the-AI-output",.github/workflows/code_review.yml,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,2023-03-28T08:47:52Z,,,,15.0,15,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider rephrasing this line to: `- Avoid giving positive comments or compliments.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246003,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:47:52+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.",src/main.ts,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,2023-03-28T08:47:53Z,,,,83.0,83,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider rephrasing this line to: `- Avoid suggesting to comment on the code.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246008,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:47:52+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.",src/main.ts,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,2023-03-28T08:47:53Z,,,,84.0,84,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+"This line seems to be removed, but it contains important information about calculating the line number. Consider adding it back or incorporating the information in another part of the instructions.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246013,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:47:52+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.",src/main.ts,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,2023-03-28T08:47:53Z,,,,87.0,87,RIGHT,9,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider using a ternary operator instead of two separate string templates for better readability: `${c.ln ? c.ln : c.ln2} ${c.content}`.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246018,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:47:52+00:00,"@@ -101,7 +101,10 @@ Git diff to review:
+ 
+ \`\`\`diff
+ ${chunk.content}
+-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? `${c.ln} ` : `${c.ln2} `}${c.content}`)",src/main.ts,f67f5f0d41cbfe9cf09618ed07a57d41303d8670,2023-03-28T08:47:53Z,,,,,106,RIGHT,23,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider rephrasing the sentence to avoid using a double negative: 'Avoid giving positive comments or compliments.',https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248894,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:50:07+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.",src/main.ts,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28T08:50:08Z,,,,83.0,83,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Rephrase the sentence to make it clearer: 'Avoid suggesting to add comments to the code.',https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248902,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:50:07+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.",src/main.ts,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28T08:50:08Z,,,,84.0,84,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+"This line seems to be removed, but it contains important information about calculating line numbers. Consider keeping this instruction or incorporating it into another part of the prompt.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248906,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:50:07+00:00,"@@ -80,12 +80,12 @@ async function analyzeCode(
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++- Do not give positive comments or compliments.
++- Refrain from suggesting to comment on the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub markdown.
+-- Don't give positive comments.
+ - Use the given description only for the overall context and only comment the code.",src/main.ts,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28T08:50:08Z,,,,87.0,87,RIGHT,9,9.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+Consider adding a comment to explain the purpose of this line and why the `@ts-expect-error` is necessary.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150248909,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28 08:50:08+00:00,"@@ -101,7 +101,10 @@ Git diff to review:
+ 
+ \`\`\`diff
+ ${chunk.content}
+-${chunk.changes.map((c) => c.content).join(""\n"")}
++${chunk.changes
++  // @ts-expect-error - ln and ln2 exists where needed
++  .map((c) => `${c.ln ? c.ln : c.ln2} ${c.content}`)",src/main.ts,08e3201b551c74f43ef067e668db296bc175e867,2023-03-28T08:50:08Z,,,,106.0,106,RIGHT,23,23.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/5,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,9f3b507340c8422efb9a6147aa34907a045c783e
+The filename in the `files` field should match the new name exactly. Ensure that the change from `whitelist.txt` to `.spellcheck-allowlist.txt` is consistent with the intended naming convention.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378086,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28 23:58:46+00:00,"@@ -10,8 +10,8 @@ repos:
+       - id: check-added-large-files
+       - id: check-toml
+       - id: file-contents-sorter
+-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt",yafs/.pre-commit-config.yaml,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28T23:58:46Z,,,,13.0,13,RIGHT,6,6.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/4,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,9fd4a977fc3114cc34218e3e1489e5262ebaff85
+"Similarly, the path in the `args` field should also reflect the new filename accurately. Verify that the change from `whitelist.txt` to `.spellcheck-allowlist.txt` is intentional and correct.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378087,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28 23:58:46+00:00,"@@ -10,8 +10,8 @@
+       - id: check-added-large-files
+       - id: check-toml
+       - id: file-contents-sorter
+-        files: whitelist.txt
+-        args: [./yafs/whitelist.txt]
++        files: .spellcheck-allowlist.txt
++        args: [./yafs/.spellcheck-allowlist.txt]",yafs/.pre-commit-config.yaml,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28T23:58:46Z,,,,14.0,14,RIGHT,7,7.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/4,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,9fd4a977fc3114cc34218e3e1489e5262ebaff85
+The key `whitelist` should be renamed to `spellcheck-allowlist.txt` to match the pull request title and description.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378088,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28 23:58:46+00:00,"@@ -60,6 +60,7 @@ per-file-ignores = """"""
+     main.py: D103
+     **/tests/*: S101,D103
+ """"""
++whitelist = "".spellcheck-allowlist.txt""",yafs/pyproject.toml,8c5215259e219fdcdb489a0f79b3a17081757efb,2024-07-28T23:58:46Z,,,,63.0,63,RIGHT,4,4.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/4,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,9fd4a977fc3114cc34218e3e1489e5262ebaff85
+The change from `issues: write` to `pull-requests: write` should be reviewed for its implications on the workflow. Ensure that the permissions align with the intended functionality of the CI process.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694359392,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28 23:33:37+00:00,"@@ -10,6 +10,7 @@ on:
+ 
+ permissions:
+   contents: write
++  pull-requests: write",.github/workflows/ci.yml,87652e0cba73d01cac5adf4bd562bcbc11b5fbe2,2024-07-28T23:33:37Z,,,,,13,RIGHT,4,,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/3,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,086369f50abefac5fe84f6551540c2cf3531ffa3
+The removal of the `permissions` section may lead to unintended consequences regarding access control. Ensure that the necessary permissions are still granted for the workflow to function as intended.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360257,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28 23:38:43+00:00,"@@ -8,9 +8,6 @@ on:
+     branches:
+       - main
+ 
+-permissions:
+-  contents: write
+-
+ jobs:",.github/workflows/ci.yml,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28T23:38:43Z,,,,11.0,11,RIGHT,7,7.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/3,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,086369f50abefac5fe84f6551540c2cf3531ffa3
+"The `permissions` key should be defined at the job level, not within the `steps`. Consider moving it outside of the `steps` section.",https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360259,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28 23:38:43+00:00,"@@ -58,12 +55,37 @@
+         run: |
+           source .venv/bin/activate
+           poe lint
++      - name: Run hooks
++        working-directory: ./yafs
++        run: |
++          source .venv/bin/activate
++          poe run-hooks
++
++  ai-review:
++    name: ""AI Code Review""
++    needs: [test-yafs]
++    runs-on: ubuntu-latest
++    if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write",.github/workflows/ci.yml,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28T23:38:43Z,,,,70.0,70,RIGHT,26,26.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/3,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,086369f50abefac5fe84f6551540c2cf3531ffa3
+The condition in the `if` statement is quite specific to the `dependabot[bot]`. Consider whether this condition is necessary or if it could be generalized to accommodate other scenarios.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360260,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28 23:38:43+00:00,"@@ -58,12 +55,37 @@
+         run: |
+           source .venv/bin/activate
+           poe lint
++      - name: Run hooks
++        working-directory: ./yafs
++        run: |
++          source .venv/bin/activate
++          poe run-hooks
++
++  ai-review:
++    name: ""AI Code Review""
++    needs: [test-yafs]
++    runs-on: ubuntu-latest
++    if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write
++    steps:
++      - name: Check out repository
++        uses: actions/checkout@v4
++      - name: AI Code Review
++        uses: freeedcom/ai-codereviewer@v2.7.0
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
++          OPENAI_API_MODEL: ""gpt-4o-mini""
++          exclude: ""**/*.json, **/*.md, **/*.lock""
+ 
+   dependabot:
+     name: ""Dependabot""
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}",.github/workflows/ci.yml,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28T23:38:43Z,,,,86.0,86,RIGHT,42,42.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/3,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,086369f50abefac5fe84f6551540c2cf3531ffa3
+The `permissions` setting grants write access to contents. Ensure that this level of access is necessary for the job and does not pose a security risk.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694360261,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28 23:38:43+00:00,"@@ -58,12 +55,37 @@
+         run: |
+           source .venv/bin/activate
+           poe lint
++      - name: Run hooks
++        working-directory: ./yafs
++        run: |
++          source .venv/bin/activate
++          poe run-hooks
++
++  ai-review:
++    name: ""AI Code Review""
++    needs: [test-yafs]
++    runs-on: ubuntu-latest
++    if: ${{ github.event_name == 'pull_request'}}
++    permissions:
++      pull-requests: write
++    steps:
++      - name: Check out repository
++        uses: actions/checkout@v4
++      - name: AI Code Review
++        uses: freeedcom/ai-codereviewer@v2.7.0
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
++          OPENAI_API_MODEL: ""gpt-4o-mini""
++          exclude: ""**/*.json, **/*.md, **/*.lock""
+ 
+   dependabot:
+     name: ""Dependabot""
+     needs: [test-yafs]
+     runs-on: ubuntu-latest
+     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
++    permissions:
++      contents: write",.github/workflows/ci.yml,d945ed5c1f3077dffe5c1c795e00dc41279707fd,2024-07-28T23:38:43Z,,,,88.0,88,RIGHT,44,44.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/3,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,086369f50abefac5fe84f6551540c2cf3531ffa3
+The version specified here (`v8.18.4`) should be checked for the latest stable release to ensure compatibility and security.,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378435,7d98c79df1bcfbaf565b5f3105b65ee0af94b303,2024-07-29 00:00:40+00:00,"@@ -21,3 +21,7 @@ repos:
+     rev: 3.3.0
+     hooks:
+       - id: nb-clean
++  - repo: https://github.com/gitleaks/gitleaks
++    rev: v8.18.4",yafs/.pre-commit-config.yaml,7d98c79df1bcfbaf565b5f3105b65ee0af94b303,2024-07-29T00:00:40Z,,,,25.0,25,RIGHT,5,5.0,line,https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/5,mt-krainski/yet-another-flight-scanner,mt-krainski/yet-another-flight-scanner,7e8ee7bb411fb0d96c412cf61768f44fc980de11
+Consider initializing `date` with `null` in `useState` to make it more explicit.,https://api.github.com/repos/mrako/week-number/pulls/comments/1236833517,c1b9c76486940d566a492d1f2be7c464e51e90e6,2023-06-21 11:28:31+00:00,"@@ -1,11 +1,24 @@
+-import React from 'react';
++import React, { useEffect, useState } from 'react';
+ import { createRoot } from 'react-dom/client';
+ 
+ import { getWeekNumber } from './weeknumber';
+ 
+-const App = () => (
+-  <h1>{ getWeekNumber ? getWeekNumber() : '-' }</h1>
+-);
++const App = () => {
++  const [date, setDate] = useState();",src/index.js,08089113741645198a42138ba3811f0943703b21,2023-06-21T11:28:31Z,,,,7.0,7,RIGHT,11,11.0,line,https://api.github.com/repos/mrako/week-number/pulls/29,mrako/week-number,mrako/week-number,15488b2b5b414d3f41e183afbb1114cd17966f10
+It's better to use `const dateParam = searchParams.get('date');` and then parse it in the next line to avoid confusion with the state variable `date`.,https://api.github.com/repos/mrako/week-number/pulls/comments/1236833540,c1b9c76486940d566a492d1f2be7c464e51e90e6,2023-06-21 11:28:31+00:00,"@@ -1,11 +1,24 @@
+-import React from 'react';
++import React, { useEffect, useState } from 'react';
+ import { createRoot } from 'react-dom/client';
+ 
+ import { getWeekNumber } from './weeknumber';
+ 
+-const App = () => (
+-  <h1>{ getWeekNumber ? getWeekNumber() : '-' }</h1>
+-);
++const App = () => {
++  const [date, setDate] = useState();
++
++  useEffect(() => {
++    const searchParams = new URLSearchParams(window.location.search);
++    const date = Date.parse(searchParams.get('date'));",src/index.js,08089113741645198a42138ba3811f0943703b21,2023-06-21T11:28:31Z,,,,,11,RIGHT,15,,line,https://api.github.com/repos/mrako/week-number/pulls/29,mrako/week-number,mrako/week-number,15488b2b5b414d3f41e183afbb1114cd17966f10
+"Instead of checking for `date`, you can use a ternary operator inside the JSX to conditionally render the week number or a default value.",https://api.github.com/repos/mrako/week-number/pulls/comments/1236833555,c1b9c76486940d566a492d1f2be7c464e51e90e6,2023-06-21 11:28:31+00:00,"@@ -1,11 +1,24 @@
+-import React from 'react';
++import React, { useEffect, useState } from 'react';
+ import { createRoot } from 'react-dom/client';
+ 
+ import { getWeekNumber } from './weeknumber';
+ 
+-const App = () => (
+-  <h1>{ getWeekNumber ? getWeekNumber() : '-' }</h1>
+-);
++const App = () => {
++  const [date, setDate] = useState();
++
++  useEffect(() => {
++    const searchParams = new URLSearchParams(window.location.search);
++    const date = Date.parse(searchParams.get('date'));
++
++    setDate(isNaN(date) ? new Date() : new Date(date));
++  }, []);
++
++  if (date) {",src/index.js,08089113741645198a42138ba3811f0943703b21,2023-06-21T11:28:31Z,,,,16.0,16,RIGHT,20,20.0,line,https://api.github.com/repos/mrako/week-number/pulls/29,mrako/week-number,mrako/week-number,15488b2b5b414d3f41e183afbb1114cd17966f10
+"Consider using a more descriptive variable name, such as `parsedDate`, to better convey its purpose.",https://api.github.com/repos/mrako/week-number/pulls/comments/1236844931,c1b9c76486940d566a492d1f2be7c464e51e90e6,2023-06-21 11:30:38+00:00,"@@ -1,11 +1,24 @@
+-import React from 'react';
++import React, { useEffect, useState } from 'react';
+ import { createRoot } from 'react-dom/client';
+ 
+ import { getWeekNumber } from './weeknumber';
+ 
+-const App = () => (
+-  <h1>{ getWeekNumber ? getWeekNumber() : '-' }</h1>
+-);
++const App = () => {
++  const [date, setDate] = useState();
++
++  useEffect(() => {
++    const searchParams = new URLSearchParams(window.location.search);
++    const dateParam = Date.parse(searchParams.get('date'));",src/index.js,c1b9c76486940d566a492d1f2be7c464e51e90e6,2023-06-21T11:30:38Z,,,,11.0,11,RIGHT,15,15.0,line,https://api.github.com/repos/mrako/week-number/pulls/29,mrako/week-number,mrako/week-number,15488b2b5b414d3f41e183afbb1114cd17966f10
+"```diff
+@@ -20,16 +20,23 @@ interface PRDetails {
+-    owner: string;
+-    repo: string;
+-    pull_number: number;
++ +  description: string;
+-  }
+-  
+-  async function getPRDetails(): Promise<PRDetails> {
+-    const { repository, number } = JSON.parse(
+-      readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+-    );
++ +  const prResponse = await octokit.pulls.get({
++ +    owner: repository.owner.login,
++ +    repo: repository.name,
++ +    pull_number: number,
++ +  });
+-    return {
+-      owner: repository.owner.login,
+-      repo: repository.name,
+-      pull_number: number,
++ +    description: prResponse.data.body ?? """",
+-    };
+-  }
+-  
+```
+- Consider adding a comment above the `getPRDetails` function to briefly explain its purpose.
+- It's a good practice to handle possible errors when using `await`. You can wrap the `await octokit.pulls.get()` call in a try-catch block to handle any errors that might occur during the API call.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490072,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22 23:00:08+00:00,"@@ -20,16 +20,23 @@ interface PRDetails {
+   owner: string;
+   repo: string;
+   pull_number: number;
++  description: string;
+ }
+ 
+ async function getPRDetails(): Promise<PRDetails> {
+   const { repository, number } = JSON.parse(
+     readFileSync(process.env.GITHUB_EVENT_PATH || """", ""utf8"")
+   );
++  const prResponse = await octokit.pulls.get({
++    owner: repository.owner.login,
++    repo: repository.name,
++    pull_number: number,
++  });
+   return {
+     owner: repository.owner.login,
+     repo: repository.name,
+     pull_number: number,
++    description: prResponse.data.body ?? """",",src/main.ts,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22T23:00:08Z,,,,39.0,39,RIGHT,20,20.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/2,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,f3bfd9a657270d8369bc93901faf35232b0fc108
+"```diff
+@@ -49,13 +56,14 @@ async function getDiff(
+  }
+  
+  async function analyzeCode(
+-    parsedDiff: File[]
++    parsedDiff: File[],
++    prDescription: string
+  ): Promise<Array<{ body: string; path: string; line: number }>> {
+    const comments: Array<{ body: string; path: string; line: number }> = [];
+  
+    for (const file of parsedDiff) {
+      for (const chunk of file.chunks) {
+-        const prompt = createPrompt(file, chunk);
++        const prompt = createPrompt(file, chunk, prDescription);
+        const aiResponse = await getAIResponse(prompt);
+        if (aiResponse) {
+          const comment = createComment(file, chunk, aiResponse);
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490077,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22 23:00:08+00:00,"@@ -49,13 +56,14 @@ async function getDiff(
+ }
+ 
+ async function analyzeCode(
+-  parsedDiff: File[]
++  parsedDiff: File[],
++  prDescription: string
+ ): Promise<Array<{ body: string; path: string; line: number }>> {
+   const comments: Array<{ body: string; path: string; line: number }> = [];
+ 
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+-      const prompt = createPrompt(file, chunk);
++      const prompt = createPrompt(file, chunk, prDescription);",src/main.ts,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22T23:00:08Z,,,,66.0,66,RIGHT,37,37.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/2,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,f3bfd9a657270d8369bc93901faf35232b0fc108
+"```diff
+@@ -167,7 +183,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff);
++ +  const comments = await analyzeCode(filteredDiff, prDetails.description);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```
+
+I would suggest adding a comment to explain why the `prDetails.description` parameter was added to the `analyzeCode` function. This will help other developers understand the purpose of this change. For example:
+
+```diff
+@@ -167,7 +183,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff);
++ +  // Pass the PR description to analyzeCode for additional context
++ +  const comments = await analyzeCode(filteredDiff, prDetails.description);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145490079,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22 23:00:08+00:00,"@@ -167,7 +183,7 @@ async function createReviewComment(
+     );
+   });
+ 
+-  const comments = await analyzeCode(filteredDiff);
++  const comments = await analyzeCode(filteredDiff, prDetails.description);",src/main.ts,f80c0fad0c99d711efbc96a21d239556469b1f70,2023-03-22T23:00:08Z,,,,186.0,186,RIGHT,68,68.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/2,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,f3bfd9a657270d8369bc93901faf35232b0fc108
+The `permissions` field is set to `write-all` which grants all permissions. It's a good practice to follow the principle of least privilege and only grant the permissions that are necessary for the workflow.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307887,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all",.github/workflows/ai-code-review.yml,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,8.0,8,RIGHT,8,8.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+You are using `actions/checkout@v3` which is not a valid version. The latest version is `v2`. Please update this.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307889,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3",.github/workflows/ai-code-review.yml,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,14.0,14,RIGHT,14,14.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+You are using `freeedcom/ai-codereviewer@main`. It's recommended to use a specific version of the action instead of `main` to avoid unexpected changes.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307898,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main",.github/workflows/ai-code-review.yml,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,17.0,17,RIGHT,17,17.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+Avoid using loose equality (`==`) and use strict equality (`===`) instead. This will avoid unexpected type coercion.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307904,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,2.0,2,RIGHT,2,2.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+Avoid using loose equality (`==`) and use strict equality (`===`) instead. This will avoid unexpected type coercion.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307906,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,6.0,6,RIGHT,6,6.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+The function `doStuff` assumes that `x` is an array and `y` is a number. This could lead to unexpected behavior if different types are passed. Consider adding type checks.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307909,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,13.0,13,RIGHT,13,13.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+"Avoid using `console.log` in production code. If you need to log, consider using a logging library that can be toggled for development/production.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307910,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,16.0,16,RIGHT,16,16.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+"Dividing by zero will return `Infinity` in JavaScript, which might not be the expected behavior. Consider adding a check to prevent division by zero.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307912,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,17.0,17,RIGHT,17,17.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+"Returning without a value will return `undefined`. If this is the intended behavior, consider making it explicit for readability.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307913,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,19.0,19,RIGHT,19,19.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+The function `doStuff` is being called with `data.value` and `undefined`. This could lead to unexpected behavior if the function does not handle these inputs correctly.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307914,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:47+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly
++}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",test.js,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,23.0,23,RIGHT,23,23.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+"The `console.log('testing...');` statement seems to be a debugging line. If it's not necessary for the final code, consider removing it to keep the code clean.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801307919,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15 14:35:48+00:00,"@@ -4,5 +4,5 @@ import slackify from 'slackify-markdown';
+ const releaseNotes = process.env.RELEASE_NOTES || '';
+ const formattedReleaseNotes = slackify(releaseNotes);
+ 
+-// Output the formatted notes as a single line, replacing newlines with spaces
+-console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
+\ No newline at end of file
++console.log(formattedReleaseNotes.replace(/\n/g, '\\n'));
++console.log('testing...');",workflow-scripts/slackify-release.workflow.mjs,145ac99349039a247ed5c7dfc50a1af4a5b283e1,2024-10-15T14:35:48Z,,,,8.0,8,RIGHT,8,8.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/264,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,890e96a821e3f080bb79b298c7ece61d10fc9e9a
+Consider using a more descriptive variable name instead of `firstDayOfYear`. It could be something like `firstDayOfGivenYear` to make it clear that it's the first day of the year of the provided date.,https://api.github.com/repos/mrako/week-number/pulls/comments/1343124553,591cebee4c469d0e19c0238c805c6cd74d471da1,2023-10-02 20:26:18+00:00,"@@ -1,18 +1,7 @@
+ function getWeekNumber(date = new Date()) {
+-    // Create a copy of the date object
+-    let tempDate = new Date(date.valueOf());
+-
+-    // Set to nearest Thursday: current date + 4 - current day number
+-    // Sunday is treated as week day 7
+-    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+-
+-    // Get first day of year
+-    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
+-
+-    // Calculate full weeks to nearest Thursday
+-    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+-
+-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);",src/weeknumber.js,b24c840ada6006cda19334df0d454ef807a35e7d,2023-10-02T20:26:18Z,,,,2.0,2,RIGHT,16,16.0,line,https://api.github.com/repos/mrako/week-number/pulls/38,mrako/week-number,mrako/week-number,a3b4090187847b254609d1cc8a13d532395aa546
+The variable name `pastDaysOfYear` is not very clear. Consider renaming it to something more descriptive like `daysPassedInYear`.,https://api.github.com/repos/mrako/week-number/pulls/comments/1343124556,591cebee4c469d0e19c0238c805c6cd74d471da1,2023-10-02 20:26:18+00:00,"@@ -1,18 +1,7 @@
+ function getWeekNumber(date = new Date()) {
+-    // Create a copy of the date object
+-    let tempDate = new Date(date.valueOf());
+-
+-    // Set to nearest Thursday: current date + 4 - current day number
+-    // Sunday is treated as week day 7
+-    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+-
+-    // Get first day of year
+-    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
+-
+-    // Calculate full weeks to nearest Thursday
+-    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+-
+-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
++  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;",src/weeknumber.js,b24c840ada6006cda19334df0d454ef807a35e7d,2023-10-02T20:26:18Z,,,,3.0,3,RIGHT,17,17.0,line,https://api.github.com/repos/mrako/week-number/pulls/38,mrako/week-number,mrako/week-number,a3b4090187847b254609d1cc8a13d532395aa546
+The calculation in the return statement is a bit complex and hard to understand. Consider breaking it down into smaller parts with well-named variables for better readability.,https://api.github.com/repos/mrako/week-number/pulls/comments/1343124558,591cebee4c469d0e19c0238c805c6cd74d471da1,2023-10-02 20:26:18+00:00,"@@ -1,18 +1,7 @@
+ function getWeekNumber(date = new Date()) {
+-    // Create a copy of the date object
+-    let tempDate = new Date(date.valueOf());
+-
+-    // Set to nearest Thursday: current date + 4 - current day number
+-    // Sunday is treated as week day 7
+-    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+-
+-    // Get first day of year
+-    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
+-
+-    // Calculate full weeks to nearest Thursday
+-    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+-
+-    return weekNo;
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
++  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
++  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);",src/weeknumber.js,b24c840ada6006cda19334df0d454ef807a35e7d,2023-10-02T20:26:18Z,,,,4.0,4,RIGHT,18,18.0,line,https://api.github.com/repos/mrako/week-number/pulls/38,mrako/week-number,mrako/week-number,a3b4090187847b254609d1cc8a13d532395aa546
+Consider rephrasing the first sentence to: `Your task is to review pull requests.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636318,a2b67879fef9383df263fc63dcde7be2236b63b7,2023-04-23 20:07:53+00:00,"@@ -96,12 +96,13 @@ async function getBaseAndHeadShas(
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++  return `Your job is to review pull requests. Instructions:",src/main.ts,6176ca5693891dcd3259d20784c72b3c229e4d37,2023-04-23T20:07:53Z,,,,,99,RIGHT,5,,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/11,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9
+Replace `IMPORTANT:` with `Note:` to maintain consistency with the tone of the instructions.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636320,a2b67879fef9383df263fc63dcde7be2236b63b7,2023-04-23 20:07:53+00:00,"@@ -96,12 +96,13 @@ async function getBaseAndHeadShas(
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++  return `Your job is to review pull requests. Instructions:
++- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- NEVER suggest adding a comment explaining the code.
+ - Provide comments and suggestions ONLY if there is something to improve, otherwise return an empty array.
+ - Write the comment in GitHub Markdown format.
+ - Use the given description only for the overall context and only comment the code.
++- IMPORTANT: NEVER suggest adding comments to the code.",src/main.ts,6176ca5693891dcd3259d20784c72b3c229e4d37,2023-04-23T20:07:53Z,,,,105.0,105,RIGHT,12,12.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/11,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9
+Consider rephrasing the sentence to `Your task is to review the pull requests. Instructions:` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174636560,a2b67879fef9383df263fc63dcde7be2236b63b7,2023-04-23 20:09:19+00:00,"@@ -96,12 +96,13 @@ async function getBaseAndHeadShas(
+ }
+ 
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+-  return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
++  return `Your task is to review pull requests. Instructions:",src/main.ts,a2b67879fef9383df263fc63dcde7be2236b63b7,2023-04-23T20:09:19Z,,,,99.0,99,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/11,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,012d1cdc1ae99f4a9ea665358bf9c6b94dc126d9
+It's a good practice to end a file with a newline to avoid any unexpected behavior. Please add a newline at the end of the file.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801289249,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:26:19+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}",.github/workflows/ai-code-review.yml,2c40f0ef3ab247963fd8c5ffb815c4ba5d6ca5f4,2024-10-15T14:26:19Z,,,,,20,RIGHT,20,,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"The `OPENAI_API_MODEL` parameter has been removed. If this model specification is not needed anymore, this change is fine. However, if it's still required, please add it back.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801289255,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:26:19+00:00,"@@ -0,0 +1,20 @@
++name: AI Code Reviewer
++
++on:
++  pull_request:
++    types:
++      - opened
++      - synchronize
++permissions: write-all
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout Repo
++        uses: actions/checkout@v3
++
++      - name: AI Code Reviewer
++        uses: freeedcom/ai-codereviewer@main
++        with:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}",.github/workflows/ai-code-review.yml,2c40f0ef3ab247963fd8c5ffb815c4ba5d6ca5f4,2024-10-15T14:26:19Z,,,,,20,RIGHT,20,,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+Consider using default parameters to set default values for `x` and `y` instead of checking and assigning inside the function. This will make the code cleaner and more readable.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302484,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:46+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,2.0,2,RIGHT,2,2.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"Avoid using `var` for variable declaration, use `let` or `const` instead to avoid hoisting and other potential issues.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302569,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:48+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,5.0,5,RIGHT,5,5.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+Returning a string message when hitting a certain condition in a loop might not be the best approach. Consider throwing an error or using a different mechanism to abort the operation.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302571,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:48+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,7.0,7,RIGHT,7,7.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"This line assumes `x` is an array and `y` is a number, which might not always be the case. Consider adding type checks or handling potential errors when `x` and `y` are not the expected types.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302574,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:48+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,13.0,13,RIGHT,13,13.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+Avoid using `console.log` for error handling. Consider throwing an error or using a more robust logging system.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302575,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:49+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,16.0,16,RIGHT,16,16.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"Dividing by zero will result in `Infinity`, which might not be the expected behavior. Consider adding a check to prevent division by zero.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302576,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:49+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,17.0,17,RIGHT,17,17.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"Returning `undefined` implicitly can lead to confusion. If there's no meaningful value to return, consider returning `null` explicitly to indicate the absence of a value.",https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302578,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:49+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,19.0,19,RIGHT,19,19.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+Passing wrong data types can lead to unexpected behavior or errors. Consider adding type checks or using TypeScript for static type checking.,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/comments/1801302579,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15 14:32:49+00:00,"@@ -0,0 +1,23 @@
++function doStuff(x, y) {
++    if (!x) x = 0;
++    if (!y) y = ""default""; 
++
++    for (var i = 0; i < 10; i++) {
++        if (i == 5) {
++            return ""We hit 5, abort everything!"";
++        }
++    }
++
++    var result = 0;
++    for (i = 0; i < x.length; i++) {
++        result = result + x[i] * y; // Incorrect assumption about x and y
++    }
++
++    console.log(result); // No error handling for invalid values
++    result = 100 / 0; // Dividing by zero!
++    
++    return; // Returning undefined implicitly
++}
++
++var data = { name: ""Test"", value: 123 };
++doStuff(data.value, undefined); // Passing wrong data types",test.js,e5fef5e1a89b7be9b7329ecc63fdeeb5644dd037,2024-10-15T14:32:49Z,,,,23.0,23,RIGHT,23,23.0,line,https://api.github.com/repos/jhopley-stadion/v3-release-workflow/pulls/263,jhopley-stadion/v3-release-workflow,jhopley-stadion/v3-release-workflow,145ac99349039a247ed5c7dfc50a1af4a5b283e1
+"```diff
+@@ -20,6 +20,7 @@ interface PRDetails {
+-    owner: string;
+-    repo: string;
+-    pull_number: number;
++ +  title: string;
+-    description: string;
+-  }
+-  
+```
+
+I suggest removing the extra `+` before the `title` property:
+
+```diff
+@@ -20,6 +20,7 @@ interface PRDetails {
+    owner: string;
+    repo: string;
+    pull_number: number;
+- +  title: string;
++    title: string;
+    description: string;
+  }
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496519,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22 23:07:13+00:00,"@@ -20,6 +20,7 @@ interface PRDetails {
+   owner: string;
+   repo: string;
+   pull_number: number;
++  title: string;",src/main.ts,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22T23:07:13Z,,,,23.0,23,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/3,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,4152906beba1249aba9659555dfefde20c91cf13
+"```diff
+@@ -36,6 +37,7 @@ async function getPRDetails(): Promise<PRDetails> {
+-      owner: repository.owner.login,
+-      repo: repository.name,
+-      pull_number: number,
++ +    title: prResponse.data.title ?? """",
+-      description: prResponse.data.body ?? """",
+-    };
+-  }
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496522,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22 23:07:13+00:00,"@@ -36,6 +37,7 @@ async function getPRDetails(): Promise<PRDetails> {
+     owner: repository.owner.login,
+     repo: repository.name,
+     pull_number: number,
++    title: prResponse.data.title ?? """",",src/main.ts,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22T23:07:13Z,,,,40.0,40,RIGHT,12,12.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/3,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,4152906beba1249aba9659555dfefde20c91cf13
+"```diff
+@@ -57,13 +59,13 @@ async function getDiff(
+  
+  async function analyzeCode(
+    parsedDiff: File[],
+- -  prDescription: string
++ +  prDetails: PRDetails
+  ): Promise<Array<{ body: string; path: string; line: number }>> {
+    const comments: Array<{ body: string; path: string; line: number }> = [];
+  
+    for (const file of parsedDiff) {
+      for (const chunk of file.chunks) {
+- -      const prompt = createPrompt(file, chunk, prDescription);
++ +      const prompt = createPrompt(file, chunk, prDetails);
+        const aiResponse = await getAIResponse(prompt);
+        if (aiResponse) {
+          const comment = createComment(file, chunk, aiResponse);
+```",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496525,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22 23:07:13+00:00,"@@ -57,13 +59,13 @@ async function getDiff(
+ 
+ async function analyzeCode(
+   parsedDiff: File[],
+-  prDescription: string
++  prDetails: PRDetails
+ ): Promise<Array<{ body: string; path: string; line: number }>> {
+   const comments: Array<{ body: string; path: string; line: number }> = [];
+ 
+   for (const file of parsedDiff) {
+     for (const chunk of file.chunks) {
+-      const prompt = createPrompt(file, chunk, prDescription);
++      const prompt = createPrompt(file, chunk, prDetails);",src/main.ts,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22T23:07:13Z,,,,68.0,68,RIGHT,28,28.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/3,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,4152906beba1249aba9659555dfefde20c91cf13
+"```diff
+@@ -183,7 +187,7 @@ async function createReviewComment(
+-      );
+-    });
+-  
+- -  const comments = await analyzeCode(filteredDiff, prDetails.description);
++ +  const comments = await analyzeCode(filteredDiff, prDetails);
+-    if (comments.length > 0) {
+-      await createReviewComment(
+-        prDetails.owner,
+```
+
+I suggest adding a comment to explain why the change was made from `prDetails.description` to `prDetails`. This will help future developers understand the reasoning behind the change.",https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1145496527,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22 23:07:13+00:00,"@@ -183,7 +187,7 @@ async function createReviewComment(
+     );
+   });
+ 
+-  const comments = await analyzeCode(filteredDiff, prDetails.description);
++  const comments = await analyzeCode(filteredDiff, prDetails);",src/main.ts,6fd12f15a282d3d238cc67f3aa2ec052ce2e5066,2023-03-22T23:07:13Z,,,,190.0,190,RIGHT,59,59.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/3,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,4152906beba1249aba9659555dfefde20c91cf13
+"Consider adding a JSDoc comment to describe the function, its parameters, and its return value.",https://api.github.com/repos/mrako/week-number/pulls/comments/1311552217,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31 12:26:57+00:00,"@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {",src/weeknumber.js,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31T12:26:58Z,,,,1.0,1,RIGHT,1,1.0,line,https://api.github.com/repos/mrako/week-number/pulls/34,mrako/week-number,mrako/week-number,0a10c53521260befa4ee7621dd02f948b5e2c741
+It's not necessary to create a copy of the date object. You can directly use the date object passed as a parameter.,https://api.github.com/repos/mrako/week-number/pulls/comments/1311552221,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31 12:26:57+00:00,"@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {
++    // Create a copy of the date object",src/weeknumber.js,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31T12:26:58Z,,,,2.0,2,RIGHT,2,2.0,line,https://api.github.com/repos/mrako/week-number/pulls/34,mrako/week-number,mrako/week-number,0a10c53521260befa4ee7621dd02f948b5e2c741
+"The magic number 86400000 is used here, which represents the number of milliseconds in a day. It would be better to create a constant with a meaningful name for this value to improve readability.",https://api.github.com/repos/mrako/week-number/pulls/comments/1311552223,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31 12:26:57+00:00,"@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {
++    // Create a copy of the date object
++    let tempDate = new Date(date.valueOf());
+ 
++    // Set to nearest Thursday: current date + 4 - current day number
++    // Sunday is treated as week day 7
++    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
++
++    // Get first day of year
++    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
++
++    // Calculate full weeks to nearest Thursday
++    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);",src/weeknumber.js,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31T12:26:58Z,,,,13.0,13,RIGHT,13,13.0,line,https://api.github.com/repos/mrako/week-number/pulls/34,mrako/week-number,mrako/week-number,0a10c53521260befa4ee7621dd02f948b5e2c741
+Consider using ES6 export syntax for exporting functions.,https://api.github.com/repos/mrako/week-number/pulls/comments/1311552224,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31 12:26:57+00:00,"@@ -1 +1,18 @@
++function getWeekNumber(date = new Date()) {
++    // Create a copy of the date object
++    let tempDate = new Date(date.valueOf());
+ 
++    // Set to nearest Thursday: current date + 4 - current day number
++    // Sunday is treated as week day 7
++    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
++
++    // Get first day of year
++    let yearStart = new Date(tempDate.getFullYear(), 0, 1);
++
++    // Calculate full weeks to nearest Thursday
++    let weekNo = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
++
++    return weekNo;
++}
++
++module.exports = { getWeekNumber };",src/weeknumber.js,e60a3ab9a8e004cc3f3927091954f75a1a5c532d,2023-08-31T12:26:58Z,,,,18.0,18,RIGHT,18,18.0,line,https://api.github.com/repos/mrako/week-number/pulls/34,mrako/week-number,mrako/week-number,0a10c53521260befa4ee7621dd02f948b5e2c741
+Consider rephrasing to `Avoid recommending the addition of comments to the code.` for better clarity.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1153218100,8f38d09f7d6432838c3ffd04d0d4fe34c6c54716,2023-03-30 12:51:56+00:00,"@@ -81,7 +81,7 @@ async function analyzeCode(
+ function createPrompt(file: File, chunk: Chunk, prDetails: PRDetails): string {
+   return `- Provide the response in following JSON format:  [{""lineNumber"":  <line_number>, ""reviewComment"": ""<review comment>""}]
+ - Do not give positive comments or compliments.
+-- Refrain from suggesting to comment on the code.
++- Do not recommend adding comments to the code.",src/main.ts,8f38d09f7d6432838c3ffd04d0d4fe34c6c54716,2023-03-30T12:51:56Z,,,,84.0,84,RIGHT,5,5.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/6,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,cc0ff7a63b8b85007abfbae0364eb93a70522f74
+Consider adding a comment above this line to explain why deleted files are being ignored in the review process.,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1155327110,1e217661a4f9393e302de28009f42683be42fd09,2023-04-02 14:58:14+00:00,"@@ -64,6 +64,7 @@ async function analyzeCode(
+   const comments: Array<{ body: string; path: string; line: number }> = [];
+ 
+   for (const file of parsedDiff) {
++    if (file.to === ""/dev/null"") continue; // Ignore deleted files",src/main.ts,1e217661a4f9393e302de28009f42683be42fd09,2023-04-02T14:58:14Z,,,,67.0,67,RIGHT,4,4.0,line,https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/9,aidar-freeed/ai-codereviewer,aidar-freeed/ai-codereviewer,32f7a8317cc7ad6064db526bde25a956f6c96309
+Please maintain consistent spacing. There should be a space before the closing brace.,https://api.github.com/repos/mrako/week-number/pulls/comments/1389361588,ad443875563a2588a0cca28b721855098c004e1e,2023-11-10 12:56:13+00:00,"@@ -1,15 +1,8 @@
+ function getWeekNumber(date = new Date()) {
+-      // Get Thursday of the target week
+-    const thursday = new Date(date);
+-    thursday.setDate(thursday.getDate() + 3 - (thursday.getDay() + 6) % 7);
++  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
++  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+ 
+-    // Get the first Thursday of the year
+-    const yearStart = new Date(thursday.getFullYear(), 0, 4);
+-
+-    // Calculate full weeks to the target Thursday
+-    const weekNumber = 1 + Math.round(((thursday - yearStart) / (24 * 60 * 60 * 1000) - 3 + (yearStart.getDay() + 6) % 7) / 7);
+-
+-    return weekNumber;
++  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+ }
+ 
+-module.exports = { getWeekNumber };
++module.exports = { getWeekNumber};",src/weeknumber.js,ad443875563a2588a0cca28b721855098c004e1e,2023-11-10T12:56:14Z,,,,8.0,8,RIGHT,19,19.0,line,https://api.github.com/repos/mrako/week-number/pulls/44,mrako/week-number,mrako/week-number,61055146808fe05fcb203d1dabd00f0cb73761f3

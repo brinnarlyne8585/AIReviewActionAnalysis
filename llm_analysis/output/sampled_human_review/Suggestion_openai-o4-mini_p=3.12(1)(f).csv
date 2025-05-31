@@ -1,0 +1,207 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1171806715,2,"1. in the comment  
+   ```go
+   // returns all the staked fisherman at this session height
+   ```  
+   change “fisherman” to “fishermen”."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160180621,2,- “can you add a comment on the key-value types here?” (i.e. add a comment explaining what the map key and value represent for `validatorkeys map[string]string`)
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184436462,2,"- maybe a `consideration: if switching to newrandomsub, there will be a max size`"
+https://api.github.com/repos/xun082/create-neat/pulls/comments/1528641886,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174214813,2,- can you add a `techdebt: these structures were copied as placeholders from v0 and need to be updated to reflect changes in v1; <insert_link_to_v0_ref_here>` comment in shared/core/types/proto/challenge.proto
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829250184,2,"1. change the added lines from this two‐line form:
+   ```diff
+   +                    f""data index for {reader.pattern} contains out-of-order timestamps!"",
+   +                    stacklevel=2,
+   ```
+   to this single‐line form:
+   ```diff
+   +                    f""data index for {reader.pattern} contains out-of-order timestamps!"", stacklevel=2
+   ```
+2. revert the black formatting that caused the two‐line split."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228789399,2,"1. “can’t we just get it directly from `session`?”  
+2. “if not, we should be able to do `s.getbus().getconsensusmodule().currentheight()`”  
+3. “if neither 1 or 2 work, this is `techdebt`, not `improve` imo”"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160294627,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1826216808,2,"1. remove the `# noqa: 501` directive from the docstring.
+2. ensure bullet lists start after a blank line.
+3. when breaking a bullet description into multiple lines, align the subsequent lines with the first line of that bullet so the docs render correctly."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820625134,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1254315920,2,- need to check `m.isstakedactor()` here…
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220512526,2,"1. “can you add a very short comment for each of them?”  
+   - i.e. add a brief go comment above the newly added `noninteractive bool` and `verbose bool` fields in `app/client/cli/flags/flags.go`."
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1479556773,2,"- delete the `/*ktlint-disable*/` line, since `./gradlew ktlintcheck` passes locally without it."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1824905241,2,"1. “would you revert this change as well?”  
+   - i.e. remove the newly added lines  
+     ```python
+     import datajoint as dj
+     import pandas as pd
+     ```"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,2,"1. rename the selected alias:
+   ```sql
+   offer_data_api_call_id ⇾ jsonpayload.extra.offer_data_api_call_id
+   ```
+2. explicitly document what this field (and the following ones) contains.
+3. consider one of these alternative column names:
+   ```
+   offer_suggestion_api_id
+   subcategory_predict_api_id
+   predictive_model_call_id
+   suggested_offer_api_id
+   api_call_subcat_suggestion_id
+   predictive_offer_call_id
+   subcat_offer_api_id
+   suggestion_model_api_id
+   api_offer_prediction_id
+   offer_creation_api_id
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184450214,2,"1. rename `fisherman.json` to `fisherman1.json` in case we add more; ditto for the servicer.  
+2. rename the `config*.json` files to `validator*.json` so everything is semantically identified."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220406444,2,- “optional nit: i feel like single lining this whole statement (even if it's > 80 chars) will make it easier to read”
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1182005752,2,"- change
+  ```diff
+  +          description: session servicer response
+  ```
+  to
+  ```diff
+  +          description: session response
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1201133126,2,- rename the variable `appmsgdata` to `pocketenvelopebz` (i.e. apply the substitution `s/appmsgdata/pocketenvelopebz/`).
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184416497,2,"1. invert the `if` to reduce nesting and improve readability. change this block:
+   ```
+   if height == 0 {
+       currentheight := int64(s.getbus().getconsensusmodule().currentheight())
+       if currentheight > 0 {
+           currentheight -= 1
+       }
+       return currentheight
+   }
+   return height
+   ```
+   to:
+   ```
+   if height != 0 {
+       return height
+   }
+   currentheight := int64(s.getbus().getconsensusmodule().currentheight())
+   if currentheight > 0 {
+       currentheight -= 1
+   }
+   return currentheight
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1195874598,2,"- ""let's log a warning here with details"""
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1581104089,2,- can we drop the `return` statements in the fixtures that do not return anything?
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1173565356,2,- “what do you think about multi-lining this signature for readability?”
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228800495,2,"1. add a comment marker and note to add more unit tests:
+
+   ```go
+   // addtest: need to add more unit tests for the numerical portion of this functionality
+   func (s *servicer) calculateservicerappsessiontokens(session *coretypes.session) (*big.int, error) {
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220445042,2,"- “let's also rename it to `relayminingvolumeaccuracy`.”  
+- “point to https://arxiv.org/abs/2305.10672”"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251317366,2,"1. change
+   ```
+   +_discuss(team): if you feel this needs a diagram, please reach out to the team for additional details._
+   ```
+   to
+   ```
+   +_note: if you (the reader) feel this needs a diagram, please reach out to the team for additional details._
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184471728,2,- “can you reflect the same name of the `wg` as what you passed in. it'll help with the flow of the code to the reader.”
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1206007090,2,"1. “thoughts on decoupling `getsession` and `getservicer` or getting the session in place and passing that to `fetchservicer`?”
+2. “feels weird to get back a session from a function called `fetchservicer`.”"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820652338,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174221617,2,"1. after the error‐check block ending with
+   ```
+   }
+   ```
+   add
+   ```
+   defer readctx.release()
+   ```
+   (and apply the same change in all other similar blocks)."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251330088,0,
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,2,- fix the typo in `deploy_model_taks` (should be `deploy_model_task`).
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1210858477,2,1. “why not assign to `payload.jsonrpcpayload.headers[header.name]` directly? i believe it’s auto initialized to an empty map.”
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1906709003,2,"- suggest using `datetime.strptime` to parse `data[""timeutc""]` instead of manually splitting the string:
+  ```python
+  # replace
+  hour, minute, second = data[""timeutc""].split("":"")
+  # with something like
+  parsed_time = datetime.strptime(data[""timeutc""], ""%h:%m:%s"")
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228700393,2,"- “i think it's worth creating a ticket an[d] adding it in cracked: `incomplete(#xxx): ...`”  
+  → create a tracking ticket and update the `// incomplete: implement this` comment to use the format `incomplete(#xxx): ...`."
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1483859108,2,"1. change the line
+   ```xml
+   <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan</string>
+   ```
+   to
+   ```xml
+   <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan.</string>
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1180838572,2,"1. in the new test helper function, add a call to `t.helper()` immediately after the signature. change from:
+   ```go
+   func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+   ```
+   to:
+   ```go
+   func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+       t.helper()
+   ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243115416,2,"- optional personal style nit: reduce indent for readability by using early returns. suggested replacement snippet:
+  ```go
+  isstaked, err := m.isstakedactor()
+  if err != nil {
+     return err
+  }
+  if !isstaked {
+     return nil
+  }
+  // business logic
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220421661,1,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820658854,1,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1235980764,2,"1. update the pokt-unittest in utility/servicer/module_test.go to use a rest payload getting `/v1/height` instead of the json-rpc `eth_blocknumber`.
+2. add (or adjust) an eth goerli test case that uses `eth_blocknumber` with a json-rpc payload."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1188377629,2,"- “remove it”  
+  action: delete the commented-out line  
+    ```diff
+    - // import { abi } from '@uniswap/v3-periphery/artifacts/contracts/swaprouter.sol/swaprouter.json'
+    ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1828128411,2,"1. refactor the added multi-line dict into a single line:
+   ```diff
+   -            {
+   -                ""strain_id"": animal_resp[""strain_id""],
+   -                ""strain_name"": animal_resp[""strain_id""],
+   -            },
+   +            {""strain_id"": animal_resp[""strain_id""], ""strain_name"": animal_resp[""strain_id""]},
+   ```
+2. revert the black formatter’s reformatting (i.e., “revert black”).
+3. similarly collapse the dicts at aeon/dj_pipeline/subject.py lines 74–85 into single-line dict literals."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228792764,2,"- use the existing key‐generation utilities instead of hard-coding values. for example:
+```go
+operatorkey, err := crypto.generatepublickey()
+if err != nil {
+    return nil, err
+}
+
+outputaddr, err := crypto.generateaddress()
+if err != nil {
+    return nil, err
+}
+```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1205997356,2,- “we have a helper in `shared/crypto/sha3.go` you might be able to use. can you see if it can be leveraged?”
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829515344,2,"1. “remove this as project requires python >= 3.11 we can use the `datetime.utc` alias”  
+   – action: delete the added `""up017""  # skip \`datetime.utc\` alias` line in pyproject.toml."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251331098,2,"- add a doc comment above the function signature:
+  ```diff
+  - func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+  + // setuppubsub sets up a new gossip sub topic using libp2p
+  + func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+  ```"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243081568,2,"- “maybe just update the todo you have below?”  
+  suggestion: in this file’s existing todo comment, add a note about considering `waitforeventsinternal` in the consensus module as an alternative approach."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1209947205,2,- “now with the `txindexer` working on the same hash for both proto and indexed txs what is stopping us from using the txindexer alone for this call?”
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,2,"- replace “structures” with “cultural entities” in the added line:
+  “as well as structures which have no permanent venue (…)”"

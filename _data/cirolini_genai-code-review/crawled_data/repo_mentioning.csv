@@ -1,0 +1,5 @@
+Repository,Count,File Paths
+cluizdes/starwars_api,1,.github/workflows/chatgpt-review.yaml
+ob-f/OpenBot,1,.github/workflows/gpt_review.yml
+aziznal/chatgpt-pr-integration-test,1,.github/workflows/llm-pr-reviw.yml
+cirolini/genai-code-review,1,.github/workflows/genai_code_review.yml
