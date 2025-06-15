@@ -1,0 +1,207 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1264656945,2,"1. ensure that the `prefs = mockk(relaxed = true)` parameter is required for the functionality of the `alertservicetest` class and remove it if unnecessary.
+2. confirm that the newly added `prefs` object is properly utilized within the class and its dependencies without causing any conflicts or unexpected behavior.
+3. verify that the trailing comma after the `prefs` line is allowed in kotlin syntax to avoid compilation errors."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1264388529,2,"1. in the `showringtonepicker` function, add comments explaining the purpose of each line, especially the intent extras being used.
+2. add error handling around the call to `startactivityforresult(pickerintent, ringtonepickerrequestcode)` in `showringtonepicker` to prevent the app from crashing if an exception occurs.
+3. instead of catching a generic `exception` in `showringtonepicker`, catch more specific exceptions that can occur when starting activities or dealing with intents.
+4. in the `getpickedringtone` function, handle null values returned by  
+   ```kotlin
+   getparcelableextra<uri>(ringtonemanager.extra_ringtone_picked_uri)
+   ```  
+   and provide a default value or throw an exception if needed.
+5. in `userfriendlytitle`, replace the broad `runcatching { … }` with handling of specific exceptions (e.g., `nosuchelementexception`, `securityexception`) and provide appropriate fallback behavior or error messages.
+6. clarify or reconsider renaming the original `gettitle` method to `title` in the private `ringtone` extension—modifying its name could lead to confusion with the framework’s `ringtone.gettitle`."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1206663442,2,"- comment clarification: it might be helpful to clarify the comment regarding the `nonce` in the `transaction` schema compared to the newly added `nonce` field in `pocketenvelope`. explain if they represent different nonces or should indeed be the same, and potentially document why it's necessary if they are separate."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1180843923,2,"1. error handling in the `init()` function:  
+   “instead of logging an error and setting the default namespace when there is an issue getting the current namespace, consider propagating the error upwards so that users of this package are aware of the issue.”  
+   (i.e. change the `init()` logic to return or expose the error rather than swallowing it and defaulting to `""default""`.)
+
+2. use context properly in `fetchvalidatorprivatekeys`:  
+   “the code uses `context.todo()` while fetching secrets. it's better to accept a `context.context` as an argument to the `fetchvalidatorprivatekeys` function and pass that to the kubernetes client instead of using `context.todo()`. this allows proper cancellation of requests or any other contextual behavior when required.”  
+   (i.e. change the signature to `func fetchvalidatorprivatekeys(ctx context.context, clientset *kubernetes.clientset) …` and call `.get(ctx, …)`.)"
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1158559484,1,
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1153052060,2,"- there is a commented-out “to do” note about writing the chain config. if this is still necessary, it should be addressed."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1214813220,2,- “it can be useful to include a brief comment explaining why the version code and name were updated.”
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1891515273,2,"1. avoid using magic strings for parameter types (e.g., `'field'`, `'expression'`, `'sql'`, `'map'`, `'newmap'`); replace them with a typescript `enum` or string literal type to prevent typos and improve readability.
+2. avoid using the `any` type: in the `toworkflow` function, replace `f.aggname as any` with a more specific type for `aggname`.
+3. avoid using the non-null assertion operator (`!`): instead of `f.rule!`, add proper null checks or use optional chaining (`?.`).
+4. avoid using `console.error` for error handling in the `createfilter` function; throw an error or handle the unknown rule case more gracefully."
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1641207575,2,"1. consider renaming `notcompletebid` to `notifyincompletebid` for better readability and consistency with the other method names.  
+2. add error handling around the `mqpublisher.publish` calls to manage any potential exceptions that might occur during message publishing.  
+3. add more detailed logging inside each method to provide better traceability of actions.  
+4. add javadoc comments to your methods to describe their purpose and parameters."
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1641206923,2,"1. rename enum constant `not_complete_auction` to `not_completed_auction` for consistent past-tense naming.  
+2. fix the typo in the message for `not_complete_auction`: change “겅매” to “경매”.  
+3. move the semicolon at the end of the enum constants list onto its own line for better readability.  
+4. add comments or javadoc for each enum constant to explain its purpose."
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1189776413,2,"- as an improvement suggestion, you could consider adding more comments and documentation around the changes made to help other developers understand the reasoning and usage behind the new arguments/constructor."
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1189776926,2,"1. “adding validation checks to ensure the input parameters are not empty or invalid can help make the function more robust.”
+2. “documenting the purpose of the `markettype` parameter and its expected values can aid in making the code more readable and maintainable.”"
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1639543878,2,"1. ensure consistent formatting throughout the code. for example, align method chaining for better readability.
+2. use consistent naming conventions for your methods. for instance, `productcancelbinding` could be renamed to `productflagbinding` to match the queue name.
+3. if you have multiple similar bindings, consider creating a helper method to reduce redundancy.
+4. add comments or javadoc to explain the purpose of each binding."
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1150480404,2,- “one improvement suggestion could be to use a constant for the `/utilities/` part of the url path instead of hardcoding it. this can make the code more maintainable in case the url needs to be changed in the future.”
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1191901236,1,
+https://api.github.com/repos/hongbo-miao/hongbomiao.com/pulls/comments/1151037241,1,
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1626310017,2,"- **regex simplification**: replace the patterns
+    - `"".*products(\\??)(.*)+""`  
+      with  
+      `"".*products(?:\\?.*)?""`  
+    - `"".*auctions(\\??)(.*)+""`  
+      with  
+      `"".*auctions(?:\\?.*)?""`  
+  to make the regexes more readable and maintainable."
+https://api.github.com/repos/pass-culture/data-gcp/issues/comments/2548481880,2,1. there is a typo in the `fetch_dms` function call for the 'pro' target: `targer` should be `target`. this will cause a runtime error.
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1161591649,1,
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1623330397,2,"1. “use `final` for constants: mark the `flag_limit` as `final` since it is a constant.”
+   – change  
+     `private static int flag_limit = 10;`  
+     to  
+     `private static final int flag_limit = 10;`
+2. “method extraction: consider extracting the role update logic into a separate method for clarity.”
+   – extract this block from `update(...)`:  
+     ```
+     if (flagcount >= flag_limit) 
+         this.memberservice.updatememberrole(targetmemberid, userrole.black_user);
+     ```
+     into a new private method, e.g.:  
+     ```java
+     private void checkandupdateuserrole(long targetmemberid, int flagcount) {
+         if (flagcount >= flag_limit) {
+             this.memberservice.updatememberrole(targetmemberid, userrole.black_user);
+         }
+     }
+     ```"
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1150476217,2,"- remove commented-out code that is no longer needed.
+  ```html
+  <!-- <li>
+        <label for=""drawer-main"" class=""flex gap-4"" routerlink=""/utilities/incentive"">
+          <span class=""flex-none"">
+            <mat-icon color=""primary"">attach_money</mat-icon>
+          </span>
+          <span class=""flex-1"">incentive</span>
+        </label>
+      </li> -->
+  ```"
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1192058563,1,
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2051451460,2,"1. **use of `any` type**  
+   the `spec` variable is declared with `any` type. it’s recommended to use a specific type or interface to provide better type safety.  
+   ```typescript
+   const spec: any = {
+     data: {
+       values: datasource,
+     },
+     params: [
+       {
+         name: 'geom',
+         select: {
+           type: 'point',
+           fields: geomfieldids.map(encodefid),
+         },
+       },
+     ],
+   };
+   ```
+
+2. **magic numbers**  
+   the numbers `5` and `1` are used directly in the code. they should be replaced with named constants to improve readability and maintainability.  
+   ```typescript
+   const padding = 5;
+   const min_repeat_fields = 1;
+   ```
+
+3. **use of `let` for immutable variables**  
+   variables that are never reassigned—such as `index` and `result`—are declared with `let`. they should be declared with `const` instead.  
+   ```typescript
+   // before
+   let index = 0;
+   let result = new array(rowrepeatfields.length * colrepeatfields.length);
+   // after
+   const index = 0;
+   const result = new array(rowrepeatfields.length * colrepeatfields.length);
+   ```"
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1156858575,2,"- “properly handle and communicate any errors that `disconnectwallet()` could throw.”
+- “consider adding some user feedback to indicate whether the wallet has been successfully disconnected or not.”
+- “consider disabling the disconnect button if the wallet is already disconnected.”"
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1184851643,2,- fix the typo in the translator comment: change “need too more context!” to “need more context!”
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1147096902,2,"1. since the `faucetuguuport`, `faucetjpuport` and `faucetuethport` all seem to be pointing to the same endpoint (`${domaincauchyea}:${faucetuguuport}`), it looks like there might be some copy-pasting error. it would be best to double-check and make sure that these endpoints are correct."
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1155810107,2,"1. “to avoid this, the find command could include the -maxdepth 1 option to limit the search to the top level of the project path.”
+2. “it would be helpful to add error checking for the find command to ensure that it returns at least one file to translate.”
+3. “make the script more portable by encapsulating the basename command inside a subshell using backticks rather than relying on the availability of the -a option.”
+4. “additionally, the grep command could be used instead of xargs to avoid potential issues with whitespace in file names.”"
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1188494206,1,
+https://api.github.com/repos/bingryan/WeChatAI/pulls/comments/1184791262,1,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1174600934,0,
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1191900990,1,
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1145610365,2,"1. the `name` field is not required for workflow files and can be removed.
+2. it's best practice to limit permissions… consider using the more specific  
+   `pull_requests: [comment]` permission instead of `pull-requests: write`.
+3. consider modifying the `types` field of the `pull_request` event to only trigger  
+   the workflow on certain events (rather than `[opened, reopened, synchronize]`).
+4. specify version numbers in the `model` field to ensure consistency between script runs."
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1639543374,2,"1. “exception handling: instead of catching `throwable`, catch specific exceptions to avoid handling errors that you might not want to handle (like `outofmemoryerror`).”
+2. “logging: improve the log messages for clarity and consistency.”
+3. “return value: ensure that the return value is handled correctly when an exception occurs.”"
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1192058338,1,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160328372,1,
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1161525656,2,"1. “if the `max-h-screen` height value is used to prevent the card from overflowing too much, it could conflict with other elements on the page. a better approach to ensure the heights don't conflict could be to use the `vh` unit instead of `screen`.”
+2. “depending on the application requirements, the card could use more accessible semantic markup such as a `section`, `article`, or `aside`.”"
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1641207396,2,"1. ensure that your log messages provide enough context to be useful during debugging.
+   - e.g., include `auctionid` in the `log.debug` call in `closeauction(...)` (and add meaningful context in `getendedauctions()`).
+2. consider adding error handling for the new methods.
+   - e.g., wrap the call to `auctionrepository.updateclosebyid(auctionid);` in `closeauction(...)` with a try-catch block to log and handle potential exceptions.
+3. add comments or javadoc to explain the purpose of the new methods.
+   - e.g., insert javadoc above `public void closeauction(long auctionid)` and above `public list<auction> getendedauctions()` describing parameters and return values."
+https://api.github.com/repos/pass-culture/data-gcp/issues/comments/2504391937,2,"1. in `load_wikidata`, use `os.path.join` instead of f-strings to build `latest_path`, e.g.:
+   ```python
+   latest_path = os.path.join(
+       wiki_base_path,
+       get_last_date_from_bucket(wiki_base_path),
+       wiki_file_name
+   )
+   ```"
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1172111147,2,"1. consider using `aria-label` or `title` attribute for the breadcrumb links (e.g. on `<li routerlink=""…""><a>top</a></li>`) to enhance accessibility.
+2. in line 18 (`<div class=""badge …"">{{ listinginfo?.state || 'not_listing' }}</div>`), provide a more accurate default value instead of `'not_listing'`, for example `listing_status_unknown`.
+3. replace the condition in lines 26–36:
+   ```
+   *ngif=""!bidders || !bidders.length""
+   ```
+   with a check on the listing state, e.g.
+   ```
+   *ngif=""listinginfo?.state === 'not_listed'""
+   ```
+4. in the new card added in lines 20–30 (the one with the “list” button), increase the button’s visual emphasis—e.g. stronger color contrast or adding an icon—to make the primary action more obvious."
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1197710618,2,"1. “one improvement suggestion is to use a specific version tag instead of always pulling the latest version of `alpine:edge`, which can lead to unpredictable behavior if there are breaking changes in the base image.”  
+   – affects the final image line (`from alpine:edge`); recommend pinning to a fixed version (e.g. `alpine:3.18`).
+
+2. “there is also a commented out section related to installing glibc, which seems unnecessary for this particular docker image since the system is already using alpine linux.”  
+   – refers to the block of commented-out `glibc` install commands; suggest removing those lines."
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1192157791,1,
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1641207309,2,"1. exception handling:  
+   ensure that you handle potential exceptions that might occur during the execution of `completeauction()`.  
+2. logging:  
+   add more detailed logging to help with debugging and monitoring. for example, log the number of auctions processed and any errors encountered.  
+3. transactional management:  
+   if `auctionservice.getendedauctions()` or `completebidauctionalarm.sendalarm()` involves database operations, consider using transactions to ensure consistency (e.g., add `@transactional` to the method).  
+4. method naming:  
+   rename the method `completeauction` to a more descriptive name, such as `processcompletedauctions`.  
+5. documentation:  
+   add javadoc comments to describe the purpose of the class and its methods."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1264660912,2,"1. in the line `prefs = mockk(relaxed = true),`, there is a trailing comma. the trailing comma should be removed as it may cause a compilation error."
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1207484667,1,
+https://api.github.com/repos/UnUniFi/chain/pulls/comments/1191901365,2,"- “as an improvement suggestion, adding comments explaining the purpose of the modified value and why this specific precision was chosen could make the code more understandable and easier to maintain in the future.”"
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1174606865,2,"- it would be good to ensure that the namespace ""interview.domain.users.records"" is appropriate for the project and consistent with any other namespaces being used.
+- the use of nullable reference types (""string?"") can sometimes introduce bugs if not used consistently, so it may be worth verifying that this makes sense in the context of the larger codebase.
+- depending on the needs of the application, some other properties (such as email address or password) may need to be added to the userdetail class."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1160046540,1,
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1210424810,2,"- in the `main` function’s retry loop for `translate_string`, there is no upper limit on the number of attempts, so it could get stuck in an infinite loop.  
+- the added delay (`sleep $i`) before each retry of `translate_string` may be unnecessary and can slow down overall execution.  
+- some error handling messages are too vague and could be improved, for example:  
+    - `""something went wrong""`  
+    - `""failed to get auto-translations.""`"
+https://api.github.com/repos/fresh-trash-project/fresh-trash-backend/pulls/comments/1666459833,2,"1. “ensure consistent keep-alive settings across similar locations to avoid unexpected behavior.”
+2. “consider adding more security headers like `x-content-type-options`, `x-frame-options`, and `x-xss-protection` for better protection.”
+3. “reduce redundancy by using common configurations (for example, defining variables for common cors headers).”"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1181515430,1,

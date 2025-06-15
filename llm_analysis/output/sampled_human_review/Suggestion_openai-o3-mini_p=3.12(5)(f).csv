@@ -1,0 +1,151 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1171806715,2,- suggest updating the comment text by replacing “fisherman” with “fishermen” to accurately describe the plural nature of the returned items.
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160180621,2,"- ""can you add a comment on the key-value types here?"" (this suggests modifying the reviewed file by adding a comment to clarify what the key and value represent in the `validatorkeys` map.)"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184436462,2,"- ""consideration: if switching to newrandomsub, there will be a max size"" 
+  • this comment points out that if the code is changed to use newrandomsub, the maximum size parameter must be handled—a change that directly affects the reviewed file. it is actionable and specific since it targets the handling of the size argument in the context of the reviewed change."
+https://api.github.com/repos/xun082/create-neat/pulls/comments/1528641886,1,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174214813,2,"1. ""can you add a `techdebt: these structures were copied as placeholders from v0 and need to be updated to reflect changes in v1; <insert_link_to_v0_ref_here>`"" – this is a direct suggestion to modify the reviewed file by adding a technical debt comment that explains the current state and the need for update according to v1 changes."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829250184,2,"1. the review comment suggests changing the formatting of the added lines by combining them into a single line (i.e., replacing
+   ```
+   +                    f""data index for {reader.pattern} contains out-of-order timestamps!"",
+   +                    stacklevel=2,
+   ```
+   with
+   ```
+   +                    f""data index for {reader.pattern} contains out-of-order timestamps!"", stacklevel=2
+   ```).
+2. the comment adds “revert black” to indicate that the formatting changes imposed by the black formatter should be undone."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228789399,2,"• suggest replacing the comment or implementation to fetch the current height directly from `session`, as indicated by “can't we just get it directly from `session`?”  
+• recommend modifying the code to use `s.getbus().getconsensusmodule().currentheight()` if accessing the value directly from `session` isn’t viable.  
+• advise reconsidering the comment label: if neither method works, the code should mark this as `techdebt` instead of `improve`."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160294627,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1826216808,2,"1. “full suggestion that gets rid of noqa 501.” – the comment suggests removing the ‘noqa 501’ directive from the documentation, which is a specific change to the reviewed file.
+2. “note that bullet lists need to start after a linebreak.” – this is a specific instruction to adjust the formatting of bullet lists in the docstring within the file.
+3. “when breaking the bullet description into multiple lines, these need to align with the first line for the docs to render correctly.” – this provides precise guidance on aligning multi-line bullet descriptions for proper rendering."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820625134,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1254315920,2,"- ""need to check `m.isstakedactor()` here..."" (suggests adding a condition in the reviewed code, specifically at the highlighted location.)"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220512526,2,"- ""can you add a very short comment for each of them?"" (requesting that each flag (noninteractive and verbose) in the reviewed file be accompanied by a brief comment)"
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1479556773,2,"- ""i think yo can delete `/*ktlint-disable*/`"" – this comment suggests removing the `/*ktlint-disable*/` line from the reviewed file since the local `./gradlew ktlintcheck` passed successfully."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1824905241,2,"- ""@milagrosmarin would you revert this change as well?"" (this comment asks to revert the added import lines in the reviewed file.)"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,2,"1. change the column named `offer_data_api_call_id` to `jsonpayload.extra.offer_data_api_call_id` in the reviewed sql file.
+2. add explicit documentation to describe what the field (and the subsequent fields) contains.
+3. consider renaming the column using one of the provided alternative names, such as:
+   - offer_suggestion_api_id
+   - subcategory_predict_api_id
+   - predictive_model_call_id
+   - suggested_offer_api_id
+   - api_call_subcat_suggestion_id
+   - predictive_offer_call_id
+   - subcat_offer_api_id
+   - suggestion_model_api_id
+   - api_offer_prediction_id
+   - offer_creation_api_id"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184450214,2,"• “can you rename `fisherman.json` to `fisherman1.json` in case we add more; ditto for the servicer”  
+  – this suggestion specifically targets the reviewed file’s name and is actionable by renaming it, making it valid.
+• “can you rename the `config*.json` to `validator*.json` so everything is semantically identified”  
+  – this suggestion is phrased generally and does not clearly specify a change to the reviewed file itself."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220406444,2,"- ""optional nit: i feel like single lining this whole statement (even if it's > 80 chars) will make it easier to read"" – a suggestion to reformat the multi-line statement into a single line within the file."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1182005752,2,"- the review comment suggests changing the line 
+  ""    +          description: session servicer response""
+  to 
+  ""    +          description: session response"" 
+  in the ""rpc/v1/openapi.yaml"" file."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1201133126,2,"- suggest renaming the variable ""appmsgdata"" to ""pocketenvelopebz"" in the reviewed change for better clarity."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184416497,2,"1. replace the current if-else structure:
+   • from:
+     if height == 0 {
+     	currentheight := int64(s.getbus().getconsensusmodule().currentheight())
+     	if currentheight > 0 {
+     		currentheight -= 1
+     	}
+     	return currentheight
+     }
+     return height
+   • to:
+     if height != 0 {
+     	return height
+     }
+     currentheight := int64(s.getbus().getconsensusmodule().currentheight())
+     if currentheight > 0 {
+     	currentheight -= 1
+     }
+     return currentheight"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1195874598,2,"- ""let's log a warning here with details"" – this comment suggests adding a log statement in the reviewed file at the current location with more detailed information."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1581104089,2,"- ""drop the `return` statements in the fixtures that do not return anything?"""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1173565356,2,"- ""what do you think about multi-lining this signature for readability?"" (this suggests changing the function signature's formatting within the reviewed file to enhance readability.)"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228800495,2,"- the review comment specifically suggests modifying the function declaration by adding a comment line: "" // addtest: need to add more unit tests for the numerical portion of this functionality"" immediately before the function definition. this is a specific, actionable suggestion that focuses on the reviewed file."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220445042,2,• rename `utilityconfig` to `relayminingvolumeaccuracy`. the comment explicitly recommends renaming the configuration variable and suggests adding a reference link (https://arxiv.org/abs/2305.10672) to support the change.
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251317366,2,"- the review comment suggests changing the line:
+  +_discuss(team): if you feel this needs a diagram, please reach out to the team for additional details._
+  to
+  +_note: if you (the reader) feel this needs a diagram, please reach out to the team for additional details._"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184471728,2,"1. ""can you reflect the same name of the wg as what you passed in. it'll help with the flow of the code to the reader."""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1206007090,2,"1. suggest decoupling ""getsession"" and ""getservicer"" by either separating the session retrieval from the current workflow or by getting the session in place and then passing it to `fetchservicer`.
+2. highlight the naming inconsistency: it's confusing that a function named `fetchservicer` returns a session."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820652338,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174221617,2,"- suggestion to change the code snippet from:
+  ""  
+   +	}
+  ""  
+  to  
+  ""  
+   +	}
+   +	defer readctx.release()
+  ""  
+  in the file ""rpc/handlers.go"", and the same change should be applied ""everywhere else""."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251330088,0,
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,2,"the comment ""typo"" appears to be flagging that the identifier ""deploy_model_taks"" in the reviewed change is misspelled and should be corrected (for example, to ""deploy_model_tasks"" or an appropriate alternative)."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1210858477,2,"- ""why not assign to `payload.jsonrpcpayload.headers[header.name]` directly? i believe it's auto initialized to an empty map."" (this suggests replacing the manual creation and iteration over the headers map with a direct assignment to the auto-initialized map.)"
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1906709003,2,- suggest using datetime.strptime instead of manually splitting the time string.
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228700393,2,"- suggest creating a ticket to track the multi-day effort for the incomplete implementation.
+- recommend modifying the “incomplete” comment in the reviewed file (in ""persistence/local.go"") to include a ticket reference by changing it to something like `incomplete(#xxx): ...`."
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1483859108,2,"- suggest changing
+  "" +    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan</string>""
+to
+  "" +    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">you\'ve solved %d problems today. great job! unlock unlimited problems with mobile only plan.</string>"""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1180838572,2,"- in the function definition for assertactorsdifference, insert a call to t.helper() after the function declaration. in other words, change from:
+  +func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+to:
+  +func assertactorsdifference(t *testing.t, actors1, actors2 []*coretypes.actor, maxsimilaritythreshold float64) {
+  +  t.helper()"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243115416,2,"1. ""optional personal style nit: reduce indent for readability"" – this suggestion is focused on improving the formatting in the reviewed file. the reviewer provides a code snippet showing a more readable indent structure, making the suggestion actionable and specific."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220421661,1,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820658854,0,
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1235980764,2,"1. ""should we update the test to getting pocket height? otherwise, this is confusing of using `pokt-unittest` with `eth_blocknumber`.""
+2. ""pokt-unittest with rest payload getting `/v1/height`""
+3. ""eth goerli with `eth_blocknumber` and json rpc"""
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1188377629,2,"- ""remove it"" – this comment suggests removing the commented out import line (""// import { abi } from '@uniswap/v3-periphery/artifacts/contracts/swaprouter.sol/swaprouter.json'"") in the reviewed file."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1828128411,2,"1. ""i suggest changing
+   ```
+   +            {
+   +                ""strain_id"": animal_resp[""strain_id""],
+   +                ""strain_name"": animal_resp[""strain_id""],
+   +            },
+   ```
+   to
+   ```
+   +            {""strain_id"": animal_resp[""strain_id""], ""strain_name"": animal_resp[""strain_id""]},
+   ```""
+   this is a specific and actionable suggestion to change the dict formatting in the reviewed file.
+
+2. ""revert black""  
+   this is interpreted as an instruction to undo the changes made by the black formatter, which is actionable for the reviewed file.
+
+3. ""likewise the following dicts can fit in a single line https://github.com/sainsburywellcomecentre/aeon_mecha/blob/48493cbc0de8b6e2a5e20bcebc0f30f3f7e6719b/aeon/dj_pipeline/subject.py#l74-l85""  
+   this is a specific suggestion (with a link to exact line ranges) advising to reformat similar multi-line dictionaries into a single line, making it a valid issue for the reviewed file."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228792764,2,"1. the reviewer questions the hardcoded key values with ""how did you generate these?"" and suggests that the test should use existing utilities to generate keys that are guaranteed to be compatible.
+2. the reviewer provides a specific code snippet showing the use of functions like crypto.generatepublickey() and crypto.generateaddress(), implying that these should replace the hardcoded values in the reviewed file."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1205997356,2,"1. ""we have a helper in `shared/crypto/sha3.go` you might be able to use. can you see if it can be leveraged?"" – this suggestion is specific and actionable as it points out a helper function in a specific file that could replace or assist the current implementation in the reviewed code."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829515344,2,"- ""remove this as project requires python >= 3.11 we can use the `datetime.utc` alias"" – this suggests removing the added `""up017""` skip in the pyproject.toml file because the project now meets the required python version."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251331098,2,"- ""i suggest changing
+   ```
+   +func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+   ```
+   to
+   ```
+   +// setuppubsub sets up a new gossip sub topic using libp2p
+   +func (rtr *backgroundrouter) setuppubsub(ctx context.context) (err error) {
+   ```"""
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243081568,2,"- ""maybe just update the todo you have below?"" this suggests updating the todo comment in the reviewed file to consider the alternative approach exemplified by `waitforeventsinternal` in consensus."
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1209947205,2,"- suggestion to replace the current use of the hydrate function with using the txindexer directly (i.e. ""what is stopping us from using the txindexer alone for this call?""), now that the txindexer produces a consistent hash for both proto and indexed transactions."
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,2,"- ""structures -> cultural entities"": suggest replacing the term ""structures"" with ""cultural entities"" in the added line of the file."

@@ -1,0 +1,1926 @@
+Comment_URL,GPT_Input,GPT_Output
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1171806715,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/session.go""
+- Reviewed Change: ""+\t\treturn err\n+\t}\n+\n+\t// returns all the staked fisherman at this session height""
+- Review Comment: ""\""fishermen\"" ""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""fishermen""
+
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160180621,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""e2e/tests/steps_init_test.go""
+- Reviewed Change: ""+\n+var (\n+\t// validatorKeys is hydrated by the clientset with credentials for all validators\n+\tvalidatorKeys map[string]string""
+- Review Comment: ""Can you add a comment on the key-value types here?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Can you add a comment on the key-value types here?""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184436462,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/background/router.go""
+- Reviewed Change: ""+\t\treturn nil, err\n+\t}\n+\n+\t// NOTE_TO_SELF: `pubsub.NewRandomSub` requires a `size` arg.""
+- Review Comment: ""maybe a `CONSIDERATION: If switching to NewRandomSub, there will be a max size`""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""CONSIDERATION: If switching to NewRandomSub, there will be a max size""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/xun082/create-neat/pulls/comments/1528641886,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""packages/core/package.json""
+- Reviewed Change: ""   \""bin\"": {\n-    \""create-neat\"": \""./dist/index.js\""\n+    \""create-neat\"": \""./dist/index.js\"",\n+    \""c\"": \""./dist/index.js\""""
+- Review Comment: ""what""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: None
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174214813,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""shared/core/types/proto/challenge.proto""
+- Reviewed Change: ""+\n+import \""relay.proto\"";\n+\n+message Challenge {""
+- Review Comment: ""Can you add a `TECHDEBT: These structures were copied as placeholders from v0 and need to be updated to reflect changes in v1; <insert_link_to_v0_ref_here>`""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Can you add a `TECHDEBT: These structures were copied as placeholders from v0 and need to be updated to reflect changes in v1; <insert_link_to_v0_ref_here>`""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829250184,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/io/api.py""
+- Reviewed Change: ""+                    f\""data index for {reader.pattern} contains out-of-order timestamps!\"",\n+                    stacklevel=2,""
+- Review Comment: ""I suggest changing\n ```\n+                    f\""data index for {reader.pattern} contains out-of-order timestamps!\"",\n+                    stacklevel=2,\n```\n to\n```\n+                    f\""data index for {reader.pattern} contains out-of-order timestamps!\"", stacklevel=2\n```\nRevert black""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""I suggest changing\n ```\n+                    f\""data index for {reader.pattern} contains out-of-order timestamps!\"",\n+                    stacklevel=2,\n```\n to\n```\n+                    f\""data index for {reader.pattern} contains out-of-order timestamps!\"", stacklevel=2\n```\nRevert black""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228789399,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/servicer/module.go""
+- Reviewed Change: ""-\t*/\n-\treturn nil\n+func (s *servicer) validateApplication(session *coreTypes.Session) error {\n+\t// IMPROVE: use a function to get current height from the current session""
+- Review Comment: ""1. Can't we just get it directly from `Session`?\n2. If not, we should be able to do `s.GetBus().GetConsensusModule().CurrentHeight()`\n3. If neither 1 or 2 work, this is `TECHDEBT`, not `IMPROVE` IMO""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""Can't we just get it directly from `Session`?""
+2. ""If not, we should be able to do `s.GetBus().GetConsensusModule().CurrentHeight()`""
+3. ""If neither 1 or 2 work, this is `TECHDEBT`, not `IMPROVE` IMO""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1160294627,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/unit_of_work/gov.go""
+- Reviewed Change: "" \treturn typesUtil.ErrUnknownParam(paramName)\n }\n \n-func (u *baseUtilityUnitOfWork) getParameter(paramName string) (any, error) {""
+- Review Comment: ""Fucking amazing""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: None
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1826216808,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/dj_pipeline/analysis/block_analysis.py""
+- Reviewed Change: ""     3. For each event \""A\"", find the nearest event \""B\"" within 100ms before or after the event \""A\""\n-        - These are the pellet delivery events \""B\"" associated with the previous threshold update event \""A\""\n-    4. Shift back the pellet delivery timestamps by 1 to match the pellet delivery with the previous threshold update\n+        - These are the pellet delivery events \""B\"" associated with the previous threshold update""
+- Review Comment: ""Full suggestion that gets rid of noqa 501. Note that bullet lists need to start after a linebreak. When breaking the bullet description into multiple lines, these need to align with the first line for the docs to render correctly.\n```python\n    \""\""\""Gets pellet delivery timestamps for each patch threshold update within the specified time range.\n\n    1. Get all patch state update timestamps (DepletionState): let's call these events \""A\""\n\n       - Remove all events within 1 second of each other\n       - Remove all events without threshold value (NaN)\n    2. Get all pellet delivery timestamps (DeliverPellet): let's call these events \""B\""\n\n       - Find matching beam break timestamps within 1.2s after each pellet delivery\n    3. For each event \""A\"", find the nearest event \""B\"" within 100ms before or after the event \""A\""\n\n       - These are the pellet delivery events \""B\"" associated with the previous threshold update event \""A\""\n    4. Shift back the pellet delivery timestamps by 1 to match the pellet delivery with the\n       previous threshold update\n    5. Remove all threshold updates events \""A\"" without a corresponding pellet delivery event \""B\""\n\n    Args:\n        patch_key (dict): primary key for the patch\n        start (datetime): start timestamp\n        end (datetime): end timestamp\n\n    Returns:\n        pd.DataFrame: DataFrame with the following columns:\n\n        - threshold_update_timestamp (index)\n        - pellet_timestamp\n        - beam_break_timestamp\n        - offset\n        - rate\n    \""\""\""\n```\n""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""Note that bullet lists need to start after a linebreak.""
+2. ""When breaking the bullet description into multiple lines, these need to align with the first line for the docs to render correctly.""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820625134,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/dj_pipeline/create_experiments/create_socialexperiment_0.py""
+- Reviewed Change: ""         ld = [jl.levenshtein_distance(subjid, x[-len(subjid) :]) for x in valid_ids]\n         return valid_ids[np.argmin(ld)]\n-    except:\n+    except ValueError:""
+- Review Comment: ""Fixed bare except (E722) ""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Fixed bare except (E722)""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1254315920,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/event_handler.go""
+- Reviewed Change: "" \n \t\tif stateMachineTransitionEvent.NewState == string(coreTypes.StateMachineState_P2P_Bootstrapping) {\n-\t\t\tif m.router.GetPeerstore().Size() == 0 {\n+\t\t\tif m.stakedActorRouter.GetPeerstore().Size() == 0 {""
+- Review Comment: ""need to check `m.isStakedActor()` here...""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""need to check `m.isStakedActor()` here...""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220512526,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""app/client/cli/flags/flags.go""
+- Reviewed Change: ""+\n+\tNonInteractive bool\n+\n+\tVerbose bool""
+- Review Comment: ""Can you add a very short comment for each of them?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Can you add a very short comment for each of them?""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1479556773,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""shared/src/commonMain/kotlin/org/hyperskill/app/paywall/presentation/PaywallActionDispatcher.kt""
+- Reviewed Change: ""+            .let(onNewMessage)\n+    }\n+\n+    /*ktlint-disable*/""
+- Review Comment: ""I think yo can delete `/*ktlint-disable*/`, local execution `./gradlew ktlintCheck` passed successfully ""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""I think you can delete `/*ktlint-disable*/`, local execution `./gradlew ktlintCheck` passed successfully""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1824905241,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/dj_pipeline/streams.py""
+- Reviewed Change: ""+import datajoint as dj\n+import pandas as pd""
+- Review Comment: ""@MilagrosMarin would you revert this change as well?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: None
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1867684164,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""orchestration/dags/data_gcp_dbt/models/intermediate/pcapi/int_pcapi__log.sql""
+- Reviewed Change: ""+    jsonpayload.extra.status as user_status,\n+    cast(jsonpayload.extra.user_satisfaction as string) as user_satisfaction,\n+    cast(jsonpayload.extra.user_comment as string) as user_comment,\n+    cast(offer_data_api_call_id as string) as offer_data_api_call_id,""
+- Review Comment: ""`offer_data_api_call_id` ⇾ `jsonpayload.extra.offer_data_api_call_id`\nPourrait-on expliciter ce que contient ce champ ainsi que les suivants : \n\nHere are some alternative column name suggestions :\noffer_suggestion_api_id\nsubcategory_predict_api_id\npredictive_model_call_id\nsuggested_offer_api_id\napi_call_subcat_suggestion_id\npredictive_offer_call_id\nsubcat_offer_api_id\nsuggestion_model_api_id\napi_offer_prediction_id\noffer_creation_api_id\n""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""`offer_data_api_call_id` ⇾ `jsonpayload.extra.offer_data_api_call_id`""
+- ""Pourrait-on expliciter ce que contient ce champ ainsi que les suivants :""
+- ""Here are some alternative column name suggestions: offer_suggestion_api_id, subcategory_predict_api_id, predictive_model_call_id, suggested_offer_api_id, api_call_subcat_suggestion_id, predictive_offer_call_id, subcat_offer_api_id, suggestion_model_api_id, api_offer_prediction_id, offer_creation_api_id""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184450214,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""build/config/fisherman.json""
+- Reviewed Change: ""@@ -0,0 +1,57 @@\n+{""
+- Review Comment: ""NIT regarding file nameing.\n\n1. Can you rename `fisherman.json` to `fisherman1.json` in case we add more; ditto for the servicer\n2. Can you rename the `config*.json` to `validator*.json` so everything is semantically identified""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""Can you rename `fisherman.json` to `fisherman1.json` in case we add more; ditto for the servicer""
+2. ""Can you rename the `config*.json` to `validator*.json` so everything is semantically identified""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220406444,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""shared/modules/persistence_module.go""
+- Reviewed Change: ""+type TreeStore interface {\n+\t// Update returns the new state hash for a given height.\n+\t// * Height is passed through to the Update function\n+\t// and used by the queries against the TxIndexer and the""
+- Review Comment: ""Optional NIT: I feel like single lining this whole statement (even if it's > 80 chars) will make it easier to read""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Optional NIT: I feel like single lining this whole statement (even if it's > 80 chars) will make it easier to read""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1182005752,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""rpc/v1/openapi.yaml""
+- Reviewed Change: ""+        required: true\n+      responses:\n+        \""200\"":\n+          description: Session servicer response""
+- Review Comment: ""I suggest changing\n ```\n+          description: Session servicer response\n```\n to\n```\n+          description: Session response\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- I suggest changing
+  ``` 
+  +          description: Session servicer response
+  ```
+  to
+  ```
+  +          description: Session response
+  ```
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1201133126,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/raintree/router.go""
+- Reviewed Change: ""+\t}\n+\n+\t// extract `PocketEnvelope` from `RainTreeMessage` (& continue propagation)\n+\tappMsgData, err := rtr.handleRainTreeMsg(data)""
+- Review Comment: ""`s/appMsgData/pocketEnvelopeBz` ?\n\nI realize you were staying consistent with what we had before but doesn't hurt to be more explicit seeing how we're already here.""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""`s/appMsgData/pocketEnvelopeBz` ?\n\nI realize you were staying consistent with what we had before but doesn't hurt to be more explicit seeing how we're already here.""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184416497,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""rpc/utils.go""
+- Reviewed Change: ""+\tif height == 0 {\n+\t\tcurrentHeight := int64(s.GetBus().GetConsensusModule().CurrentHeight())\n+\t\tif currentHeight > 0 {\n+\t\t\tcurrentHeight -= 1\n+\t\t}\n+\t\treturn currentHeight\n+\t}\n+\treturn height""
+- Review Comment: ""Just a NIT that makes code easier to read. It's a general trick if you ever find yourself doing `if {very large block } `\nI suggest changing\n ```\n+\tif height == 0 {\n+\t\tcurrentHeight := int64(s.GetBus().GetConsensusModule().CurrentHeight())\n+\t\tif currentHeight > 0 {\n+\t\t\tcurrentHeight -= 1\n+\t\t}\n+\t\treturn currentHeight\n+\t}\n+\treturn height\n```\n to\n```\n+\tif height != 0 {\n+\t\treturn height\n+\t}\n+\tcurrentHeight := int64(s.GetBus().GetConsensusModule().CurrentHeight())\n+\tif currentHeight > 0 {\n+\t\tcurrentHeight -= 1\n+\t}\n+\treturn currentHeight\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""I suggest changing\n ```\n+\tif height == 0 {\n+\t\tcurrentHeight := int64(s.GetBus().GetConsensusModule().CurrentHeight())\n+\t\tif currentHeight > 0 {\n+\t\t\tcurrentHeight -= 1\n+\t\t}\n+\t\treturn currentHeight\n+\t}\n+\treturn height\n```\n to\n```\n+\tif height != 0 {\n+\t\treturn height\n+\t}\n+\tcurrentHeight := int64(s.GetBus().GetConsensusModule().CurrentHeight())\n+\tif currentHeight > 0 {\n+\t\tcurrentHeight -= 1\n+\t}\n+\treturn currentHeight\n```""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1195874598,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""build/localnet/cluster-manager/sts_kill.go""
+- Reviewed Change: ""+\t\tcase watch.Added, watch.Modified:\n+\t\t\tpod, ok := event.Object.(*corev1.Pod)\n+\t\t\tif !ok {\n+\t\t\t\tcontinue""
+- Review Comment: ""Let's log a warning here with details""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Let's log a warning here with details""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1581104089,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""tests/conftest.py""
+- Reviewed Change: ""+    dj.config[\""custom\""][\n+        \""database.prefix\""\n+    ] = f\""u_{dj.config['database.user']}_testsuite_\""\n+    return""
+- Review Comment: ""Can we drop the `return` statements in the fixtures that do not return anything?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Can we drop the `return` statements in the fixtures that do not return anything?""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1173565356,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""runtime/test_artifacts/generator.go""
+- Reviewed Change: ""+type GenesisOption func(*genesis.GenesisState)\n+\n+// IMPROVE: Extend the utilities here into a proper genesis suite in the future.\n+func NewGenesisState(numValidators, numServicers, numApplications, numFisherman int, genesisOpts ...GenesisOption) (genesisState *genesis.GenesisState, validatorPrivateKeys []string) {""
+- Review Comment: ""What do you think about multi-lining this signature for readability?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""What do you think about multi-lining this signature for readability?""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228800495,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/servicer/module.go""
+- Reviewed Change: ""+// calculateServicerAppSessionTokens return the number of tokens the servicer has remaining for the Application in the session provided.\n+//\n+//\tIf nothing is cached, the maximum number of session tokens is computed.\n+func (s *servicer) calculateServicerAppSessionTokens(session *coreTypes.Session) (*big.Int, error) {""
+- Review Comment: ""I suggest changing\n ```\n+func (s *servicer) calculateServicerAppSessionTokens(session *coreTypes.Session) (*big.Int, error) {\n```\n to\n```\n+// ADDTEST: Need to add more unit tests for the numerical portion of this functionality\n+func (s *servicer) calculateServicerAppSessionTokens(session *coreTypes.Session) (*big.Int, error) {\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""I suggest changing\n ```\n+func (s *servicer) calculateServicerAppSessionTokens(session *coreTypes.Session) (*big.Int, error) {\n```\n to\n```\n+// ADDTEST: Need to add more unit tests for the numerical portion of this functionality\n+func (s *servicer) calculateServicerAppSessionTokens(session *coreTypes.Session) (*big.Int, error) {\n```""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220445042,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/service/service.go""
+- Reviewed Change: ""+\ttypesUtil \""github.com/pokt-network/pocket/utility/types\""\n )\n \n+// DISCUSS: where should the RelayAccracyParameter be defined?""
+- Review Comment: ""`UtilityConfig`\n\nIt's client configurable based on how much risk (opportunity?) they're willing to take to mine.\n\nLet's also rename it to `RelayMiningVolumeAccuracy` and point to https://arxiv.org/abs/2305.10672""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""Let's also rename it to `RelayMiningVolumeAccuracy`""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251317366,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/README.md""
+- Reviewed Change: ""-The `Network Module` is where [RainTree](https://github.com/pokt-network/pocket/files/9853354/raintree.pdf) (or the simpler basic approach) is implemented. See `raintree/network.go` for the specific implementation of RainTree, but please refer to the [specifications](https://github.com/pokt-network/pocket-network-protocol/tree/main/p2p) for more details.\n+### Raintree Router Architecture\n+\n+_DISCUSS(team): If you feel this needs a diagram, please reach out to the team for additional details._""
+- Review Comment: ""I suggest changing\n ```\n+_DISCUSS(team): If you feel this needs a diagram, please reach out to the team for additional details._\n```\n to\n```\n+_NOTE: If you (the reader) feel this needs a diagram, please reach out to the team for additional details._\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""I suggest changing\n ```\n+_DISCUSS(team): If you feel this needs a diagram, please reach out to the team for additional details._\n```\n to\n```\n+_NOTE: If you (the reader) feel this needs a diagram, please reach out to the team for additional details._\n```""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1184471728,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/background/router_test.go""
+- Reviewed Change: ""+func readSubscription(\n+\tt *testing.T,\n+\tctx context.Context,\n+\twg *sync.WaitGroup,""
+- Review Comment: ""Can you reflect the same name of the wg as what you passed in. It'll help with the flow of the code to the reader.""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""Can you reflect the same name of the wg as what you passed in. It'll help with the flow of the code to the reader.""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1206007090,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""app/client/cli/servicer.go""
+- Reviewed Change: ""+\t\t\t\t\treturn fmt.Errorf(\""error getting application's private key: %w\"", err)\n+\t\t\t\t}\n+\n+\t\t\t\tsession, servicer, err := fetchServicer(cmd.Context(), applicationAddr, chain, servicerAddr)""
+- Review Comment: ""Thoughts on decoupling \""getSession\"" and \""getServicer\"" or getting the session in place and passing that to `fetchServicer`?\n\nFeels weird to get back a session from a function called `fetchServicer`""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""Thoughts on decoupling \""getSession\"" and \""getServicer\"" or getting the session in place and passing that to `fetchServicer`?""
+- ""Feels weird to get back a session from a function called `fetchServicer`""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820652338,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/io/reader.py""
+- Reviewed Change: ""         df.set_index(\""seconds\"", inplace=True)\n         for column in self.columns:\n-            df[column] = df[self.root_key].apply(lambda x: x[column])\n+            df[column] = df[self.root_key].apply(lambda x, col=column: x[col])""
+- Review Comment: ""Refactor: Updated the `read` method in the `JsonList` class within `aeon/io/reader.py.`""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Refactor: Updated the `read` method in the `JsonList` class within `aeon/io/reader.py.`""
+
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1174221617,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""rpc/handlers.go""
+- Reviewed Change: ""+\treadCtx, err := s.GetBus().GetPersistenceModule().NewReadContext(currentHeight)\n+\tif err != nil {\n+\t\treturn ctx.String(http.StatusInternalServerError, err.Error())\n+\t}""
+- Review Comment: ""I suggest changing\n ```\n+\t}\n```\n to\n```\n+\t}\n+\tdefer readCtx.Release()\n```\n\nDitto everywhere else""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""I suggest changing\n ```\n+\t}\n```\n to\n```\n+\t}\n+\tdefer readCtx.Release()\n```""
+- ""Ditto everywhere else""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251330088,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/background/router.go""
+- Reviewed Change: "" \t}\n \n-\treturn rtr, nil\n+\treturn multierr.Append(""
+- Review Comment: ""Great usage of multierr everywhere!""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: None
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1880340949,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""orchestration/dags/jobs/ml/algo_default_deployment.py""
+- Reviewed Change: ""-\n-        deploy_model.set_upstream(seq_task)\n-        seq_task = deploy_model\n+    deploy_model_taks = {}""
+- Review Comment: ""typo""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""typo""
+
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1210858477,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""rpc/handlers.go""
+- Reviewed Change: ""+\tif body.Payload.Headers != nil {\n+\t\theaders := make(map[string]string)\n+\t\tfor _, header := range *body.Payload.Headers {\n+\t\t\theaders[header.Name] = header.Value""
+- Review Comment: ""Why not assign to `payload.JsonRpcPayload.Headers[header.Name]` directly? I believe it's auto initialized to an empty map.""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Why not assign to `payload.JsonRpcPayload.Headers[header.Name]` directly? I believe it's auto initialized to an empty map.""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1906709003,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""parkpow/genetec/main.py""
+- Reviewed Change: ""+        #  \""11:49:22\"", Format HH/MM/SS\n+        hour, minute, second = data[\""TimeUtc\""].split(\"":\"")\n+        lgr.debug([hour, minute, second])\n+        created_date = datetime(""
+- Review Comment: ""nit: isn't datetime.strptime better for this?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""nit: isn't datetime.strptime better for this?""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228700393,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""persistence/local.go""
+- Reviewed Change: ""+\treturn nil\n+}\n+\n+// INCOMPLETE: implement this""
+- Review Comment: ""Because we have a few `INCOMPLETE` that are related and are a multi-day effort, I think it's worth creating a ticket  an adding it in cracked: `INCOMPLETE(#XXX): ... `""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Because we have a few `INCOMPLETE` that are related and are a multi-day effort, I think it's worth creating a ticket an adding it in cracked: `INCOMPLETE(#XXX): ... `""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/hyperskill/mobile-app/pulls/comments/1483859108,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""shared/src/commonMain/resources/MR/base/strings.xml""
+- Reviewed Change: ""+    <!--Problems limit reached modal-->\n     <string name=\""problems_limit_reached_modal_title\"">You\\'ve reached your daily limit</string>\n     <string name=\""problems_limit_reached_modal_description\"">You\\'ve solved %d problems today. Great job! Tomorrow new problems will be available to you.</string>\n+    <string name=\""problems_limit_reached_modal_unlock_unlimited_problems_description\"">You\\'ve solved %d problems today. Great job! Unlock unlimited problems with Mobile only plan</string>""
+- Review Comment: ""I suggest changing\n ```\n+    <string name=\""problems_limit_reached_modal_unlock_unlimited_problems_description\"">You\\'ve solved %d problems today. Great job! Unlock unlimited problems with Mobile only plan</string>\n```\n to\n```\n+    <string name=\""problems_limit_reached_modal_unlock_unlimited_problems_description\"">You\\'ve solved %d problems today. Great job! Unlock unlimited problems with Mobile only plan.</string>\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- I suggest changing
+``` 
++    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">You\'ve solved %d problems today. Great job! Unlock unlimited problems with Mobile only plan</string>
+```
+to
+```
++    <string name=""problems_limit_reached_modal_unlock_unlimited_problems_description"">You\'ve solved %d problems today. Great job! Unlock unlimited problems with Mobile only plan.</string>
+```
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1180838572,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/session_test.go""
+- Reviewed Change: ""+\t// until the new parameter takes effect. There are open design questions that need to be made.\n+}\n+\n+func assertActorsDifference(t *testing.T, actors1, actors2 []*coreTypes.Actor, maxSimilarityThreshold float64) {""
+- Review Comment: ""See: https://pkg.go.dev/testing#T.Helper\n\nI suggest changing\n ```\n+func assertActorsDifference(t *testing.T, actors1, actors2 []*coreTypes.Actor, maxSimilarityThreshold float64) {\n```\n to\n```\n+func assertActorsDifference(t *testing.T, actors1, actors2 []*coreTypes.Actor, maxSimilarityThreshold float64) {\n+  t.Helper()\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- ""I suggest changing\n ```\n+func assertActorsDifference(t *testing.T, actors1, actors2 []*coreTypes.Actor, maxSimilarityThreshold float64) {\n```\n to\n```\n+func assertActorsDifference(t *testing.T, actors1, actors2 []*coreTypes.Actor, maxSimilarityThreshold float64) {\n+  t.Helper()\n```""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243115416,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/event_handler.go""
+- Reviewed Change: ""-\t\tadded, removed := oldPeerList.Delta(updatedPeerstore.GetPeerList())\n-\t\tfor _, add := range added {\n-\t\t\tif err := m.router.AddPeer(add); err != nil {\n+\t\t} else if isStaked {""
+- Review Comment: ""OPTIONAL PERSONAL STYLE NIT:  Reduce indent for readability\n\n```go\nisStaked, err := m.isStakedActor()\nif err != nil {\n   return err\n}\nif !isStaked {\n   return nil\n}\n// business logic\n```\n""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""OPTIONAL PERSONAL STYLE NIT: Reduce indent for readability""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1220421661,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""shared/modules/gomock_reflect_1203808572/prog.go""
+- Reviewed Change: ""@@ -0,0 +1,66 @@\n+""
+- Review Comment: ""Intended to be merged in?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: None
+Classification: Not Contain Any Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1820658854,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""tests/dj_pipeline/test_pipeline_instantiation.py""
+- Reviewed Change: ""-    exp_subjects = (acquisition.Experiment.Subject & {\""experiment_name\"": experiment_name}).fetch(\""subject\"")\n-    assert len(exp_subjects) == test_params[\""subject_count\""]\n-    assert \""BAA-1100701\"" in exp_subjects\n+    if raw_dir != test_params[\""raw_dir\""]:""
+- Review Comment: ""S101: Replaced assertions with exceptions""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""S101: Replaced assertions with exceptions""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1235980764,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/servicer/module_test.go""
+- Reviewed Change: ""-\t\tPayload: &coreTypes.RelayPayload{\n-\t\t\tMethod: \""POST\"",\n-\t\t\tData:   `{\""id\"": 1, \""jsonrpc\"": \""2.0\"", method: \""eth_blockNumber\""}`,\n+\t\tRelayPayload: &coreTypes.Relay_JsonRpcPayload{""
+- Review Comment: ""Should we update the test to getting pocket height? Otherwise, this is confusing of using `POKT-UnitTest` with `eth_blockNumber`.\n\nMy suggestion:\n1. POKT-UnitTest with REST payload getting `/v1/height`\n2. ETH Goerli with `eth_blockNumber` and json RPC""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""Should we update the test to getting pocket height? Otherwise, this is confusing of using `POKT-UnitTest` with `eth_blockNumber`.""
+2. ""My suggestion: 1. POKT-UnitTest with REST payload getting `/v1/height`""
+3. ""2. ETH Goerli with `eth_blockNumber` and json RPC""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1188377629,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""src/lib/src/swapRouter.ts""
+- Reviewed Change: "" import { Trade } from './trade';\n import { PermitOptions, SelfPermit } from './selfPermit';\n import { MethodParameters, toHex } from './utils/calldata';\n-// import { abi } from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json'""
+- Review Comment: ""remove it""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""remove it"" - The commented-out line `// import { abi } from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json'` should be removed from the code.
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1828128411,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""aeon/dj_pipeline/subject.py""
+- Reviewed Change: ""+            {\n+                \""strain_id\"": animal_resp[\""strain_id\""],\n+                \""strain_name\"": animal_resp[\""strain_id\""],\n+            },""
+- Review Comment: ""I suggest changing\n ```\n+            {\n+                \""strain_id\"": animal_resp[\""strain_id\""],\n+                \""strain_name\"": animal_resp[\""strain_id\""],\n+            },\n```\n to\n```\n+            {\""strain_id\"": animal_resp[\""strain_id\""], \""strain_name\"": animal_resp[\""strain_id\""]},\n```\nRevert black\n\nLikewise the following dicts can fit in a single line\nhttps://github.com/SainsburyWellcomeCentre/aeon_mecha/blob/48493cbc0de8b6e2a5e20bcebc0f30f3f7e6719b/aeon/dj_pipeline/subject.py#L74-L85""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""I suggest changing\n ```\n+            {\n+                \""strain_id\"": animal_resp[\""strain_id\""],\n+                \""strain_name\"": animal_resp[\""strain_id\""],\n+            },\n```\n to\n```\n+            {\""strain_id\"": animal_resp[\""strain_id\""], \""strain_name\"": animal_resp[\""strain_id\""]},\n```""
+2. ""Likewise the following dicts can fit in a single line""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1228792764,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/servicer/module_test.go""
+- Reviewed Change: ""+\ttestServicer1 = &coreTypes.Actor{\n+\t\tActorType: coreTypes.ActorType_ACTOR_TYPE_SERVICER,\n+\t\tAddress:   \""a3d9ea9d9ad9c58bb96ec41340f83cb2cabb6496\"",\n+\t\tPublicKey: \""a6cd0a304c38d76271f74dd3c90325144425d904ef1b9a6fbab9b201d75a998b\"",""
+- Review Comment: ""How did you generate these?\n\nWe have utilities to generate keys that are guaranteed to be compatible.\n\n```go\n\toperatorKey, err := crypto.GeneratePublicKey()\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\n\toutputAddr, err := crypto.GenerateAddress()\n\tif err != nil {\n\t\treturn nil, err\n\t}\n```\t""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+1. ""How did you generate these?""
+2. ""We have utilities to generate keys that are guaranteed to be compatible.""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1205997356,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""app/client/cli/servicer.go""
+- Reviewed Change: ""+\treturn relay, nil\n+}\n+\n+func hash(data []byte) ([]byte, error) {""
+- Review Comment: ""We have a helper in `shared/crypto/sha3.go` you might be able to use. Can you see if it can be leveraged?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""We have a helper in `shared/crypto/sha3.go` you might be able to use. Can you see if it can be leveraged?""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1829515344,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""pyproject.toml""
+- Reviewed Change: ""+  \""PLR0912\"", \n   \""PLR0913\"",\n   \""PLR0915\"",\n+  \""UP017\""  # skip `datetime.UTC` alias""
+- Review Comment: ""Remove this as project requires python >= 3.11 we can use the `datetime.UTC` alias""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Remove this as project requires python >= 3.11 we can use the `datetime.UTC` alias""
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1251331098,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/background/router.go""
+- Reviewed Change: ""+\treturn err\n+}\n+\n+func (rtr *backgroundRouter) setupPubsub(ctx context.Context) (err error) {""
+- Review Comment: ""I suggest changing\n ```\n+func (rtr *backgroundRouter) setupPubsub(ctx context.Context) (err error) {\n```\n to\n```\n+// setupPubsub sets up a new gossip sub topic using libp2p\n+func (rtr *backgroundRouter) setupPubsub(ctx context.Context) (err error) {\n```""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions:
+- I suggest changing
+  ```go
+  +func (rtr *backgroundRouter) setupPubsub(ctx context.Context) (err error) {
+  ```
+  to
+  ```
+  +// setupPubsub sets up a new gossip sub topic using libp2p
+  +func (rtr *backgroundRouter) setupPubsub(ctx context.Context) (err error) {
+  ```
+
+Classification: Contain Valid Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1243081568,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""p2p/utils_test.go""
+- Reviewed Change: "" \tmockModulesRegistry.EXPECT().GetModule(peerstore_provider.ModuleName).Return(nil, runtime.ErrModuleNotRegistered(peerstore_provider.ModuleName)).AnyTimes()\n \tmockModulesRegistry.EXPECT().GetModule(current_height_provider.ModuleName).Return(nil, runtime.ErrModuleNotRegistered(current_height_provider.ModuleName)).AnyTimes()\n \tmockBus.EXPECT().GetModulesRegistry().Return(mockModulesRegistry).AnyTimes()\n+\tmockBus.EXPECT().PublishEventToBus(gomock.AssignableToTypeOf(&messaging.PocketEnvelope{})).""
+- Review Comment: ""Have you ever looked at `waitForEventsInternal` in consensus?\n\nDon't think we need to change anything here, but could be an alternative approach in the future. Maybe just update the TODO you have below?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""Have you ever looked at `waitForEventsInternal` in consensus?""
+- ""Maybe just update the TODO you have below?""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pokt-network/pocket/pulls/comments/1209947205,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""utility/transaction.go""
+- Reviewed Change: "" }\n+\n+// GetIndexedTransaction implements the exposed functionality of the shared utilityModule interface.\n+func (u *utilityModule) GetIndexedTransaction(txProtoBytes []byte) (*coreTypes.IndexedTransaction, error) {""
+- Review Comment: ""I think it was a by-product of not being able to use the hash of the proto bytes that I originally used the hydrate function - now with the `TxIndexer` working on the same hash for both proto and indexed txs what is stopping us from using the txIndexer alone for this call?""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""what is stopping us from using the txIndexer alone for this call?""
+
+Classification: Only Contain General Issues Or Suggestions"
+https://api.github.com/repos/pass-culture/data-gcp/pulls/comments/1863764089,"Input Format:
+Code Review:
+- Reviewed Path: The file path of the code change.
+- Reviewed Change: The code change under review. (""+"" indicates added lines, ""-"" indicates removed lines)
+- Review Comment: A comment for the above changes, which may includes issues or suggestions.
+
+Task: List the issues or suggestions raised in the Review Comment, and determine whether they are valid or not.
+The valid issues or suggestions should be:
+- Focus on the reviewed file itself.
+- Actionable: Require a change to the reviewed file.
+- Specific: Includes details to locate which parts of the Reviewed Change should be modified.
+(Suggestions that are expressed in a indirect manner are acceptable, including those framed as questions.)
+The following are considered only general issues or suggestions, but NOT valid:
+- Comments that lack any specific details, and could apply to any code review scenario.
+- Comments that only request checking of resources, without requiring specific code modifications.
+The following are NOT considered issues or suggestions at all:
+- Items that have been implemented in the Reviewed Change, as they are the descriptions of the existing code changes.
+- Suggestions that are unrelated to the reviewed file (e.g., requests for more context).
+After completing the analysis, classify the entire review comment into one of the following categories:
+- Not Contain Any Issues Or Suggestions: The review comment contains no issues or suggestions.
+- Only Contain General Issues Or Suggestions: The review comment only contains general issues or suggestions.
+- Contain Valid Issues Or Suggestions: The review comment contains at least one valid issues or suggestions.
+
+Output Format:
+Issues or Suggestions: List valid items from the Review Comment clearly, preserving code details, including inline code blocks and multi-line code snippets, and using the original wording as much as possible.
+Classification: Based on the listed items, select one of ""Not Contain Any Issues Or Suggestions"", ""Only Contain General Issues Or Suggestions"" or ""Contain Valid Issues Or Suggestions"" as the final classification without more explanations.
+
+Input:
+Code Review:
+- Reviewed Path: ""orchestration/dags/data_gcp_dbt/models/_dbt_docs/models/mart/global/description__mrt_global__cultural_partner.md""
+- Reviewed Change: "" \n {% enddocs %}\n \n+Cultural partners include all permanent venues (facilities which are opened to the public and belong to the institution) as well as structures which have no permanent venue (which are not open to the public nor belong to the institution).""
+- Review Comment: ""structures -> cultural entities""
+
+Output: List the identified issues or suggestions, and make the final classification.
+","Issues or Suggestions: 
+- ""structures -> cultural entities""
+
+Classification: Contain Valid Issues Or Suggestions"

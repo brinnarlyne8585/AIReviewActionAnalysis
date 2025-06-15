@@ -1,0 +1,7 @@
+Repository,Count,File Paths
+dding94/s2w,1,.github/workflows/ai-pr-reviewer.yml
+zircon-tech/webinar-users-service-api,1,.github/workflows/ai-pr-reviewer.yml
+awsxuhi/github-actions-cicd,1,.github/workflows/ai_pr_codereview_v2_claude.yml
+rnanthan/postgres-table-schema-generator,1,.github/workflows/main.yml
+aws-samples/jp-prototyping-blog,1,.github/workflows/review.yaml
+mmuyakwa/bash-scripts,1,.github/workflows/ai-pr-reviewer.yml

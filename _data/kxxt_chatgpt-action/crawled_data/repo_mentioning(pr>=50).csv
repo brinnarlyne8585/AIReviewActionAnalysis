@@ -1,0 +1,3 @@
+Repository,Count,File Paths,pr_count,stars,forks,contributors,commits,releases,languages,file_count,has_license
+actions-marketplace-validations/kxxt_chatgpt-action,1,.github/workflows/chatgpt.yml,53,0,0,2,98,0,JavaScript,32,MIT License
+kxxt/kxxt-website,1,.github/workflows/chatgpt.yml,50,6,1,3,615,0,"Markdown, MDX, JavaScript, SCSS, TypeScript, Shell, HTML",7414,Other

@@ -1,0 +1,14 @@
+Repository,Count,File Paths
+s2mr/xc,1,.github/workflows/ai_review.yml
+s2mr/L10nLint,1,.github/workflows/code_butler.yml
+ca-risken/.github,1,.github/workflows/code-butler.yml
+ca-risken/code,1,.github/workflows/code-butler.yml
+rajugit1/course-gh-actions,1,.github/workflows/butler.yml
+ca-dp/code-butler,1,.github/workflows/code-butler.yml
+aaronmaj/consuming-github-actions-workflows,1,.github/workflows/butler.yml
+Efthymios-Stathakis/authoring-and-maintaining-gha-workflows,1,.github/workflows/butler.yml
+ca-risken/core,1,.github/workflows/code-butler.yml
+pipe-cd/pipecd,1,.github/workflows/code-butler.yaml
+g0t4/course-gh-actions,1,.github/workflows/butler.yml
+Chao-Xi/action-sample,1,.github/workflows/butler.yml
+bucketeer-io/bucketeer,1,.github/workflows/code-butler.yaml

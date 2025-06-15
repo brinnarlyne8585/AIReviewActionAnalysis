@@ -1,0 +1,291 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1440512678,2,"- “it would be better if we could also pass the `redis_config` to the `nanoidstrategy` constructor as we do for `rediscounterstrategy`, even if it’s not used right now. it will make the code more consistent and future-proof in case `nanoidstrategy` needs to use redis in the future.”
+  ```diff
+  - shorteningstrategies::nanoidstrategy.new
+  + shorteningstrategies::nanoidstrategy.new(dynamiclinks.configuration.redis_config)
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1777229984,2,"1. optimize the replacement of integer class ids with strings by using a mapping dictionary and pandas’ `replace` instead of an o(n²) loop:
+   ```diff
+   -        identity = data[""identity""].astype(""string"")
+   -        for i, subj in enumerate(classes):
+   -            identity.loc[data[identity.name] == i] = subj
+   -        data[identity.name] = identity
+   +        identity_mapping = {i: subj for i, subj in enumerate(classes)}
+   +        data[""identity""] = data[""identity""].replace(identity_mapping)
+   ```"
+https://api.github.com/repos/mrako/week-number/pulls/comments/1236833555,2,"- instead of checking for `date`, you can use a ternary operator inside the jsx to conditionally render the week number or a default value."
+https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663252,2,"1. line 13: the `concurrency` configuration seems incomplete and contains a syntax error. it needs to be corrected for proper functionality.
+   ```diff
+   -   concurrency:
+   -     group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name == 'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+   -     cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+   +   concurrency:
+   +     group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name == 'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+   +     cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+   ```
+
+2. lines 30-31: the boolean values for `review_simple_changes` and `review_comment_lgtm` are set to `false`. ensure these settings align with the intended behavior of the workflow.
+   ```diff
+   -           review_simple_changes: false
+   -           review_comment_lgtm: false
+   +           review_simple_changes: true
+   +           review_comment_lgtm: true
+   ```"
+https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1893912146,1,
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1451584993,1,
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426210,2,1. consider using `core.debug()` instead of `console.log()` for better integration with github actions.
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1322223359,2,"1. in the keyerror handler, replace the check  
+   ```diff
+   -        if parts is none:
+   +        if not parts:
+            raise keyerror(f""cannot find bodyparts in {file}."") from err
+   ```"
+https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706228991,0,
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858445,2,- “the function name `dividebyseven` does not match its implementation. consider renaming it to better reflect its purpose.”
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1929972018,2,"1. to enhance error handling, consider logging additional details like the url or payload in the error message for better traceability.
+   suggested change:
+   ```diff
+   -        logging.error(f""vehicle:{plate}. failed to send request: {err}"")
+   +        logging.error(f""vehicle:{plate}, url:{url}. failed to send request: {err}"")
+   ```"
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1438979305,2,"1. add an `ensure` block to reset the configuration after the test to prevent side effects in other tests. for example:
+   ```diff
+   test ""generate_short_url returns the correct structure"" do
+     dynamiclinks.configure do |config|
+       config.shortening_strategy = :mock
+     end
+
+     expected_response = {
+       shortlink: 'shortened_url',
+       previewlink: 'shortened_url?preview=true',
+       warning: []
+     }
+
+     dynamiclinks.stub :shorten_url, 'shortened_url' do
+       assert_equal expected_response, dynamiclinks.generate_short_url('https://example.com')
+     end
++  ensure
++    dynamiclinks.reset_configuration
+   end
+   ```"
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196788,2,"1. similarly, specify a more precise type for the event parameter in the `runcommand` function instead of using `any`.
+   ```diff
+   -   function runcommand(e: any){
+   +   function runcommand(e: react.mouseevent<htmlbuttonelement>){
+   ```"
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443729766,2,"1. consider wrapping the operations in `perform` in a begin-rescue block to handle potential exceptions and ensure the job doesn’t fail unexpectedly:
+```diff
+   def perform(client, url, short_url, lock_key)
++    begin
+     shortenedurl.find_or_create(client, short_url, url)
+
+     # delete the lock key
+     dynamiclinks.configuration.cache_store.delete(lock_key)
++    rescue => e
++      # log the error and re-raise it if necessary
++      rails.logger.error(""error in shortenurljob: #{e.message}"")
++      raise
++    end
+   end
+```"
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1743909207,2,"1. simplify the expiration check by removing the redundant `present?` call. for example:
+   ```diff
+   - raise activerecord::recordnotfound if link.expires_at.present? && link.expires_at.past?
+   + raise activerecord::recordnotfound if link.expires_at&.past?
+   ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1765246060,2,"- include the “run all tests” command in the file’s docstring for clarity. for example:
+  ```diff
+  - """"""global configurations and fixtures for pytest.
+  + """"""global configurations and fixtures for pytest.
+    # run all tests:
+    # pytest -sv --cov-report term-missing --cov=aeon_mecha -p no:warnings tests/dj_pipeline
+  ```"
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1438979300,2,"1. in `self.shorten_url(url)`, add error handling around the strategy lookup and initialization to catch `nameerror` and `argumenterror` and raise more user-friendly messages. for example:
+   ```diff
+    def self.shorten_url(url)
++     begin
+       strategy_class = ""dynamiclinks::shorteningstrategies::#{configuration.shortening_strategy.to_s.camelize}strategy"".constantize
+       strategy = strategy_class.new
++     rescue nameerror
++       raise ""invalid shortening strategy: #{configuration.shortening_strategy}""
++     rescue argumenterror
++       raise ""#{strategy_class} needs to be initialized with arguments""
++     end
+       strategy.shorten(url)
+    end
+   ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174426413,2,"1. replace the hardcoded string `'opened'` in the condition  
+   ```ts
+   if (eventdata.action === ""opened"") {
+   ```
+   with a constant variable for better maintainability."
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421186,2,- consider adding an empty line before this `else if` statement for better readability.
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196792,2,"1. avoid using `any` for the `cmd` variable. instead, declare it as `string[]` and provide a default empty array:
+```diff
+-     const cmd: any = command.match(/[^ ]+/g)?.slice(2);
++     const cmd: string[] = command.match(/[^ ]+/g)?.slice(2) || [];
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1314347259,2,"1. change the single-line dict assignment for `weight_scale_key` to a multi-line format for readability:
+   ```diff
+   - weight_scale_key = {""weight_scale_serial_number"": weight_scale[""serial-number""]}
+   + weight_scale_key = {
+   +     ""weight_scale_serial_number"": weight_scale[""serial-number""]
+   + }
+   ```"
+https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663254,2,"1. the `on` field should be adjusted to trigger on pull requests only:
+```diff
+-  on:
+-    push:
+-      branches:
+-        - master
+-    pull_request:
+-      types: [opened, synchronize, reopened]
++  on:
++    pull_request:
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1747418199,2,"- the built-in `zip` function does not accept a `strict` argument and will raise a `typeerror`. replace
+  ```diff
+  - for frameidx, path in zip(data._frame, data._path, strict=false):
+  ```
+  with something like:
+  ```diff
+  + from itertools import zip_longest
+  + for frameidx, path in zip_longest(data._frame, data._path):
+  ```"
+https://api.github.com/repos/Dev-FE-1/Toy_Project_3_team4/pulls/comments/1720613303,2,"- remove the trailing space after `gpt-4o-2024-05-13` in the `openai_heavy_model` line to maintain consistency:
+```diff
+-          openai_heavy_model: gpt-4o-2024-05-13 
++          openai_heavy_model: gpt-4o-2024-05-13
+```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174421187,2,- consider adding an empty line before this `else` statement for better readability.
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443162247,2,"- in the `delete` method, you're using `del` which is a method for `redis` but not for `memcached`. for `memcached`, you should use `delete`. add a condition to handle both cases.
+```diff
+- @store.del(key)
++ @store.is_a?(redis) ? @store.del(key) : @store.delete(key)
+```"
+https://api.github.com/repos/parkpow/deep-license-plate-recognition/pulls/comments/1806196756,2,"- avoid using `any` as the type for the event parameter. instead, specify a more precise type:
+  ```diff
+  - const handleuninstall = (e: any) => {
+  + const handleuninstall = (e: react.mouseevent<htmlbuttonelement>) => {
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1764204980,2,"1. add an assertion to check that the downsampled data keeps the same start timestamp as the raw data:
+   ```diff
+    assert len(data) < len(raw_data)
+   +assert data.index[0] == raw_data.index[0]
+    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
+   ```
+2. add an assertion to check that the downsampled data keeps the same end timestamp as the raw data:
+   ```diff
+    assert len(data) < len(raw_data)
+   +assert data.index[-1] == raw_data.index[-1]
+    assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
+   ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1149858439,2,"- instead of using `flatmap`, use `map` and then `filter` to remove empty elements to make the code more readable."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1532539663,2,"- it would be better to make `name` a required positional argument without a default value to prevent misuse and unnecessary exception handling. for example:
+  ```diff
+  -    def __init__(self, name=none, *args, path=none):
+  +    def __init__(self, name, *args, path=none):
+  ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1412872860,2,- the fallback value for `res` should be an empty array `[]` instead of an empty object `{}` to match the expected return type of the function.
+https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1888123645,2,"- change the `autoplayspeed` value from 0 to a positive integer. for example:
+  ```diff
+  -  autoplayspeed: 0,
+  +  autoplayspeed: 3000, // for example, change slides every 3 seconds
+  ```"
+https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706229007,2,"1. the sorting of the `salarylist` is done in place, which might lead to unexpected behavior if the original data is needed elsewhere in its initial order."
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443749710,2,"1. consider breaking the `simulate_shorten_url` method into smaller methods, each responsible for a specific part of the process (e.g., configuring the system, preparing the mocks, running the operation, asserting the results).
+2. consider adding comments to explain the purpose of each step, especially for complex operations like the ones involving mocks and stubs."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1765335037,0,
+https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1888123658,2,"1. the padding value is inconsistent with the one on line 260. if you don’t intend to override it, make them consistent—for example:
+```diff
+-   padding: 15px !important;
++   padding: 0 !important;
+```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1150246008,2,"- rephrase the line  
+  `- refrain from suggesting to comment on the code.`  
+  to  
+  `- avoid suggesting to comment on the code.`"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1314347286,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1758592490,2,"- the variable `experiment_names` is assigned but never used. if this variable is not needed, consider removing it:
+  ```diff
+  -  experiment_names = automatedexperimentingestion.fetch(""experiment_name"")
+  ```"
+https://api.github.com/repos/saiqulhaq/dynamic_links/pulls/comments/1443118844,2,"1. the `client_id` variable is undefined when calling `dynamiclinks::client.find(client_id)`. suggested change at line 10:
+   ```diff
+   -      client = dynamiclinks::client.find(client_id)
+   +      # assuming client_id should be extracted from the client object
+   +      client = dynamiclinks::client.find(client.id)
+   ```
+2. the `cache_key` is not defined before being used in `cache_store.read(cache_key)` and `cache_store.delete(cache_key)`. suggested change around lines 7 and 13:
+   ```diff
+   -      data = cache_store.read(cache_key)
+   +      # assuming cache_key should be constructed using some properties of the client or url
+   +      cache_key = ""some_key_derived_from_client_or_url""
+   +      data = cache_store.read(cache_key)
+
+   -      cache_store.delete(cache_key)
+   +      # same assumption for deleting the key
+   +      cache_store.delete(cache_key)
+   ```"
+https://api.github.com/repos/brisen-app/brisen-client/pulls/comments/1536663257,2,"- add a timeout to the quality gate check step. for example:
+  ```yaml
+      - name: 📋 sonarqube quality gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1307905830,2,"1. re-enable the commented-out pytest-py hook so that tests run as part of the commit process. for example, remove the leading “# ” from these lines in .pre-commit-config.yaml:
+   ```
+   # - repo: local
+   #   hooks:
+   #     - id: pytest-py
+   #       name: pytest-py
+   #       entry: pytest
+   #       language: system
+   #       pass_filenames: false
+   #       args:
+   #         - ""-v""
+   #         - ""-n""
+   #         - ""auto""
+   ```"
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694359392,1,
+https://api.github.com/repos/mt-krainski/yet-another-flight-scanner/pulls/comments/1694378435,2,- the version specified here (`v8.18.4`) should be checked for the latest stable release to ensure compatibility and security.
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1755686429,2,"1. add an assertion to verify the downsampling when `downsample=none`, for example:
+   ```diff
+       data = aeon.load(
+           nonmonotonic_path, exp02.patch2.encoder, end=pd.timestamp(""2022-06-06t13:00:49""), downsample=none
+       )
+   +   # add an assertion to check the frequency of the data
+   +   assert data.index.to_series().diff().dt.total_seconds().min() >= 0.02
+   ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174420681,2,- “consider adding a comment to explain the purpose of this `else` block and why the event is unsupported.”
+https://api.github.com/repos/Dev-FE-1/Toy_Project_II_team4/pulls/comments/1706969846,2,"1. performance optimization for sorting:
+   “you’re sorting the salary list twice: once for `sorteddata` and once for `latestsalarylist`. if the salary list is large, this could be inefficient. consider optimizing this by sorting the list only once and then deriving both `sorteddata` and `latestsalarylist` from the sorted list.”
+
+2. use unary plus instead of `number()`:
+   “you are using `number()` to convert strings to numbers at multiple places. it would be better to use unary plus (`+`) operator for this purpose as it is faster and more concise.”
+   example change:
+   ```diff
+   - const filtereditem = salarylist.filter((item) => number(item.payday.slice(0,4)) === number(selectedyear))
+   + const filtereditem = salarylist.filter((item) => +item.payday.slice(0,4) === +selectedyear)
+   ```
+
+3. faster lookup in `handleapplicationbtn`:
+   “in the `handleapplicationbtn` function, you’re searching through `sorteddata` to find an item with a matching id. if you expect to have a large number of items in `sorteddata`, consider using a data structure that allows for faster lookups, like a set or a map.”
+   example change:
+   ```diff
+   + const salaryidset = new set(sorteddata.map(item => item.id));
+   + const handleapplicationbtn = (id: number) => {
+   +   if (salaryidset.has(id)) {
+   +     navigate(`/salary-detail/${id}`);
+   +   } else {
+   +     navigate('/payments');
+   +   }
+   + };
+   ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1174425080,2,1. consider using a more descriptive function name instead of `main`. this will improve code readability and make it easier to understand the purpose of the function.
+https://api.github.com/repos/lightspeedwp/tour-operator/pulls/comments/1893912122,2,"1. the removal of the theme reference “lsx-tour-operator” from the header template part may break styles or scripts tied to that theme. if this change wasn’t intentional, you should reconsider restoring the `""theme"":""lsx-tour-operator""` attribute or verify that no dependencies are broken:
+   ```diff
+   - <!-- wp:template-part {""slug"":""header-2-0"",""theme"":""lsx-tour-operator""} /-->
+   + <!-- wp:template-part {""slug"":""header"",""area"":""header""} /-->
+   ```"
+https://api.github.com/repos/aidar-freeed/ai-codereviewer/pulls/comments/1155327110,2,- “consider adding a comment above this line to explain why deleted files are being ignored in the review process.”
