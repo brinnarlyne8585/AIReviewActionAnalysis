@@ -1,0 +1,852 @@
+Comment_URL,Classification,Issue_Suggestion_List
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1162240012,2,"- one potential improvement would be to remove the duplicate `zengo_connect` object in the `supported_wallets` object, as it appears twice with slightly different configurations.
+- it may also be worth considering adding documentation or commenting on the purpose of this list and how it is used in the application for future developers who need to modify it."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1162239897,1,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1162239815,2,- an improvement suggestion could be to use environment variables or configuration files to store urls and other dynamic values that may change over time. this makes it easier to update these values without having to directly modify the code every time.
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155306937,2,- i would suggest adding a brief comment explaining the reasoning behind the added ignore rules to make it more understandable for other contributors to the project.
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155306976,2,"- it is unclear whether writeasjsonasync is an extension method, but if it is, it is not obvious where it comes from.
+- if writeasjsonasync is not an extension method, then there is a mistake because httpresponse does not have such a method. instead, the recommended way to write a json response is to use jsonserializer.serializeasync or one of its overloads.
+- it is good practice to include a status code in the json response, along with the message. this would make it easier for clients to handle errors automatically. for example, new { statuscode = 401, message = ""unauthorized"" }.
+- the httponly cookie flag is set to false, which might be a security risk. it is recommended to set this flag to true to prevent javascript access to the cookie value."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307121,2,"- add better error handling and logging to make the code more robust, especially around network i/o and concurrency.
+- add some comments or documentation to explain how these methods are intended to be used."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307029,2,"- one improvement suggestion would be to add error handling in case the xml file is not found or cannot be loaded properly.
+- additionally, it may be useful to consider using a relative path instead of appcontext.basedirectory, which assumes the current working directory of the running process."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307003,2,"- it could be useful to add some form of structured logging, such as using a logging framework like serilog or nlog, to allow better auditing and diagnosis of production issues."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307065,0,
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307107,0,
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307146,2,"- there is a bug in the implementation of the toactionresult method for the generic version that takes a type parameter t. it calls itself recursively without any base case, causing a stack overflow error at runtime. it should return an actionresult<t> instead of calling itself."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155306990,2,"- adding more detailed error messages instead of just saying ""internal server error.""
+- handling specific types of exceptions differently, as not all exceptions are created equal.
+- considering possible security implications, such as how much information is being exposed about the internal workings of the backend to clients."
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307162,2,- one potential improvement would be to add more specific status codes to the response objects returned by the match method. this would make it easier to handle error conditions in the calling code.
+https://api.github.com/repos/VladislavPetyukevich/GulagGazRoom/pulls/comments/1155307218,1,
+https://api.github.com/repos/codestates-seb/fe-sprint-my-agora-states-server/pulls/comments/1160064147,2,"- on line 10, app.use(cors) has been added to enable cors (cross-origin resource sharing) on the server-side. however, this will enable all origins by default, which might not be ideal from a security perspective.
+   - a safer approach would be to specify the allowed origins explicitly using the cors middleware options or use a whitelist. for example: app.use(cors({ origin: ['http://example.com'] }))
+   - also, ensure that cors is applied only to the routes that require it.
+- the comment regarding express.json() on line 13 implies that it is yet to be implemented. if this is the case, then it should be implemented as soon as possible to enable parsing of json payloads in requests sent to the server.
+- the code also appears to be missing error-handling middleware, i.e., app.use((err, req, res, next) => {...}). this middleware should capture and handle any errors thrown during the request-response cycle."
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1148784813,1,
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1148784790,1,
+https://api.github.com/repos/FISCO-BCOS/FISCO-BCOS/pulls/comments/1146120613,2,- it looks like you have removed a line of code that is related to setting a set of ignored tables when creating the keypagestorage. is this intentional? are you sure this will not cause any issues with the storage?
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1150461489,1,
+https://api.github.com/repos/UnUniFi/web-apps/pulls/comments/1150461639,2,"- ""additionally, commenting out code that can be removed entirely might add unnecessary clutter.""
+- ""finally, consider getting rid of any dependencies that don't add any value to the project."""
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1194163471,1,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1194163404,2,"- one improvement suggestion would be to add a newline at the end of the file after the second-to-last line, to follow standard file formatting conventions."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1194163545,2,"- instead of directly accessing the process environment variable in this line `externallink: process?.env?.react_app_perps_url || ''`, it's better to use a default value if the environment variable is not defined. this can be achieved using optional chaining and nullish coalescing operators like so: `externallink: process?.env?.react_app_perps_url ?? ''`."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1211502661,2,"- removing the ""nan"" module from the ""dependencies"" section, which could potentially cause compatibility issues with other modules that require it."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1211503038,2,"1. it might be good to provide comments explaining what the code does.
+2. the code is accessing window properties using windowasany. you can use a type definition file or declare the trustwallet property on window interface to avoid compiler errors."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1211503458,0,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1211503694,2,"- if the ""abletofarm"" field was previously being used and has been removed without any concerns or modifications to the respective parts of the code, it may cause issues."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163528839,1,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163529196,2,"- the formatconnectorname method can be improved by eliminating the getwalletkeys method call since it only returns one connector anyway. instead, we can simplify the current name variable and remove the [0] index that follows the map method.
+- regarding the onclick handler in the jsx code block, it's unclear what the intended behavior was as the logic currently just references connector. there also appear to be commented-out code blocks that may have been temporarily removed. it would be best to review this before any implementation."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163529368,2,- the commented-out code related to `portis` should ideally be either removed or re-enabled with an explanation of why it was commented out. this can make it easier for future developers to understand the code flow.
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163530340,2,- the use of import { web3reacthooks } from '@web3-react/core'; is unnecessary as we don't use the web3reacthooks variable anywhere else in the code.
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163531698,2,"- as for the change to activate() return type, changing it to any may indicate a loss of type safety. instead, it would be better to define the expected return value or use a more specific type that matches the actual value returned by the function."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163530894,2,"- the return type of the activate() method has been changed to any from connectorupdate. as a result, the promise returned from activate() could resolve to anything and the consumer code won't have any type-safety guarantees. consider using a more specific return type instead of any."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163529707,1,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163531198,2,"- as for improvement suggestions, it's generally better to be explicit with return types in typescript. if possible, it may be better to replace `promise<any>` with a more specific type that accurately reflects what `activate()` returns."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163529560,2,"- as an improvement suggestion, it may be worthwhile adding some error handling around the connect() call to handle cases where network switching is not successful."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163531892,0,
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163532125,2,"- a possible improvement could be to avoid casting the window object to any in both getismetamaskwallet() and getiscoinbasewallet(), since this can lead to loss of type safety. instead you could try using the declare global syntax to extend the window interface with the added properties as described here: https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript"
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163532302,2,"- the connection functions can be combined into one `connectall` function for better readability.
+- the selected wallet `try-catch` block could be refactored to remove the empty `catch` statement, and instead of updating the entire `selectedwallet`, it could update only the `selectedconnection`.
+- the `console.debug` line inside the `connect` function should be reviewed as it may not be necessary or could be replaced with an error log rather than a debug log."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163532439,2,"- one improvement suggestion could be to add more documentation to the code, especially in regards to the purpose of the exported actions and their expected inputs. this would make it easier for other developers to understand and use them in their own code."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163532581,2,"- as a suggestion for improvement, you may consider adding validation checks to ensure that only valid values for `selectedwallet` are being passed in the action payload."
+https://api.github.com/repos/QuickSwap/interface-v2/pulls/comments/1163532709,0,
+https://api.github.com/repos/codestates-seb/fe-sprint-my-agora-states-server/pulls/comments/1160371963,2,"- there is a bug in the code patch. the ""+="" operator should not be used with ""app.use(cors++)"". instead, it should be ""app.use(cors())"" to correctly apply the cors middleware.
+- as for improvement suggestions, it would be helpful to include any necessary configuration options when applying the cors middleware.
+- additionally, it is good practice to specify allowed origins and http methods to prevent potential security vulnerabilities."
+https://api.github.com/repos/jgeofil/mlreadme-astro-blog/pulls/comments/1895096603,0,
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1229922634,2,"- it may be better to use quotes around variables like `$1` to avoid word splitting and globbing issues that could cause unexpected behavior or errors in the script.
+- the `calc_md5()` function could be simplified to using `md5sum` on both macos and linux systems by removing the conditional block and using the same `| cut -d ' ' -f 1` filter.
+- the path handling section starting from `if [ -z $project_path ]` should check that `project_dir` is set before falling back to `./`, with something like `if [ ""${project_dir:-}"" ]; then project_path=""$project_dir""; else project_path=""./""; fi`. it also doesn't seem to be working properly because when `$github_head_ref` isn't empty, `backup_root` will be set to `./tmp` regardless of the value of `backup_root=""/tmp""` earlier in the script.
+- it would help if there were some comments explaining the purpose of certain sections of the script, especially where it's not immediately clear what's happening or what's expected.
+- lastly, it's recommended to use double brackets `[[ ... ]]` instead of single brackets `[ ... ]` for strings tests since it handles word splitting and file globbing differently and provides stricter syntax requirements."
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1229921212,2,"1. the function calc_md5() is defined twice which is not necessary since it could be defined once and be shared by both operating systems.
+2. the script should always check if $project_path exists before using it to avoid any potential errors caused by scripts being executed from the wrong directory.
+3. the rm command in line 396 to delete a file didn't include a nullability check of the file's existence, so it would throw an error if said file doesn't exist."
+https://api.github.com/repos/clickcaramel/PolyglotRocks/pulls/comments/1228447121,2,"- in line 387, it would be good to use a more suitable command to empty the file `$backup_langs_file`. instead of `rm`, using `> ""$backup_langs_file""` or `echo -n > ""$backup_langs_file""` can ensure that the file is emptied without removing it.
+- in line 401, `$langs_path` should better be checked for existence before proceeding with further operations.
+- in line 408, the variable `$escaped_langs_path` is initialized using an undefined function `escape_for_sed`. this function should be defined somewhere else in the code or imported from an external script. additionally, it's good to add a check if the function exists before proceeding with further operations."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1267089945,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1267089814,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530357371,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530357543,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1384220479,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530357894,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1384220449,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530357993,2,"- consider specifying the exact version for the dependency on `@types/express` instead of using `""*""`, for better control over dependencies.
+- consider specifying specific versions for all dependencies to ensure consistent behavior across different environments."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1176014094,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306708585,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1176014194,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1312183202,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306708597,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1312183283,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1328119137,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1328119125,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1346075146,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530359223,2,- consider adding a brief comment mentioning the reason for updating `joi` to help future maintainers understand the change easily.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1346075312,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530359381,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1532470469,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1533059815,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1533060198,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1532470626,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1537848125,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1537847930,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1169049195,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1169049304,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1175651948,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1175651766,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1179470722,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1190470463,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1179470983,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1198521934,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1190470488,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1198521984,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1204839122,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1199286534,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1199286430,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1210431972,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1204839175,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1224657775,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1224657881,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1210432281,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1227213636,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1227213737,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1230123002,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237329816,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237329972,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1260236332,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1255021917,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1260236412,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1261673746,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1261673823,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237329931,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1255021966,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1230122919,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237329784,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1171508992,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1171508794,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1211970460,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1252311135,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1211970771,2,- it would be helpful to include a brief description of why this version update is being made in the code patch or in a related comment. this can help other developers understand the purpose of the change and avoid confusion.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1252311154,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1252311169,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1254778615,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1252311158,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1254778678,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1258683707,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1258683643,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1276104040,2,- consider adding explicit version ranges or using the caret (^) symbol in the package.json file to allow automatic upgrading to compatible future versions.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1276104094,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1302112599,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1302112689,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306622020,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306622029,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1322544202,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1322544134,2,"- in package.json, there is a version mismatch between ""@types/jest"" in dependencies and devdependencies. it might cause compatibility issues if these versions have conflicting types definitions.
+- update ""@types/jest"" from ""29.5.0"" to ""29.5.4"" in dependencies.
+- update ""jest"" from ""29.5.0"" to ""29.7.0"" in devdependencies."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1363505999,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1327845614,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1363506069,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1327845577,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1376878628,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1376878602,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385666684,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385666723,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400012992,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400012956,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401409661,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358253,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401409691,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358313,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1174249254,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1174249275,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1199440895,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1186554083,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1215081749,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1232878660,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1232878855,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248781016,2,"- consider keeping all the updated dependencies at consistent versions. in the code patch, the ""@typescript-eslint/eslint-plugin"" and ""@typescript-eslint/parser"" packages are updated to version 5.58.0, while other packages remain at their previous versions. maintaining consistency in package versions can help prevent potential conflicts and ensure compatibility among dependencies."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248781022,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248780997,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1263940623,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248780987,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1278033139,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1263940681,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1278033210,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1291611457,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1291611405,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306207957,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1320380479,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306207963,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1320380499,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1334871495,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1334871469,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1349344393,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1349344418,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1367545361,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1367545350,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1382301942,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1382301937,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398022992,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398022982,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663420,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358747,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663440,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358822,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1532770734,2,"- consider checking if any breaking changes or deprecations were introduced in typescript 5.4.3 and update your code accordingly.
+- remember to update any documentation or guides related to this change."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1532770938,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1552454138,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1552454040,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1559634324,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1559634461,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461577,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1648050737,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1648050670,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461641,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1661472529,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1661472572,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1750714596,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1750714457,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1687293981,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1687293935,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1792672685,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1792672739,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1854374230,2,"- it is advisable to check for any deprecated or removed features in the updated version of ""typescript"" and make corresponding changes in the code to maintain compatibility."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1854374241,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1536924250,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1536924262,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461900,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1673288007,2,"1. **duplicate dependency entries:** in the patch, there are duplicate entries for `logform` with different versions (`^2.3.2` and `^2.6.0`). this can lead to potential conflicts or unexpected behavior during installation and runtime.
+2. **check for and remove any duplicate dependency entries across packages.**
+3. **ensure consistency in specifying dependency versions to prevent version conflicts.**
+4. **consider aligning dependencies across packages if feasible to avoid unnecessary discrepancies.**"
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1673287948,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461841,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1708757073,2,"1. ensure consistency in specifying dependency versions across packages for better maintainability and potential bug prevention. if possible, update all packages to use the same version of logform."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1710372362,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1708756958,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1710372437,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1717379595,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1717379638,2,"1. **logform dependency conflict:**
+    - the package.json indicates two conflicting versions of `logform` being used (`^2.3.2` and `^2.6.0`).
+    - ensure that this discrepancy is addressed, as it may lead to unexpected behavior or runtime errors.
+
+2. **dependency versions:**
+    - make sure to align the dependency versions consistently, especially for `logform`. using different versions may introduce compatibility or functionality issues."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1788535332,2,"- add a brief comment summarizing the reason for updating ""winston"" to version ""3.15.0"". this helps in tracking changes easily.
+- consider using exact versions (without ^ or ~) to prevent unexpected behavior due to future major updates. if consistent behavior is crucial, exact versions are recommended."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1788535356,2,"- consider always using specific dependency versions rather than ranges (`^`) to prevent unexpected behavior due to changes in third-party libraries.
+- ensure consistency in versioning; for example, while some dependencies have precise versions specified like `""triple-beam"": ""^1.3.0""`, others might have broader bounds like `""readable-stream"": ""^3.6.0""`. consider reviewing and harmonizing this for better stability."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1826343894,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1826343915,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1835570448,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1835570447,2,"1. consider adding comments to clarify the purpose of each dependency and devdependency listed in the package.json file.
+2. ensure all dependencies are necessary and remove any that are not being used."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1166168614,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1181999423,2,- it seems like there is a duplication in the `dependencies` block inside `buildscript`. you might want to remove one of the `dependencies { }` blocks.
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1173210014,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1181243616,2,"- an improvement suggestion could be to remove the commented-out line of code related to removing a certain dependency in the future, as it makes the code harder to read and can potentially cause confusion for other developers working on the same codebase."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1215434257,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1185631690,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1186953307,2,- an improvement suggestion would be to add some comments explaining the purpose of each dependency so that anyone reviewing the code can better understand its intent.
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1177205361,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1181130886,2,"- it's good practice to include a comment explaining the purpose of each plugin.
+- you may also consider specifying the versions of other plugins used in the buildscript block to ensure consistency and avoid potential conflicts between versions."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1181027783,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1185399022,2,"- specify the version of yarn used during the build step explicitly in the dockerfile to ensure consistency across environments.
+- run yarn install before copying package.json to take advantage of the caching mechanism in docker and speed up builds when changes are made only to the application's code, instead of the dependencies.
+- add labels to the production image with useful information such as the version number and source repository to facilitate further management of images."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1173136920,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1195594284,2,"- an improvement suggestion could be to add a version tag to the second from statement to ensure that the image built is tied to a specific version of node.js, such as from node:20.2.0-alpine.
+- another improvement could be to add a checksum validation step when copying the package.json file to ensure that the file hasn't been corrupted or modified during transfer. this can be achieved using tools such as sha256sum or md5sum."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1224842316,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612286,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1259004102,2,"- consider specifying a more precise tag for the node.js image, such as including the minor version, like node:20.4-alpine, to avoid unexpected upgrades.
+- consider adding yarn.lock to the copy command in the dockerfile if you rely on yarn package manager to improve reproducibility."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1290559513,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1316556850,2,"1. it's generally a good practice to use specific versions of dependencies rather than relying on the latest tag (`node:20.6.0-alpine`). this ensures that your code is using a known and stable version of node.js.
+2. consider adding a version constraint for the `yarn` package manager as well in the `package.json` file. this helps maintain consistency and avoids potential compatibility issues with future versions of yarn.
+3. ensure that the `openapi.yml` file is necessary and correctly copied to the production image. double-check its usage and path within the application."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1322047643,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271111597,2,"- consider specifying specific versions for node packages in your package.json file.
+- document any specific reasons for the base image version upgrade, such as necessary feature updates or security patches, to help future maintainers understand the rationale behind the change."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330860692,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1361115909,2,"- add comments to explain the purpose of each section.
+- consider adding a `.dockerignore` file to exclude unnecessary files from the build context and reduce the size of the image."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1341746039,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1372279602,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1369523460,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1372279716,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1369522886,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385666988,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1377430588,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1377430801,2,- the indentation and formatting of the patch seem inconsistent. ensure consistent indentation across the file to maintain readability.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385667079,2,"- ""it seems there is an extra comma at the end of the patch, which could cause a syntax error if not removed."""
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1396544964,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1396545019,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398284114,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398284122,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400013208,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400013246,2,"- there is missing information about the ""abide-promise"" dependency introduced by ""undici-types""."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401410017,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401410084,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1403780849,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1403780823,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1404168245,2,"- it's generally a good practice to use a specific version range instead of a fixed version number for type definitions. this allows for more flexibility when updating dependencies in the future. for example, you could use ""^20.10.0"" instead of ""20.10.0"" for `@types/node`."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1404168371,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1409975808,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663525,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663495,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1409975844,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413052823,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413052880,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413052911,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413176384,2,"- if reducing the final image size is a concern, you could consider using a slim alternative to the node.js alpine image, such as node:20.10.0-slim."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413176581,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354356,2,"- it is recommended to specify the tag or version when copying files. for example, instead of `copy openapi.yml ./openapi.yml`, it is better to use `copy openapi.yml ./` to prevent unexpected behavior due to changes in the working directory.
+- consider optimizing docker layers by combining run commands when appropriate to reduce the number of layers created during the build process. this can help improve caching efficiency.
+- include comments or specific instructions in the dockerfile to explain the purpose of each step and any considerations for future maintenance or updates."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413176787,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354573,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530359544,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354753,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530359696,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1204890851,2,"- it would help to have comments or documentation explaining the purpose of this build script and what each plugin does.
+- it might make sense to use a variable or constant to hold the value of the kotlin version instead of hardcoding it in multiple places."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1218752693,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1204891097,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1191810503,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1215434190,2,"- upgrading the coroutines and serialization libraries to their latest versions might be a good idea.
+- it's generally recommended to avoid using ""-beta"" versions in production code and instead use stable releases."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1222342274,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1223223778,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1222342243,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1234580807,2,"- one minor suggestion for improvement would be to move the versions of coroutines and serialization into a separate gradle.properties file, especially if they are used in multiple places across the build script. this can help with easier version management and prevent duplication of code."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1233434127,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1247289025,2,"- consider providing comments explaining the purpose/importance of each library you're using (if not obvious), especially for less common ones like ""acra-mail"" or ""floatingactionbutton"" to enhance code readability for other developers."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1266037312,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1275606409,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1274235476,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1294087841,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1271271640,2,- the syntax used in the code patch seems to be incorrect. the use of apply false after specifying the plugin version is not valid. the correct syntax for applying a plugin would be something like apply plugin: 'pluginid'.
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1271271633,2,"1. it's generally a good practice to have a newline at the end of the file to ensure proper formatting.
+2. consider specifying more specific triggers rather than using all push events on the ""develop"" branch. this can help limit unnecessary executions of the workflow.
+3. review the permissions granted in the `permissions` section. make sure they are appropriate for your use case and restrict unnecessary access.
+6. consider adding more steps/actions to perform additional tasks or validations before or after the qodana scan if required for the workflow.
+7. it might be helpful to add comments explaining the purpose or reasoning behind certain steps or configurations in the workflow for better readability and maintainability."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1271273135,2,- consider adding more descriptive names to jobs and steps to enhance readability.
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1271273158,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1271273166,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1278647351,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1292213097,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1292213102,2,"- ""you can do the same for other properties as well."" (referring to using access modifiers explicitly for other properties, suggesting to add explicit access modifiers to properties besides uistore.)"
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1292213113,2,"1. it's generally a good practice to include import statements at the top of the file in alphabetical order for better organization. in this patch, the import statements are not sorted.
+
+3. for the editing property, consider using val instead of var if the value should not be modified after initialization in order to promote immutability and prevent accidental changes.
+
+4. when implementing the edit method, it would be a good idea to handle the case where alarms.getalarm(id) returns null. you may want to add error handling or logging to handle such situations.
+
+5. in the hidedetails method, setting editing.value to null directly could potentially lead to multiple null assignments. consider checking if editing.value is already null before making the assignment to prevent unnecessary updates.
+
+6. it's important to ensure that the id parameter passed to the edit method is valid. consider adding input validation or error handling to handle the case where an invalid id is provided."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1313306151,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1302333724,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1314342310,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1335279674,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1325201757,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1340779826,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1340779871,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1335236916,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1309476693,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1326642945,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1348132408,2,"- ensure that the dependency notation style is consistent throughout the file. in the snippet you provided, some dependencies are enclosed in double-quotes ("""") while others are enclosed in parentheses (())."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1376932627,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1385803640,2,"1. the line -  dependencies { dependencies { classpath(""com.android.tools.build:gradle:7.3.1"") } } appears to be incorrect, containing duplicate dependencies blocks. to fix it, you can remove one of the duplicate blocks."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1395025306,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1406936093,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1411440765,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1396537715,2,- it appears that there is a duplication in the `dependencies` block. the `dependencies { }` block is nested within another `dependencies { }` block. you can remove the inner block to fix this issue.
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1426025005,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1437929820,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1441164880,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1437929819,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1452812439,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1464136513,2,"- there seems to be a duplication in the `dependencies` block within the `buildscript` block. the correct syntax for specifying the classpath dependency is as follows:
+  ```
+  dependencies {
+    classpath(""com.android.tools.build:gradle:8.2.2"")
+  }
+  ```"
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1414692763,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1479079215,0,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1467831257,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1445497757,2,"1. the org.slf4j:slf4j-api dependency is being updated from version 1.7.36 to 2.0.11. this may introduce backward compatibility issues if your code relies on specific features or methods from the old version. make sure to review the release notes for version 2.0.11 and check if any breaking changes affect your code.
+2. consider adding comments to explain the reasons for specific dependency updates. this can help future developers understand the rationale behind these changes."
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1467831930,1,
+https://api.github.com/repos/yuriykulikov/AlarmClock/pulls/comments/1479079305,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1534755518,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1534755562,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1543567846,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1550265040,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1550265133,2,"1. ensure consistency in upgrading dependencies. for instance, bson could be updated consistently to either ^6.4.0 or ^6.5.0 across the entire codebase."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1556345223,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1543567939,2,"1. code formatting: ensure consistent code formatting. in this case, the alignment of package version strings can be standardized for better readability and maintainability."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1556345301,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1567730419,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1567730304,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1591639896,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1583819308,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1591639979,2,"- make sure to update the dependencies listed in each package.json to reflect these new versions if necessary.
+- consider adding comments explaining why specific versions were chosen or what impact the updates might have from a functionality or security standpoint."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1583819228,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1605050528,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1601981765,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1601981635,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1605050767,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1622651926,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1622652220,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461719,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643652063,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643461818,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1643652112,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1653803936,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1653803985,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1669402780,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1667001929,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1669402852,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1676484606,2,"- after updating dependencies, regenerate and commit your package-lock.json file to ensure consistent installations across environments."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1697467970,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1697467857,2,"- consider whether it's necessary to lock down dependency versions using exact versions like ""mongoose"": ""8.5.2"" or if you can benefit from using ranges (e.g., ""mongoose"": ""^8.5.0"")."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1715847471,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1676484654,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1729361739,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1729361672,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1715847582,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1740006073,2,"1. dependency versioning strategy: consider specifying exact versions for all dependencies to prevent unintended upgrades that might introduce breaking changes.
+2. consistency: maintain consistency in versioning formats across all dependencies, e.g., using either semantic versioning or caret (^) operator consistently."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1740006133,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1742398198,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1742398317,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1755471095,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1755471204,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1764096187,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1777672447,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1764096244,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1777672515,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1778905855,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1794131310,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1794131425,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1778905960,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1805360713,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1805361150,2,"- consider pinning down dependencies to exact versions to prevent unexpected updates.
+- maintain consistency in formatting for better readability.
+- consider adding comments for complex sections or rationale behind certain dependency choices."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1817183966,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1824829240,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1824829126,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1667001967,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1834911377,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1834911375,2,- consider adding comments or documentation to explain the reason for the version update in the package.json file for future reference.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1847497521,2,- add a brief comment explaining the reason for the version update to provide context for future code maintainers.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1817183888,2,"- ensure consistent formatting across your project files. the version format could be standardized (e.g., all dependencies using ""semver"" or ""caret ranges"" ^).
+- depending on your project's requirements and policies, consider specifying more specific version ranges rather than using broad ranges like ""^"" for better control over updates and predictability."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1847497523,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1858739024,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1858739027,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1171969885,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1171969916,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1173289999,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1173290051,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1174528401,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1174528415,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1177108021,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1179805060,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1179804966,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1177108139,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1181010836,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1181010841,2,"- ""it would also improve readability to have consistent indentation and formatting throughout the file."""
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1185946627,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1185946737,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1186554044,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1187975925,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1186554060,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1187975994,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1189730241,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1189730002,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1191708539,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1191708607,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1194544267,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1194544330,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1195761641,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1198098291,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1198098032,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1199833765,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1195761715,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1199833772,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1206000956,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1206001125,2,"- standardize formatting (e.g., indentation)
+- remove trailing spaces
+- use consistent quotation marks"
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1207364312,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1207364621,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1225099966,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1227534180,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1225100012,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1227534129,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612105,2,- one potential improvement suggestion is to add the package-lock.json file to the container image to ensure deterministic builds.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612128,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612178,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612258,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612267,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248780961,2,"2. consider specifying the version range in the package.json file instead of relying on a specific version. for example, instead of `""node"": ""18.16.0""` you can use something like `""node"": ""^18.0.0""` to allow updates within the major version.
+
+3. make sure to install specific package versions by running `yarn install` instead of just copying the package.json file. this ensures consistency and avoids potential conflicts between different environments.
+
+4. consider using multi-stage builds. currently, you're using two separate docker images (`base` and the final image). with multi-stage builds, you can optimize the container size by separating the build environment from the production environment, thus reducing the risk of including unnecessary files."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248781029,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248780988,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248781001,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1237612397,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248781044,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1248780970,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1268748159,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1268748101,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1268748202,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271221190,2,"- ensure dependency versions specified in `package.json` are pinned to avoid unexpected updates.
+- consider configuring a non-root user inside the container for better security."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271221235,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271221285,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271312473,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271312455,2,- ensure that the required dependencies are installed before running the `yarn build` command.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1274075993,2,"- the openapi.yml file is also being copied during the build process, which suggests it might be used by the node.js application. make sure it's needed and placed correctly in your project structure.
+- the yarn build command is executed in the ""base"" stage. check if there are any build commands in your project that need to run before this step or after for a complete and successful build.
+- in the final production build stage, the node modules and build directory are copied from the ""base"" stage. ensure that this is the correct approach for your node.js application's specific requirements.
+- consider adding a version tag to the final production image, such as node:18.17.0-alpine, for better management and reproducibility."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1274076299,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1283885995,2,"- the package.json file is being copied in the first stage (`base`). it's recommended to also copy the lock file (e.g., package-lock.json or yarn.lock) if one exists. this ensures that the dependencies are installed based on the exact versions specified in the lock file."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1283886045,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1283886099,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1271312465,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1274076459,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1285042901,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1285042918,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1285042927,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1287750650,2,"- one improvement suggestion would be to use a more specific tag for the node.js base image, such as `node:18.17-alpine3.14`, where `3.14` corresponds to the specific version of alpine linux being used. this helps ensure that future updates to the base image won't introduce unexpected changes."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1287750714,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1287750799,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1290559410,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1290559629,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1290559491,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1291728455,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1291728514,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1291728324,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1298852935,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1298852902,2,"- ensure that the package.json specifies the exact dependency versions to achieve reproducibility.
+- consider adding additional steps such as cleaning up unnecessary files or setting environment variables if they are required for your application."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1301721687,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1301721846,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1301721979,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1298852984,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1302112999,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1302112918,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1302113097,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1303585817,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1303585712,2,"1. it is generally recommended to use specific versions of node.js for consistency and to avoid unexpected issues. the patch updates the base image from node:18.16.0-alpine to node:18.17.1-alpine, which may introduce new bugs or compatibility issues with your code.
+
+2. specify the exact version of node.js that you want to use, rather than relying on the ""latest"" tag. this ensures that your build is reproducible and avoids potential issues introduced by newer versions.
+
+for example, instead of from node:18.17.1-alpine, you can specify a specific version like from node:18.17.1-alpine3.14 if available."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1303585954,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1304932355,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1304932416,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1304932486,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306774309,2,"- improvement suggestion: it would be helpful to ensure that the ""yarn build"" step has appropriate error handling and logging, in case there are any issues during the build process."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306774323,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1306774334,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1313612894,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1313612870,2,"- verify that you need both the node_modules directory and the build files in your final image. (refers to the line: copy --from=base ./node_modules ./node_modules)
+- consider using a specific version tag for the from instruction, instead of relying on the ""latest"" tag (e.g., node:18.17.1-alpine). this ensures reproducibility and avoids unexpected changes if newer versions of the base image introduce breaking changes."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1313612927,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1314002596,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1314002660,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1320380383,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1320380482,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1320380437,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1314002668,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1326992972,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1326992601,2,"- duplicate node.js base image: there are two occurrences of the `from node:18.17.1-alpine` line. to optimize the docker image, you can remove the second occurrence since it is not required."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1326993157,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1327944501,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1327944493,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1327944507,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330860638,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330860739,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330860696,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330994140,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330994191,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1330994029,2,"- consider adding a `.dockerignore` file to exclude unnecessary files and directories from being copied.
+- it's a good practice to use the workdir instruction to set the default working directory for subsequent instructions. for example, `workdir /app` will set the working directory to `/app`.
+- if you have a package-lock.json or yarn.lock file, it's safer to copy that instead of just the package.json file. this ensures consistent installation of dependencies across different environments.
+- after copying the necessary files, consider running cleanup commands to remove any unnecessary files or dependencies that were only needed during the build stage."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1335078655,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1335078685,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1336353245,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1336353154,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1336353405,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1335078703,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1341612695,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1341612989,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1341612200,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1343250521,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1343250488,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1343250555,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1349436838,2,"- however, it's worth noting that copying only the `package.json` file might not be sufficient if you have other configuration files or dependencies required during the build process. make sure all necessary files are included.
+- the patch introduces a new line to copy an `openapi.yml` file into the image. it's important to ensure that this file exists at the specified location and is needed for your application to run correctly.
+- the code executes a `yarn build` command during the build stage. make sure this is correct and necessary for your project. if you're using a different package manager or don't require a build command, adjust it accordingly."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1349436879,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1349436867,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1355929987,2,"1. consider using specific version tags instead of generic ""alpine"" tags to ensure consistency and avoid unexpected changes in future updates.
+2. add comment lines to explain the purpose of each section or instruction to improve code readability and maintainability."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1355930057,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1355930121,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1357513876,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1357513829,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1357513777,2,"- ensure that this file exists and is required for the application. (referring to the line: ""the openapi.yml file is also copied into the base image."")
+- verify that the necessary build steps are correctly defined and are compatible with the image being used. (referring to the line: ""the yarn build command is executed in the base image."")"
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1361115807,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1361115917,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1363580376,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1363580193,2,"1. update the patch comment: the comment on line 2 should be updated to reflect the actual change made in the patch.
+2. consider using specific version tags: instead of using generic tags like alpine, it's generally recommended to use specific version tags like alpine3.14 to ensure consistent and predictable behavior across builds.
+5. consider adding checksum verification or signing: for critical files like package.json or openapi.yml, you can consider including checksum verification or digital signatures to ensure their integrity during the build process."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1363580457,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1361116013,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1372279480,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1372279575,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1372279708,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1377430520,2,- consider using the tilde (~) or caret (^) symbols in the dependency version to specify the desired level of flexibility for future updates.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1377430688,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1377430372,2,"- it would be better to copy the lock file as well (e.g., `yarn.lock` or `package-lock.json`) to ensure deterministic package installations.
+- in the second stage, when copying the node modules and build directory, it would be beneficial to specify the exact paths to avoid copying unnecessary files. for example, instead of `copy --from=base ./node_modules ./node_modules`, you can use `copy --from=base /path/to/node_modules /path/to/node_modules` for more precision."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385670099,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398284089,2,- consider adding comments explaining the purpose of each section of the dockerfile for better readability and clarity.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1385670529,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398284116,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400013070,2,"- make sure the ""openapi.yml"" file is required and used properly in your application.
+- you should ensure that the `yarn build` command is the correct command for building your application. verify if any additional build steps or scripts are needed."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1398284109,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400013112,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1400013193,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1403780728,2,"- one improvement suggestion is to use specific version tags for the base image rather than using only the major and minor version numbers. for example, instead of ""node:18.18.2-alpine,"" specifying a more specific tag like ""node:18.18.2-alpine3.14"" can ensure better consistency and prevent unexpected changes that might be introduced in future releases."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401409953,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401410019,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1401409911,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1403780795,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1403780752,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1409975663,2,"- ensure that this file (`openapi.yml`) exists and is necessary for the application's functionality.
+- make sure this command (`yarn build`) is correct and performs the necessary build steps for your application."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1409975717,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1409975788,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1411375536,2,"1. it's generally a good practice to use specific version tags for docker images instead of using a generic tag like alpine. if possible, consider specifying a more specific version tag (18.18.2 or higher) to ensure that you have control over the exact version used.
+2. review the package.json and ensure that all dependencies are pinned to specific versions. this ensures consistent behavior across different environments and avoids potential compatibility issues.
+3. consider adding a comment or documentation explaining the purpose or reason behind specific steps in the dockerfile. this can make it easier for others to understand the intention of the code and troubleshoot any future issues."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1411375607,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663344,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1411375692,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663375,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412698106,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412663423,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412698118,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1412698128,0,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413176318,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413176031,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354256,2,"- ensure that your dependencies are compatible with node 18.19.1; a run of `yarn install` might be necessary if dependencies were not rebuilt since the base image change.
+- consider combining `run yarn install`, `copy .`, and `run yarn build` into a single step to reduce the number of image layers, potentially improving caching and final image size.
+- verify that copying `package.json` and `openapi.yml` at the beginning is still valid for your application. if these files don't change frequently, copying them after installing dependencies might improve docker build caching.
+- ensure the readme or dockerfile comments are updated to reflect the changes made."
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354388,2,- consider using version ranges in your dependencies to allow for more flexibility in updates while ensuring compatibility.
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358404,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1413175663,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530354530,1,
+https://api.github.com/repos/sidhantpanda/docker-express-typescript-boilerplate/pulls/comments/1530358577,2,"1. **dependencies mismatch:**
+   - in the change from `undici-types ""~5.26.4""` to `""undici-types@~5.26.5""`, the version specified in the dependency does not match the actual resolved version, as it refers to a different version (`5.26.4` vs. `5.26.5`). ensure consistency between dependency versions and what is actually resolved.
+
+2. **consistency in dependency notation:**
+   - maintain consistency in specifying dependencies either using quotes or without quotes to enhance readability. for instance, use `""undici-types@~5.26.5""` consistently."
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796140386,1,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796140384,1,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097717,2,"- the __init__ method in the patch class is directly modifying the input argument pattern. this can lead to unexpected behavior if the caller does not anticipate that the input will be changed. consider creating a new variable instead of modifying the input argument.
+```diff
+-        super().__init__(pattern, depletionfunction, encoder, feeder)
++        pattern_modified = pattern
++        super().__init__(pattern_modified, depletionfunction, encoder, feeder)
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205277,2,"- in the function `test_load_start_only()`, there's no error handling for the case when the data loading fails and returns an empty dataset. this could lead to a misleading test result. consider adding an explicit check for this scenario.
+```diff
+    data = aeon.load(
+       nonmonotonic_path, exp02.patch2.encoder, start=pd.timestamp(""2022-06-06t13:00:49"")
+    )
++    assert data is not none, ""data loading failed""
+    assert len(data) > 0
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097706,2,"- the read method in the _encoder class is downsampling the data by taking the first sample in each resampled bin. this approach might lead to loss of important data if there are significant changes within each bin. consider using a different resampling strategy, such as averaging, which could provide a more representative sample for each bin.
+```diff
+-        data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        data = data.resample(f""{1/sr_hz}s"").mean()  # take average of samples in each resampled bin
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097705,2,"- it would be better to keep all imports from `aeon.io.api` together for better readability and maintainability.
+- suggestion to combine the imports as follows:
+  ```diff
+  - from aeon.io.api import aeon as aeon_time
+  - from aeon.io.api import chunk, chunk_key
+  + from aeon.io.api import aeon as aeon_time, chunk, chunk_key
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205264,2,"- the import of social03 from aeon.schema.ingestion_schemas is not used in the code, which can lead to unnecessary overhead and confusion. please remove unused imports to improve code readability and performance.
+```diff
+- from aeon.schema.ingestion_schemas import social03
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223570,2,- the __init__ methods in the video and encoder classes are hardcoding the pattern for file matching. this reduces the flexibility of these classes and makes them less reusable. consider passing the pattern as an argument to the __init__ method instead.
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223566,2,"- in the read method of the _video class, you are dropping columns from the dataframe without checking if they exist. this could lead to errors if one or more of the specified columns are not present in the dataframe. consider adding a check to ensure that only existing columns are dropped.
+- 
+```diff
+-        data.drop(columns=drop_cols, errors=""ignore"", inplace=true)
++        drop_cols = [col for col in drop_cols if col in data.columns]
++        data.drop(columns=drop_cols, inplace=true)
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205294,2,"- in the function test_load_end_only(), there's no error handling for the case when the data loading fails and returns an empty dataset. this could lead to a misleading test result. consider adding an explicit check for this scenario.
+```diff
+    data = aeon.load(
+       nonmonotonic_path, exp02.patch2.encoder, end=pd.timestamp(""2022-06-06t13:00:49"")
+    )
++    assert data is not none, ""data loading failed""
+    assert len(data) > 0
+```"
+https://api.github.com/repos/Taiki130/pill_notify/pulls/comments/1490981924,0,
+https://api.github.com/repos/imajoriri/tokeru/pulls/comments/1536598852,0,
+https://api.github.com/repos/imajoriri/tokeru/pulls/comments/1536598849,0,
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223564,2,"- the read method in the _encoder class is downsampling the data by taking the first sample in each resampled bin. this approach might lead to loss of important information if the first sample is not representative of the entire bin. consider using a different resampling strategy, such as averaging the samples in each bin, to preserve more information.
+- 
+  ```diff
+  -        data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
+  +        data = data.resample(f""{1/sr_hz}s"").mean()  # take average of samples in each resampled bin
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223571,2,"- please ensure that only those items that should be accessible when importing the module using from module import * are included in __all__.
+- 
+```diff
+-__all__ = [""octagon01"", ""exp01"", ""exp02"", ""social01"", ""social02"", ""social03""]
++__all__ = [""intended_public_interface_item1"", ""intended_public_interface_item2"", ...]
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1931010859,2,"- the logic in the new hunk seems to be incorrect. the elif statement on line 153 will not execute if the first condition on line 148 is true, even if there are duplicate keys in the data index. this could lead to issues if the data index has both out-of-order timestamps and duplicate keys. i suggest changing the elif to an if so that both conditions can be checked independently.
+- 
+```diff
+-            elif data.index.has_duplicates:
++            if data.index.has_duplicates:
+                 warnings.warn(f""data index for {reader.pattern} contains duplicate keys!"", stacklevel=2)
+                 data = data[~data.index.duplicated(keep=""first"")]
+```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205306,2,"- in the function `test_load_encoder_with_downsampling()`, the variable `downsample_period` is defined but not used in the subsequent code. this can lead to confusion and should be removed if not necessary.
+  ```diff
+  - downsample_period = 0.02
+  ```
+- there's no error handling for the case when the data loading fails and returns an empty dataset. this could lead to a misleading test result. consider adding an explicit check for this scenario.
+  ```diff
+      data = aeon.load(monotonic_path, social03.patch2.encoder)
+  +    assert data is not none, ""data loading failed""
+      raw_data = aeon.load(monotonic_path, exp02.patch2.encoder)
+  +    assert raw_data is not none, ""raw data loading failed""
+  ```"
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1931010865,2,"- the check for repeat_idxs is not correct. in python, an empty numpy array evaluates to true in a boolean context, which means the code inside the if block will execute even when repeat_idxs is empty. this could lead to unexpected behavior. you should explicitly check if repeat_idxs is not empty by using len(repeat_idxs) > 0.
+  
+  ```diff
+  -         if repeat_idxs:  
+  +         if len(repeat_idxs) > 0:  
+             num_cols_skip = 5 if bonsai_sleap_v == bonsai_sleap_v2 else 6
+             init_rep_part_col_idx = (repeat_idxs - 1) * 3 + num_cols_skip
+  ```"
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035-2,2,"1. error handling: the error handling in the vizquery and reportvizquery functions could be improved. currently, if the fetch request fails, it throws an error with the message from the response. it would be better to also include the status code in the error message to make debugging easier. for example:
+
+```typescript
+if (!result.success) {
+    throw new error(`${result.message}, status code: ${res.status}`);
+}
+```
+
+2. type safety: the api parameter in the askviz component can be either a string or a function. this could potentially lead to type errors. it would be better to separate these into two distinct props to ensure type safety.
+
+3. code duplication: there is some code duplication in the onclick handlers of the vote up and vote down buttons. this could be refactored into a separate function to reduce duplication and improve maintainability."
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1888626993-1,2,"- there is a potential performance issue with the use of usememo hook. the usememo hook is used to memoize the result of a function, but in this case, it is used without any dependencies. this means that the function will be re-computed on every render, which could lead to performance issues if the computation is expensive. consider adding dependencies to the usememo hook or removing it if it's not necessary."
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035-1,2,"1. error handling: the default case in the switch statement logs a warning message when an unknown step type is encountered. it would be better to throw an error instead to ensure that the issue is not silently ignored. for example:
+```typescript
+default: {
+    throw new error(`unknown step type: ${step.type}`);
+}
+```
+2. code duplication: the applyfilter and applysort functions are called with similar arguments. this could be refactored into a separate function to reduce duplication and improve maintainability.
+3. type safety: the workflow parameter in the dataqueryclient function is an array of idataqueryworkflowstep, which is a union type. this could potentially lead to type errors. it would be better to separate these into distinct types to ensure type safety."
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035-2,2,- there is a potential issue with the `filter` case in the `switch` statement. the `map` function is used but the returned value is not used. this could lead to unexpected behavior. consider removing the `map` function or use the returned value.
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035-3,2,"1. **use of usememo hook**: ""it's important to ensure that the dependencies provided to usememo are correct. in this case, the dependencies include props.rawfields, props.datasource ? props.datasource : props.computation, and props.fieldkeyguard. if any of these values change, the computation and safemetas will be recalculated. if these dependencies are not expected to change often, this is fine. however, if they do change frequently, the overhead of recalculating these values may outweigh the benefits of memoization.""
+2. **error handling**: ""the error handling in this code could be improved. currently, errors are logged to the console and optionally passed to an onerror prop if it exists. it would be better to have a more robust error handling strategy, such as displaying error messages to the user or sending error reports to a logging service.""
+3. **code organization**: ""this file is quite large and contains a lot of logic. it might be beneficial to break this up into smaller, more manageable components. this would make the code easier to read and maintain."""
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1888626993-2,2,"- there is a potential performance issue with the use of usememo hook without any dependencies. consider adding dependencies to the usememo hook or removing it if it's not necessary.
+- for example, in the following code:
+  ```typescript
+  const aggregationoptions = usememo(() => {
+      return global_config.aggregator_list.map((op) => ({
+          value: op,
+          label: t(op),
+      }));
+  }, []); // add dependencies or remove usememo if not necessary
+  ```
+  suggestion: add dependencies to the usememo hook or remove usememo if not necessary."
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035-1,2,"1. the useeffect hook at the end of the file has a dependency on isspatial and vizstore, but these are not included in the dependency array. this could lead to unexpected behavior. include isspatial and vizstore in the dependency array of the useeffect hook.
+
+```typescript
+useeffect(() => {
+    // ... existing code ...
+}, [isspatial, vizstore]);
+```
+
+2. the handlegeomclick function is quite complex and could benefit from being broken down into smaller, more manageable functions. this would improve readability and maintainability of the code. consider refactoring this function to simplify its logic."
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405241324-1,2,"1. the function fake_model is defined but seems to be a placeholder or incorrect implementation as it attempts to add an integer and a string, which will raise a typeerror. consider revising or removing this function if it's not intended for production."
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405287260-1,2,"1. the function fake_model is defined with a type mismatch in its return statement. it attempts to add an integer and a string, which will raise a typeerror. ensure the types are compatible or adjust the function signature and logic accordingly."
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405440231-1,2,"- the function fake_model has the same issue as in the other file: it attempts to add an integer and a string, which will raise a typeerror. ensure that both operands are of compatible types before performing the addition. example fix:
+```python
+return a + int(b)
+```"
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405440231-2,2,"- the function `fake_model` attempts to add an integer and a string, which will raise a typeerror. ensure that both operands are of compatible types before performing the addition. example fix:
+```python
+return a + int(b)
+```"
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035-3,2,"- the explainbyselection function is quite large and complex. it could be broken down into smaller, more manageable functions to improve readability and maintainability. for example, the logic inside the for loop could be extracted into a separate function.
+- the function is directly using the dataquery function. this could make testing this function in isolation difficult. consider passing the dataquery function as a parameter to the explainbyselection function."
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405486176-2,2,"1. the function my_function attempts to concatenate an integer and a string, which will raise a typeerror. consider converting the integer to a string before concatenation:
+   ```python
+   def my_function(a: int, b: str) -> str:
+       return str(a) + b
+   ```"
+https://api.github.com/repos/pass-culture/data-gcp/issues/comments/2485339251-1,2,"1. the added print(""gce operators loaded"") statement is likely for debugging purposes. consider removing it or using a logging mechanism instead to avoid unnecessary console output in production.
+
+```python
+self.log.info(""gce operators loaded"")
+```
+
+2. in the __init__ methods, mutable default arguments like labels={} and environment={} can lead to unexpected behavior due to shared state across instances. use none as the default and initialize inside the method.
+
+```python
+labels=none
+...
+self.labels = labels or {}
+```
+
+3. in the make_install_command method, ensure that the installer variable is validated before constructing the command to prevent potential command injection vulnerabilities."

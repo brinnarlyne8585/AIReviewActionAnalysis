@@ -1,0 +1,4 @@
+{"timestamp": "2026-01-21T20:58:00.665913", "review_file": "input/supped_reviews(llm_input).csv", "output_file": "output/supped_reviews(llm_input)/Suggestion_openai-gpt-4.1_p=3.12(1).csv", "llm_model": "openai-gpt-4.1"}
+
+{"timestamp": "2026-01-21T21:24:09.598447", "review_file": "input/supped_reviews(llm_input).csv", "output_file": "output/supped_reviews(llm_input)/Suggestion_openai-gpt-4.1_p=3.12(1).csv", "llm_model": "openai-gpt-4.1"}
+

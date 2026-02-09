@@ -1,0 +1,776 @@
+Comment_URL,Original_Start_Line,Original_Line,Original_Commit_id,Commit_id,Diff_hunk,Diff_path,Created_At,Updated_At,Body,Affiliated_PR_URL,Head_SHA
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097705,,14,b54e1c3440b58d0bd8ca3fa37e49de74b0de86da,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -11,8 +11,7 @@
+ from dotmap import DotMap
+ 
+ from aeon import util
+-from aeon.io.api import aeon as aeon_time
+-from aeon.io.api import chunk, chunk_key
++from aeon.io.api import chunk_key",aeon/io/reader.py,2024-10-10T21:09:48Z,2024-10-10T21:09:49Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The import statement `from aeon.io.api import chunk_key` has been moved up in the file. This change doesn't seem to affect the functionality of the code, but it's generally a good practice to keep imports organized and grouped together. In this case, it would be better to keep all imports from `aeon.io.api` together for better readability and maintainability.
+```diff
+- from aeon.io.api import aeon as aeon_time
+- from aeon.io.api import chunk, chunk_key
++ from aeon.io.api import aeon as aeon_time, chunk, chunk_key
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097717,60.0,61,b54e1c3440b58d0bd8ca3fa37e49de74b0de86da,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}S"").first()  # take first sample in each resampled bin
++        return data
++
++
++class _Video(reader.Video):
++    """"""A version of the video reader that drops columns that can be recreated from data and metadata.""""""
++
++    def read(self, file: PathLike[str], drop_cols=None) -> pd.DataFrame:
++        """"""Reads video metadata from the specified file.""""""
++        drop_cols = [""hw_counter"", ""_frame"", ""_path"", ""_epoch""] if drop_cols is None else drop_cols
++        data = pd.read_csv(file, header=0, names=self._rawcolumns)
++        data.drop(columns=drop_cols, errors=""ignore"", inplace=True)
++        data.set_index(""time"", inplace=True)
++        return data
++
++
++# Define new streams and stream groups
++class Video(Stream):
++    """"""Video frame metadata.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Video(f""{pattern}_*""))
++
++
++class Encoder(Stream):
++    """"""Wheel magnetic encoder data.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Encoder(f""{pattern}_90_*""))
++
++
++class Patch(StreamGroup):
++    """"""Data streams for a patch.""""""
++
++    def __init__(self, pattern):
++        super().__init__(pattern, DepletionFunction, Encoder, Feeder)",aeon/schema/ingestion_schemas.py,2024-10-10T21:09:49Z,2024-10-10T21:09:49Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `__init__` method in the `Patch` class is directly modifying the input argument `pattern`. This can lead to unexpected behavior if the caller does not anticipate that the input will be changed. Consider creating a new variable instead of modifying the input argument.
+```diff
+-        super().__init__(pattern, DepletionFunction, Encoder, Feeder)
++        pattern_modified = pattern
++        super().__init__(pattern_modified, DepletionFunction, Encoder, Feeder)
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796097706,20.0,27,b54e1c3440b58d0bd8ca3fa37e49de74b0de86da,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}S"").first()  # take first sample in each resampled bin
++        return data",aeon/schema/ingestion_schemas.py,2024-10-10T21:09:48Z,2024-10-10T21:09:49Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `read` method in the `_Encoder` class is downsampling the data by taking the first sample in each resampled bin. This approach might lead to loss of important data if there are significant changes within each bin. Consider using a different resampling strategy, such as averaging, which could provide a more representative sample for each bin.
+```diff
+-        data = data.resample(f""{1/sr_hz}S"").first()  # take first sample in each resampled bin
++        data = data.resample(f""{1/sr_hz}S"").mean()  # take average of samples in each resampled bin
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796140384,18.0,26,d6cf52ffc1c305a2202c8cf28ab0b47d59f1c2f9,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -14,15 +15,15 @@
+ @mark.api
+ def test_load_start_only():
+     data = aeon.load(
+-        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49"")
+     )
+     assert len(data) > 0
+ 
+ 
+ @mark.api
+ def test_load_end_only():
+     data = aeon.load(
+-        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49"")",tests/io/test_api.py,2024-10-10T21:53:58Z,2024-10-10T21:53:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `downsample` parameter has been removed from the `aeon.load()` function. If downsampling is now handled differently, ensure that it doesn't affect the functionality of these tests.
+```diff
+-        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49"")
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796140386,39.0,54,d6cf52ffc1c305a2202c8cf28ab0b47d59f1c2f9,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -35,22 +36,22 @@ def test_load_filter_nonchunked():
+ 
+ @mark.api
+ def test_load_monotonic():
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, exp02.Patch2.Encoder)
+     assert len(data) > 0
+     assert data.index.is_monotonic_increasing
+ 
+ 
+ @mark.api
+ def test_load_nonmonotonic():
+-    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder)
+     assert not data.index.is_monotonic_increasing
+ 
+ 
+ @mark.api
+ def test_load_encoder_with_downsampling():
+     DOWNSAMPLE_PERIOD = 0.02
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
+-    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, social03.Patch2.Encoder)
++    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder)",tests/io/test_api.py,2024-10-10T21:53:58Z,2024-10-10T21:53:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `downsample` parameter has been removed from the `aeon.load()` function in the test functions `test_load_monotonic`, `test_load_nonmonotonic`, and `test_load_encoder_with_downsampling`. If downsampling is now handled differently, ensure that it doesn't affect the functionality of these tests.
+```diff
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, exp02.Patch2.Encoder)
+
+-    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder)
+
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
+-    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, social03.Patch2.Encoder)
++    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder)
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205264,8.0,9,f12e359d1be23783adaf6ae63553923ef49527bc,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -5,24 +5,25 @@
+ from pytest import mark
+ 
+ import aeon
++from aeon.schema.ingestion_schemas import social03
+ from aeon.schema.schemas import exp02",tests/io/test_api.py,2024-10-10T23:13:58Z,2024-10-10T23:13:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The import of `social03` from `aeon.schema.ingestion_schemas` is not used in the code, which can lead to unnecessary overhead and confusion. Please remove unused imports to improve code readability and performance.
+```diff
+- from aeon.schema.ingestion_schemas import social03
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205277,18.0,19,f12e359d1be23783adaf6ae63553923ef49527bc,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -5,24 +5,25 @@
+ from pytest import mark
+ 
+ import aeon
++from aeon.schema.ingestion_schemas import social03
+ from aeon.schema.schemas import exp02
+ 
+-nonmonotonic_path = Path(__file__).parent.parent / ""data"" / ""nonmonotonic""
+ monotonic_path = Path(__file__).parent.parent / ""data"" / ""monotonic""
++nonmonotonic_path = Path(__file__).parent.parent / ""data"" / ""nonmonotonic""
+ 
+ 
+ @mark.api
+ def test_load_start_only():
+     data = aeon.load(
+-        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49"")
+     )",tests/io/test_api.py,2024-10-10T23:13:59Z,2024-10-10T23:13:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+In the function `test_load_start_only()`, there's no error handling for the case when the data loading fails and returns an empty dataset. This could lead to a misleading test result. Consider adding an explicit check for this scenario.
+```diff
+    data = aeon.load(
+       nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49"")
+    )
++    assert data is not None, ""Data loading failed""
+    assert len(data) > 0
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205306,52.0,54,f12e359d1be23783adaf6ae63553923ef49527bc,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -35,22 +36,22 @@ def test_load_filter_nonchunked():
+ 
+ @mark.api
+ def test_load_monotonic():
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, exp02.Patch2.Encoder)
+     assert len(data) > 0
+     assert data.index.is_monotonic_increasing
+ 
+ 
+ @mark.api
+ def test_load_nonmonotonic():
+-    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(nonmonotonic_path, exp02.Patch2.Encoder)
+     assert not data.index.is_monotonic_increasing
+ 
+ 
+ @mark.api
+ def test_load_encoder_with_downsampling():
+     DOWNSAMPLE_PERIOD = 0.02
+-    data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=True)
+-    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder, downsample=None)
++    data = aeon.load(monotonic_path, social03.Patch2.Encoder)
++    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder)",tests/io/test_api.py,2024-10-10T23:13:59Z,2024-10-10T23:13:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+In the function `test_load_encoder_with_downsampling()`, the variable `DOWNSAMPLE_PERIOD` is defined but not used in the subsequent code. This can lead to confusion and should be removed if not necessary.
+```diff
+- DOWNSAMPLE_PERIOD = 0.02
+```
+Also, similar to previous comments, there's no error handling for the case when the data loading fails and returns an empty dataset. This could lead to a misleading test result. Consider adding an explicit check for this scenario.
+```diff
+    data = aeon.load(monotonic_path, social03.Patch2.Encoder)
++    assert data is not None, ""Data loading failed""
+    raw_data = aeon.load(monotonic_path, exp02.Patch2.Encoder)
++    assert raw_data is not None, ""Raw data loading failed""
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796205294,26.0,27,f12e359d1be23783adaf6ae63553923ef49527bc,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -5,24 +5,25 @@
+ from pytest import mark
+ 
+ import aeon
++from aeon.schema.ingestion_schemas import social03
+ from aeon.schema.schemas import exp02
+ 
+-nonmonotonic_path = Path(__file__).parent.parent / ""data"" / ""nonmonotonic""
+ monotonic_path = Path(__file__).parent.parent / ""data"" / ""monotonic""
++nonmonotonic_path = Path(__file__).parent.parent / ""data"" / ""nonmonotonic""
+ 
+ 
+ @mark.api
+ def test_load_start_only():
+     data = aeon.load(
+-        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, start=pd.Timestamp(""2022-06-06T13:00:49"")
+     )
+     assert len(data) > 0
+ 
+ 
+ @mark.api
+ def test_load_end_only():
+     data = aeon.load(
+-        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49""), downsample=None
++        nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49"")
+     )",tests/io/test_api.py,2024-10-10T23:13:59Z,2024-10-10T23:13:59Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+Similar to the previous comment, in the function `test_load_end_only()`, there's no error handling for the case when the data loading fails and returns an empty dataset. This could lead to a misleading test result. Consider adding an explicit check for this scenario.
+```diff
+    data = aeon.load(
+       nonmonotonic_path, exp02.Patch2.Encoder, end=pd.Timestamp(""2022-06-06T13:00:49"")
+    )
++    assert data is not None, ""Data loading failed""
+    assert len(data) > 0
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223566,33.0,39,daf622481a8f7f69cf32ec56a139e4aca242b740,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        return data
++
++
++class _Video(reader.Video):
++    """"""A version of the video reader that drops columns that can be recreated from data and metadata.""""""
++
++    def read(self, file: PathLike[str], drop_cols=None) -> pd.DataFrame:
++        """"""Reads video metadata from the specified file.""""""
++        drop_cols = [""hw_counter"", ""_frame"", ""_path"", ""_epoch""] if drop_cols is None else drop_cols
++        data = pd.read_csv(file, header=0, names=self._rawcolumns)
++        data.drop(columns=drop_cols, errors=""ignore"", inplace=True)
++        data.set_index(""time"", inplace=True)
++        return data",aeon/schema/ingestion_schemas.py,2024-10-10T23:35:36Z,2024-10-10T23:35:37Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+In the `read` method of the `_Video` class, you are dropping columns from the DataFrame without checking if they exist. This could lead to errors if one or more of the specified columns are not present in the DataFrame. Consider adding a check to ensure that only existing columns are dropped.
+
+```diff
+-        data.drop(columns=drop_cols, errors=""ignore"", inplace=True)
++        drop_cols = [col for col in drop_cols if col in data.columns]
++        data.drop(columns=drop_cols, inplace=True)
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223564,20.0,27,daf622481a8f7f69cf32ec56a139e4aca242b740,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        return data",aeon/schema/ingestion_schemas.py,2024-10-10T23:35:36Z,2024-10-10T23:35:37Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `read` method in the `_Encoder` class is downsampling the data by taking the first sample in each resampled bin. This approach might lead to loss of important information if the first sample is not representative of the entire bin. Consider using a different resampling strategy, such as averaging the samples in each bin, to preserve more information.
+
+```diff
+-        data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        data = data.resample(f""{1/sr_hz}s"").mean()  # take average of samples in each resampled bin
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223570,46.0,54,daf622481a8f7f69cf32ec56a139e4aca242b740,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        return data
++
++
++class _Video(reader.Video):
++    """"""A version of the video reader that drops columns that can be recreated from data and metadata.""""""
++
++    def read(self, file: PathLike[str], drop_cols=None) -> pd.DataFrame:
++        """"""Reads video metadata from the specified file.""""""
++        drop_cols = [""hw_counter"", ""_frame"", ""_path"", ""_epoch""] if drop_cols is None else drop_cols
++        data = pd.read_csv(file, header=0, names=self._rawcolumns)
++        data.drop(columns=drop_cols, errors=""ignore"", inplace=True)
++        data.set_index(""time"", inplace=True)
++        return data
++
++
++# Define new streams and stream groups
++class Video(Stream):
++    """"""Video frame metadata.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Video(f""{pattern}_*""))
++
++
++class Encoder(Stream):
++    """"""Wheel magnetic encoder data.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Encoder(f""{pattern}_90_*""))",aeon/schema/ingestion_schemas.py,2024-10-10T23:35:36Z,2024-10-10T23:35:37Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `__init__` methods in the `Video` and `Encoder` classes are hardcoding the pattern for file matching. This reduces the flexibility of these classes and makes them less reusable. Consider passing the pattern as an argument to the `__init__` method instead.
+
+```diff
+-    def __init__(self, pattern):
+-        super().__init__(_Video(f""{pattern}_*""))
++    def __init__(self, pattern, file_pattern):
++        super().__init__(_Video(f""{pattern}_{file_pattern}""))
+
+-    def __init__(self, pattern):
+-        super().__init__(_Encoder(f""{pattern}_90_*""))
++    def __init__(self, pattern, file_pattern):
++        super().__init__(_Encoder(f""{pattern}_{file_pattern}""))
+```
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1796223571,,204,daf622481a8f7f69cf32ec56a139e4aca242b740,daf622481a8f7f69cf32ec56a139e4aca242b740,"@@ -0,0 +1,204 @@
++""""""Aeon experiment schemas for DataJoint database ingestion.""""""
++
++from os import PathLike
++
++import pandas as pd
++from dotmap import DotMap
++
++import aeon.schema.core as stream
++from aeon.io import reader
++from aeon.io.api import aeon as aeon_time
++from aeon.schema import foraging, octagon, social_01, social_02, social_03
++from aeon.schema.foraging import DepletionFunction, Feeder
++from aeon.schema.streams import Device, Stream, StreamGroup
++
++
++# Define new readers
++class _Encoder(reader.Encoder):
++    """"""A version of the encoder reader that can downsample the data.""""""
++
++    def read(self, file: PathLike[str], sr_hz: int = 50) -> pd.DataFrame:
++        """"""Reads encoder data from the specified Harp binary file.""""""
++        data = super().read(file)
++        data.index = aeon_time(data.index)
++        first_index = data.first_valid_index()
++        if first_index is not None:
++            data = data.resample(f""{1/sr_hz}s"").first()  # take first sample in each resampled bin
++        return data
++
++
++class _Video(reader.Video):
++    """"""A version of the video reader that drops columns that can be recreated from data and metadata.""""""
++
++    def read(self, file: PathLike[str], drop_cols=None) -> pd.DataFrame:
++        """"""Reads video metadata from the specified file.""""""
++        drop_cols = [""hw_counter"", ""_frame"", ""_path"", ""_epoch""] if drop_cols is None else drop_cols
++        data = pd.read_csv(file, header=0, names=self._rawcolumns)
++        data.drop(columns=drop_cols, errors=""ignore"", inplace=True)
++        data.set_index(""time"", inplace=True)
++        return data
++
++
++# Define new streams and stream groups
++class Video(Stream):
++    """"""Video frame metadata.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Video(f""{pattern}_*""))
++
++
++class Encoder(Stream):
++    """"""Wheel magnetic encoder data.""""""
++
++    def __init__(self, pattern):
++        super().__init__(_Encoder(f""{pattern}_90_*""))
++
++
++class Patch(StreamGroup):
++    """"""Data streams for a patch.""""""
++
++    def __init__(self, pattern):
++        super().__init__(pattern, DepletionFunction, Encoder, Feeder)
++
++
++# Define schemas
++octagon01 = DotMap(
++    [
++        Device(""Metadata"", stream.Metadata),
++        Device(""CameraTop"", Video, stream.Position),
++        Device(""CameraColorTop"", Video),
++        Device(""ExperimentalMetadata"", stream.SubjectState),
++        Device(""Photodiode"", octagon.Photodiode),
++        Device(""OSC"", octagon.OSC),
++        Device(""TaskLogic"", octagon.TaskLogic),
++        Device(""Wall1"", octagon.Wall),
++        Device(""Wall2"", octagon.Wall),
++        Device(""Wall3"", octagon.Wall),
++        Device(""Wall4"", octagon.Wall),
++        Device(""Wall5"", octagon.Wall),
++        Device(""Wall6"", octagon.Wall),
++        Device(""Wall7"", octagon.Wall),
++        Device(""Wall8"", octagon.Wall),
++    ]
++)
++
++exp01 = DotMap(
++    [
++        Device(""SessionData"", foraging.SessionData),
++        Device(""FrameTop"", Video, stream.Position),
++        Device(""FrameEast"", Video),
++        Device(""FrameGate"", Video),
++        Device(""FrameNorth"", Video),
++        Device(""FramePatch1"", Video),
++        Device(""FramePatch2"", Video),
++        Device(""FrameSouth"", Video),
++        Device(""FrameWest"", Video),
++        Device(""Patch1"", foraging.DepletionFunction, stream.Encoder, foraging.Feeder),
++        Device(""Patch2"", foraging.DepletionFunction, stream.Encoder, foraging.Feeder),
++    ]
++)
++
++exp02 = DotMap(
++    [
++        Device(""Metadata"", stream.Metadata),
++        Device(""ExperimentalMetadata"", stream.Environment, stream.MessageLog),
++        Device(""CameraTop"", Video, stream.Position, foraging.Region),
++        Device(""CameraEast"", Video),
++        Device(""CameraNest"", Video),
++        Device(""CameraNorth"", Video),
++        Device(""CameraPatch1"", Video),
++        Device(""CameraPatch2"", Video),
++        Device(""CameraSouth"", Video),
++        Device(""CameraWest"", Video),
++        Device(""Nest"", foraging.Weight),
++        Device(""Patch1"", Patch),
++        Device(""Patch2"", Patch),
++    ]
++)
++
++social01 = DotMap(
++    [
++        Device(""Metadata"", stream.Metadata),
++        Device(""Environment"", social_02.Environment, social_02.SubjectData),
++        Device(""CameraTop"", Video, social_01.Pose),
++        Device(""CameraNorth"", Video),
++        Device(""CameraSouth"", Video),
++        Device(""CameraEast"", Video),
++        Device(""CameraWest"", Video),
++        Device(""CameraPatch1"", Video),
++        Device(""CameraPatch2"", Video),
++        Device(""CameraPatch3"", Video),
++        Device(""CameraNest"", Video),
++        Device(""Nest"", social_02.WeightRaw, social_02.WeightFiltered),
++        Device(""Patch1"", Patch),
++        Device(""Patch2"", Patch),
++        Device(""Patch3"", Patch),
++        Device(""RfidGate"", social_01.RfidEvents),
++        Device(""RfidNest1"", social_01.RfidEvents),
++        Device(""RfidNest2"", social_01.RfidEvents),
++        Device(""RfidPatch1"", social_01.RfidEvents),
++        Device(""RfidPatch2"", social_01.RfidEvents),
++        Device(""RfidPatch3"", social_01.RfidEvents),
++    ]
++)
++
++
++social02 = DotMap(
++    [
++        Device(""Metadata"", stream.Metadata),
++        Device(""Environment"", social_02.Environment, social_02.SubjectData),
++        Device(""CameraTop"", Video, social_02.Pose),
++        Device(""CameraNorth"", Video),
++        Device(""CameraSouth"", Video),
++        Device(""CameraEast"", Video),
++        Device(""CameraWest"", Video),
++        Device(""CameraPatch1"", Video),
++        Device(""CameraPatch2"", Video),
++        Device(""CameraPatch3"", Video),
++        Device(""CameraNest"", Video),
++        Device(""Nest"", social_02.WeightRaw, social_02.WeightFiltered),
++        Device(""Patch1"", Patch),
++        Device(""Patch2"", Patch),
++        Device(""Patch3"", Patch),
++        Device(""GateRfid"", social_02.RfidEvents),
++        Device(""NestRfid1"", social_02.RfidEvents),
++        Device(""NestRfid2"", social_02.RfidEvents),
++        Device(""Patch1Rfid"", social_02.RfidEvents),
++        Device(""Patch2Rfid"", social_02.RfidEvents),
++        Device(""Patch3Rfid"", social_02.RfidEvents),
++    ]
++)
++
++
++social03 = DotMap(
++    [
++        Device(""Metadata"", stream.Metadata),
++        Device(""Environment"", social_02.Environment, social_02.SubjectData),
++        Device(""CameraTop"", Video, social_03.Pose),
++        Device(""CameraNorth"", Video),
++        Device(""CameraSouth"", Video),
++        Device(""CameraEast"", Video),
++        Device(""CameraWest"", Video),
++        Device(""CameraNest"", Video),
++        Device(""CameraPatch1"", Video),
++        Device(""CameraPatch2"", Video),
++        Device(""CameraPatch3"", Video),
++        Device(""Nest"", social_02.WeightRaw, social_02.WeightFiltered),
++        Device(""Patch1"", Patch),
++        Device(""Patch2"", Patch),
++        Device(""Patch3"", Patch),
++        Device(""PatchDummy1"", Patch),
++        Device(""NestRfid1"", social_02.RfidEvents),
++        Device(""NestRfid2"", social_02.RfidEvents),
++        Device(""GateRfid"", social_02.RfidEvents),
++        Device(""GateEastRfid"", social_02.RfidEvents),
++        Device(""GateWestRfid"", social_02.RfidEvents),
++        Device(""Patch1Rfid"", social_02.RfidEvents),
++        Device(""Patch2Rfid"", social_02.RfidEvents),
++        Device(""Patch3Rfid"", social_02.RfidEvents),
++        Device(""PatchDummy1Rfid"", social_02.RfidEvents),
++    ]
++)
++
++
++__all__ = [""octagon01"", ""exp01"", ""exp02"", ""social01"", ""social02"", ""social03""]",aeon/schema/ingestion_schemas.py,2024-10-10T23:35:36Z,2024-10-10T23:35:37Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The `__all__` variable is used to specify the public interface of a module. However, it's not clear from this code whether all the items listed in `__all__` are intended to be part of the public interface. Please ensure that only those items that should be accessible when importing the module using `from module import *` are included in `__all__`.
+
+```diff
+-__all__ = [""octagon01"", ""exp01"", ""exp02"", ""social01"", ""social02"", ""social03""]
++__all__ = [""intended_public_interface_item1"", ""intended_public_interface_item2"", ...]
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/437,daf622481a8f7f69cf32ec56a139e4aca242b740
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1931010859,148.0,153,3a06a7fa669760a59528bc521d2ae318dc3b0296,3a06a7fa669760a59528bc521d2ae318dc3b0296,"@@ -145,12 +145,12 @@ def load(root, reader, start=None, end=None, time=None, tolerance=None, epoch=No
+         except KeyError:
+             import warnings
+ 
+-            if not data.index.has_duplicates:
++            if not data.index.is_monotonic_increasing:
+                 warnings.warn(
+                     f""data index for {reader.pattern} contains out-of-order timestamps!"", stacklevel=2
+                 )
+                 data = data.sort_index()
+-            else:
++            elif data.index.has_duplicates:",aeon/io/api.py,2025-01-27T18:31:54Z,2025-01-27T18:31:55Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The logic in the new hunk seems to be incorrect. The `elif` statement on line 153 will not execute if the first condition on line 148 is true, even if there are duplicate keys in the data index. This could lead to issues if the data index has both out-of-order timestamps and duplicate keys. I suggest changing the `elif` to an `if` so that both conditions can be checked independently.
+
+```diff
+-            elif data.index.has_duplicates:
++            if data.index.has_duplicates:
+                 warnings.warn(f""data index for {reader.pattern} contains duplicate keys!"", stacklevel=2)
+                 data = data[~data.index.duplicated(keep=""first"")]
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/459,3a06a7fa669760a59528bc521d2ae318dc3b0296
+https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/comments/1931010865,364.0,366,3a06a7fa669760a59528bc521d2ae318dc3b0296,3a06a7fa669760a59528bc521d2ae318dc3b0296,"@@ -361,8 +361,9 @@ def read(self, file: Path) -> pd.DataFrame:
+         # Drop any repeat parts.
+         unique_parts, unique_idxs = np.unique(parts, return_index=True)
+         repeat_idxs = np.setdiff1d(np.arange(len(parts)), unique_idxs)
+-        if repeat_idxs:  # drop x, y, and likelihood cols for repeat parts (skip first 5 cols)
+-            init_rep_part_col_idx = (repeat_idxs - 1) * 3 + 5
++        if repeat_idxs:  # drop x, y, and likelihood cols for repeat parts (skip first cols)
++            num_cols_skip = 5 if bonsai_sleap_v == BONSAI_SLEAP_V2 else 6
++            init_rep_part_col_idx = (repeat_idxs - 1) * 3 + num_cols_skip",aeon/io/reader.py,2025-01-27T18:31:54Z,2025-01-27T18:31:55Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+The check for `repeat_idxs` is not correct. In Python, an empty numpy array evaluates to `True` in a boolean context, which means the code inside the if block will execute even when `repeat_idxs` is empty. This could lead to unexpected behavior. You should explicitly check if `repeat_idxs` is not empty by using `len(repeat_idxs) > 0`.
+
+```diff
+-         if repeat_idxs:  
++         if len(repeat_idxs) > 0:  
+            num_cols_skip = 5 if bonsai_sleap_v == BONSAI_SLEAP_V2 else 6
+            init_rep_part_col_idx = (repeat_idxs - 1) * 3 + num_cols_skip
+```
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/SainsburyWellcomeCentre/aeon_mecha/pulls/459,3a06a7fa669760a59528bc521d2ae318dc3b0296
+https://api.github.com/repos/Taiki130/pill_notify/pulls/comments/1490981924,,9,0425601c152749ef2b2eee30ad109104ed5cca13,746a9792c623b4c717c1c58ebb6ea592428b5aa8,"@@ -6,7 +6,7 @@ terraform {
+     }
+     sops = {
+       source  = ""carlpett/sops""
+-      version = ""0.7.1""
++      version = ""0.7.2""",tofu/main.tf,2024-02-15T13:06:30Z,2024-02-15T13:06:31Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+LGTM!
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/Taiki130/pill_notify/pulls/27,746a9792c623b4c717c1c58ebb6ea592428b5aa8
+https://api.github.com/repos/imajoriri/tokeru/pulls/comments/1536598852,45.0,47,0c6797a2c09df48674c684bf02898e9277ef660f,11b600074a53567623f8cd8d5baf34b5d48a1c9b,"@@ -45,30 +45,3 @@ jobs:
+ 
+             明示的に要求された場合を除き、些細なコードスタイルの問題、コメントの不足、ドキュメントの欠落についてコメントしたり、称賛したりすることは控えること。
+             コード全体の品質を向上させるために、重大な懸念事項を特定して解決することに集中し、些細な問題は無視すること。",.github/workflows/ai-pr-reviewer.yml,2024-03-23T08:54:47Z,2024-03-23T08:54:48Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+LGTM!
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/imajoriri/tokeru/pulls/43,11b600074a53567623f8cd8d5baf34b5d48a1c9b
+https://api.github.com/repos/imajoriri/tokeru/pulls/comments/1536598849,32.0,34,0c6797a2c09df48674c684bf02898e9277ef660f,11b600074a53567623f8cd8d5baf34b5d48a1c9b,"@@ -29,7 +29,7 @@ jobs:
+           review_comment_lgtm: true
+           language: ja-JP
+           system_message: |
+-            あなたは `@openai` (a.k.a. `github-actions[bot]`、`孫悟空`) です。
++            あなたは `@openai` (a.k.a. `github-actions[bot]`) です。
+             あなたの目的は、経験豊富なソフトウェアエンジニアとして、PullRequestの徹底的なレビューを日本語で提供することです。
+             以下のような重要な部分を改善するためのコードスニペットを提案すること:",.github/workflows/ai-pr-reviewer.yml,2024-03-23T08:54:47Z,2024-03-23T08:54:48Z,"<img src=""https://avatars.githubusercontent.com/in/347564?s=41"" alt=""Image description"" width=""20"" height=""20"">   CodeRabbit
+
+LGTM!
+
+
+
+<!-- This is an auto-generated comment by OSS CodeRabbit -->",https://api.github.com/repos/imajoriri/tokeru/pulls/43,11b600074a53567623f8cd8d5baf34b5d48a1c9b

@@ -1,0 +1,1012 @@
+Comment_URL,Review_Start_Line,Review_End_Line,Original_Commit_id,Head_Commit_id,Diff_path,New_path,Body,Diff_hunk,Change_Until_Head,File_Review_Index
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035,,,9ff021cc24dd1006b34abc5f31ef5facd583921e,c9b8e2bf102df37c48c9d5582c2e579a8d8ac805,packages/graphic-walker/src/computation/clientComputation.ts,,"**Risk Level 2 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/computation/clientComputation.ts**
+
+The code is generally well written and follows the SOLID principles. However, there are a few areas that could be improved for better readability and maintainability:
+
+1. **Error Handling**: The default case in the switch statement logs a warning message when an unknown step type is encountered. It would be better to throw an error instead to ensure that the issue is not silently ignored. For example:
+
+```typescript
+default: {
+    throw new Error(`Unknown step type: ${step.type}`);
+}
+```
+
+2. **Code Duplication**: The `applyFilter` and `applySort` functions are called with similar arguments. This could be refactored into a separate function to reduce duplication and improve maintainability.
+
+3. **Type Safety**: The `workflow` parameter in the `dataQueryClient` function is an array of `IDataQueryWorkflowStep`, which is a union type. This could potentially lead to type errors. It would be better to separate these into distinct types to ensure type safety.","@@ -1,34 +1,26 @@
+-import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from ""../interfaces"";
+-import { applyFilter, applySort, applyViewQuery, transformDataService } from ""../services"";
++import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from '../interfaces';
++import { applyFilter, applySort, applyViewQuery, transformDataService } from '../services';
+ 
+-export const dataQueryClient = async (
+-    rawData: IRow[],
+-    workflow: IDataQueryWorkflowStep[],
+-    offset?: number,
+-    limit?: number,
+-): Promise<IRow[]> => {
+-    if (process.env.NODE_ENV !== ""production"") {
++export const dataQueryClient = async (rawData: IRow[], workflow: IDataQueryWorkflowStep[], offset?: number, limit?: number): Promise<IRow[]> => {
++    if (process.env.NODE_ENV !== 'production') {
+         console.log('local query triggered', workflow);
+     }
+     let res = rawData;
+     for await (const step of workflow) {
+         switch (step.type) {
+             case 'filter': {
+-                res = await applyFilter(res, step.filters.map(filter => {
+-                    const res: IFilterFiledSimple = {
+-                        fid: filter.fid,
+-                        rule: null,
+-                    };
+-                    if (filter.rule.type === 'one of' || filter.rule.type === 'not in') {
+-                        res.rule = {
+-                            type: filter.rule.type,
+-                            value: new Set(filter.rule.value),
+-                        };
+-                    } else {
+-                        res.rule = filter.rule;
+-                    }
+-                    return res;
+-                }).filter(Boolean));
++                res = await applyFilter(
++                    res,
++                    step.filters
++                        .map((filter) => {
++                            const res: IFilterFiledSimple = {
++                                fid: filter.fid,
++                                rule: filter.rule,
++                            };
++                            return res;
++                        })
++                        .filter(Boolean)
++                );
+                 break;
+             }
+             case 'transform': {
+@@ -52,7 +44,7 @@ export const dataQueryClient = async (
+             }
+         }
+     }
+-    return res.slice(offset ?? 0, limit ? ((offset ?? 0) + limit) : undefined);
++    return res.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined);
+ };
+ 
+-export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit)
++export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit);","--- 
+
++++ 
+
+@@ -1,34 +1,26 @@
+
+-import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from ""../interfaces"";
+-import { applyFilter, applySort, applyViewQuery, transformDataService } from ""../services"";
++import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from '../interfaces';
++import { applyFilter, applySort, applyViewQuery, transformDataService } from '../services';
+ 
+-export const dataQueryClient = async (
+-    rawData: IRow[],
+-    workflow: IDataQueryWorkflowStep[],
+-    offset?: number,
+-    limit?: number,
+-): Promise<IRow[]> => {
+-    if (process.env.NODE_ENV !== ""production"") {
++export const dataQueryClient = async (rawData: IRow[], workflow: IDataQueryWorkflowStep[], offset?: number, limit?: number): Promise<IRow[]> => {
++    if (process.env.NODE_ENV !== 'production') {
+         console.log('local query triggered', workflow);
+     }
+     let res = rawData;
+     for await (const step of workflow) {
+         switch (step.type) {
+             case 'filter': {
+-                res = await applyFilter(res, step.filters.map(filter => {
+-                    const res: IFilterFiledSimple = {
+-                        fid: filter.fid,
+-                        rule: null,
+-                    };
+-                    if (filter.rule.type === 'one of' || filter.rule.type === 'not in') {
+-                        res.rule = {
+-                            type: filter.rule.type,
+-                            value: new Set(filter.rule.value),
+-                        };
+-                    } else {
+-                        res.rule = filter.rule;
+-                    }
+-                    return res;
+-                }).filter(Boolean));
++                res = await applyFilter(
++                    res,
++                    step.filters
++                        .map((filter) => {
++                            const res: IFilterFiledSimple = {
++                                fid: filter.fid,
++                                rule: filter.rule,
++                            };
++                            return res;
++                        })
++                        .filter(Boolean)
++                );
+                 break;
+             }
+             case 'transform': {
+@@ -52,7 +44,7 @@
+
+             }
+         }
+     }
+-    return res.slice(offset ?? 0, limit ? ((offset ?? 0) + limit) : undefined);
++    return res.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined);
+ };
+ 
+-export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit)
++export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit);",1
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035,,,9ff021cc24dd1006b34abc5f31ef5facd583921e,c9b8e2bf102df37c48c9d5582c2e579a8d8ac805,packages/graphic-walker/src/components/askViz/index.tsx,,"**Risk Level 2 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/components/askViz/index.tsx**
+
+The code seems to be well written and follows the SOLID principles. However, there are a few areas that could be improved for better readability and maintainability:
+
+1. **Error Handling**: The error handling in the `vizQuery` and `reportVizQuery` functions could be improved. Currently, if the fetch request fails, it throws an error with the message from the response. It would be better to also include the status code in the error message to make debugging easier. For example:
+
+```typescript
+if (!result.success) {
+    throw new Error(`${result.message}, Status code: ${res.status}`);
+}
+```
+
+2. **Type Safety**: The `api` parameter in the `AskViz` component can be either a string or a function. This could potentially lead to type errors. It would be better to separate these into two distinct props to ensure type safety.
+
+3. **Code Duplication**: There is some code duplication in the `onClick` handlers of the vote up and vote down buttons. This could be refactored into a separate function to reduce duplication and improve maintainability.","@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
+ import { useVizStore } from '../../store';
+ import { HandThumbDownIcon, HandThumbUpIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+ import Spinner from '../spinner';
+-import { IAskVizFeedback, IChartForExport, IViewField, IVisSpecForExport } from '../../interfaces';
++import { IAskVizFeedback, IChart, IViewField, IVisSpec } from '../../interfaces';
+ import { useTranslation } from 'react-i18next';
+ import { useReporter } from '../../utils/reportError';
+ import { parseErrorMessage } from '../../utils';
+@@ -30,7 +30,7 @@ async function vizQuery(api: string, metas: IViewField[], query: string, headers
+     });
+     const result: {
+         success: boolean;
+-        data: IVisSpecForExport | IChartForExport;
++        data: IVisSpec | IChart;
+         message?: string;
+     } = await res.json();
+     if (result.success) {
+@@ -62,7 +62,7 @@ async function reportVizQuery(api: string | ((data: IAskVizFeedback) => void), d
+ }
+ 
+ const AskViz: React.FC<{
+-    api?: string | ((metas: IViewField[], query: string) => PromiseLike<IVisSpecForExport | IChartForExport> | IVisSpecForExport | IChartForExport);
++    api?: string | ((metas: IViewField[], query: string) => PromiseLike<IVisSpec | IChart> | IVisSpec | IChart);
+     feedbackApi?: string | ((data: IAskVizFeedback) => void);
+     headers?: Record<string, string>;
+ }> = (props) => {","--- 
+
++++ 
+
+@@ -3,7 +3,7 @@
+
+ import { useVizStore } from '../../store';
+ import { HandThumbDownIcon, HandThumbUpIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+ import Spinner from '../spinner';
+-import { IAskVizFeedback, IChartForExport, IViewField, IVisSpecForExport } from '../../interfaces';
++import { IAskVizFeedback, IChart, IViewField, IVisSpec } from '../../interfaces';
+ import { useTranslation } from 'react-i18next';
+ import { useReporter } from '../../utils/reportError';
+ import { parseErrorMessage } from '../../utils';
+@@ -30,7 +30,7 @@
+
+     });
+     const result: {
+         success: boolean;
+-        data: IVisSpecForExport | IChartForExport;
++        data: IVisSpec | IChart;
+         message?: string;
+     } = await res.json();
+     if (result.success) {
+@@ -62,7 +62,7 @@
+
+ }
+ 
+ const AskViz: React.FC<{
+-    api?: string | ((metas: IViewField[], query: string) => PromiseLike<IVisSpecForExport | IChartForExport> | IVisSpecForExport | IChartForExport);
++    api?: string | ((metas: IViewField[], query: string) => PromiseLike<IVisSpec | IChart> | IVisSpec | IChart);
+     feedbackApi?: string | ((data: IAskVizFeedback) => void);
+     headers?: Record<string, string>;
+ }> = (props) => {",2
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1825892035,,,9ff021cc24dd1006b34abc5f31ef5facd583921e,c9b8e2bf102df37c48c9d5582c2e579a8d8ac805,packages/graphic-walker/src/App.tsx,,"**Risk Level 2 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/App.tsx**
+
+The code changes in this pull request are minimal and do not seem to introduce any major risks. However, there are a few areas that could be improved for better readability and maintainability.
+
+1. **Use of `useMemo` Hook**: The `useMemo` hook is used to memoize the computation and safeMetas values. While this is a good practice for expensive computations, it's important to ensure that the dependencies provided to `useMemo` are correct. In this case, the dependencies include `props.rawFields`, `props.dataSource ? props.dataSource : props.computation`, and `props.fieldKeyGuard`. If any of these values change, the computation and safeMetas will be recalculated. If these dependencies are not expected to change often, this is fine. However, if they do change frequently, the overhead of recalculating these values may outweigh the benefits of memoization.
+
+2. **Error Handling**: The error handling in this code could be improved. Currently, errors are logged to the console and optionally passed to an `onError` prop if it exists. It would be better to have a more robust error handling strategy, such as displaying error messages to the user or sending error reports to a logging service.
+
+3. **Code Organization**: This file is quite large and contains a lot of logic. It might be beneficial to break this up into smaller, more manageable components. This would make the code easier to read and maintain.","@@ -238,7 +238,7 @@ export function VizAppWithContext(props: IVizAppProps) {
+ 
+     return (
+         <div className={`${darkMode === 'dark' ? 'dark' : ''} App font-sans bg-white dark:bg-zinc-900 dark:text-white m-0 p-0`}>
+-            <VizStoreWrapper onMetaChange={props.onMetaChange} meta={safeMetas} keepAlive={props.keepAlive} storeRef={props.storeRef}>
++            <VizStoreWrapper onSpecChange={props.onSpecChange} onMetaChange={props.onMetaChange} meta={safeMetas} keepAlive={props.keepAlive} storeRef={props.storeRef}>
+                 <FieldsContextWrapper>
+                     <VizApp
+                         darkMode={darkMode}","--- 
+
++++ 
+
+@@ -238,7 +238,7 @@
+
+ 
+     return (
+         <div className={`${darkMode === 'dark' ? 'dark' : ''} App font-sans bg-white dark:bg-zinc-900 dark:text-white m-0 p-0`}>
+-            <VizStoreWrapper onMetaChange={props.onMetaChange} meta={safeMetas} keepAlive={props.keepAlive} storeRef={props.storeRef}>
++            <VizStoreWrapper onSpecChange={props.onSpecChange} onMetaChange={props.onMetaChange} meta={safeMetas} keepAlive={props.keepAlive} storeRef={props.storeRef}>
+                 <FieldsContextWrapper>
+                     <VizApp
+                         darkMode={darkMode}",3
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1888626993,,,d49a1192ba2bfcfc842cdf1d9d16b2990fd63bc4,7a7c0b3c91e9f06fc74d9ba3dc3375a8de5c565f,packages/graphic-walker/src/fields/encodeFields/singleEncodeEditor.tsx,,"**Risk Level 2 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/fields/encodeFields/singleEncodeEditor.tsx**
+
+The code seems to be well written and follows good practices. However, there is a potential performance issue with the use of `useMemo` hook. The `useMemo` hook is used to memoize the result of a function, but in this case, it is used without any dependencies. This means that the function will be re-computed on every render, which could lead to performance issues if the computation is expensive. Consider adding dependencies to the `useMemo` hook or removing it if it's not necessary.
+
+```typescript
+const aggregationOptions = useMemo(() => {
+    return GLOBAL_CONFIG.AGGREGATOR_LIST.map((op) => ({
+        value: op,
+        label: t(`constant.aggregator.${op}`),
+    }));
+}, []); // Add dependencies or remove useMemo if not necessary
+```","@@ -41,7 +41,7 @@ const SingleEncodeEditor: React.FC<SingleEncodeEditorProps> = (props) => {
+     }, []);
+ 
+     const foldOptions = useMemo<ISelectContextOption[]>(() => {
+-        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID);
++        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID && f.aggName !== 'expr');
+         return validFoldBy.map<ISelectContextOption>((f) => ({
+             key: f.fid,
+             label: f.name,","--- 
+
++++ 
+
+@@ -41,7 +41,7 @@
+
+     }, []);
+ 
+     const foldOptions = useMemo<ISelectContextOption[]>(() => {
+-        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID);
++        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID && f.aggName !== 'expr');
+         return validFoldBy.map<ISelectContextOption>((f) => ({
+             key: f.fid,
+             label: f.name,",1
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/1888626993,,,d49a1192ba2bfcfc842cdf1d9d16b2990fd63bc4,7a7c0b3c91e9f06fc74d9ba3dc3375a8de5c565f,packages/graphic-walker/src/fields/obComponents/obPill.tsx,,"**Risk Level 2 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/fields/obComponents/obPill.tsx**
+
+Similar to the previous file, there is a potential performance issue with the use of `useMemo` hook without any dependencies. Consider adding dependencies to the `useMemo` hook or removing it if it's not necessary.
+
+```typescript
+const aggregationOptions = useMemo(() => {
+    return GLOBAL_CONFIG.AGGREGATOR_LIST.map((op) => ({
+        value: op,
+        label: t(op),
+    }));
+}, []); // Add dependencies or remove useMemo if not necessary
+```","@@ -32,7 +32,7 @@ const OBPill: React.FC<PillProps> = (props) => {
+     }, []);
+ 
+     const foldOptions = useMemo<ISelectContextOption[]>(() => {
+-        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID);
++        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID && f.aggName !== 'expr');
+         return validFoldBy.map<ISelectContextOption>((f) => ({
+             key: f.fid,
+             label: f.name,","--- 
+
++++ 
+
+@@ -32,7 +32,7 @@
+
+     }, []);
+ 
+     const foldOptions = useMemo<ISelectContextOption[]>(() => {
+-        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID);
++        const validFoldBy = allFields.filter((f) => f.analyticType === 'measure' && f.fid !== MEA_VAL_ID && f.aggName !== 'expr');
+         return validFoldBy.map<ISelectContextOption>((f) => ({
+             key: f.fid,
+             label: f.name,",2
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035,,,f5e805abca69c99d793c135937787c1c2ce376aa,689b28a4760eb686edaf24dd7a98cb795b680690,packages/graphic-walker/src/renderer/index.tsx,,"**Risk Level 3 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/renderer/index.tsx**
+
+1. The `useEffect` hook at the end of the file has a dependency on `isSpatial` and `vizStore`, but these are not included in the dependency array. This could lead to unexpected behavior. Include `isSpatial` and `vizStore` in the dependency array of the `useEffect` hook.
+
+```typescript
+useEffect(() => {
+    // ... existing code ...
+}, [isSpatial, vizStore]);
+```
+
+2. The `handleGeomClick` function is quite complex and could benefit from being broken down into smaller, more manageable functions. This would improve readability and maintainability of the code. Consider refactoring this function to simplify its logic.","@@ -29,6 +29,8 @@ import { GLOBAL_CONFIG } from '../config';
+ import { Item } from 'vega';
+ import { viewEncodingKeys } from '@/models/visSpec';
+ import LoadingLayer from '@/components/loadingLayer';
++import { getTimeFormat } from '@/lib/inferMeta';
++import { unexceptedUTCParsedPatternFormats } from '@/lib/op/offset';
+ 
+ interface RendererProps {
+     vizThemeConfig: IThemeKey | GWGlobalConfig;
+@@ -52,6 +54,7 @@ const Renderer = forwardRef<IReactVegaHandler, RendererProps>(function (props, r
+         config: visualConfig,
+         layout,
+         currentVis: chart,
++        multiViewInfo,
+         visIndex,
+         visLength,
+         sort,
+@@ -65,8 +68,7 @@ const Renderer = forwardRef<IReactVegaHandler, RendererProps>(function (props, r
+         }),
+         [layout, overrideSize]
+     );
+-
+-    const draggableFieldState = chart.encodings;
++    const draggableFieldState = { ...emptyEncodings, ...multiViewInfo.views, filters: multiViewInfo.filters };
+ 
+     const { i18n } = useTranslation();
+ 
+@@ -142,29 +144,48 @@ const Renderer = forwardRef<IReactVegaHandler, RendererProps>(function (props, r
+     });
+ 
+     const handleGeomClick = useCallback(
+-        (values: any, e: MouseEvent & { item: Item }) => {
++        (_values: any, e: MouseEvent & { item: Item }) => {
+             e.stopPropagation();
+             if (GLOBAL_CONFIG.EMBEDED_MENU_LIST.length > 0) {
+                 runInAction(() => {
+                     vizStore.showEmbededMenu([e.clientX, e.clientY]);
+-                    vizStore.setFilters(values);
+                 });
+-                const selectedMarkObject = values.vlPoint.or[0];
++                const viewKeys = new Set(
++                    viewEncodingKeys(visualConfig.geoms[0])
++                        .flatMap((k) => encodings[k] as IViewField[])
++                        .map((x) => x.fid)
++                );
++                // getting fields from event, because vega cannot pass selection including dot in key.
++                const selectedMarkObject = Object.fromEntries(Object.entries<string | number | undefined>(e.item.datum).filter(([k]) => viewKeys.has(k)));
+                 // check selected fields include temporal, and return temporal timestamp to original data
+                 const allFields = viewEncodingKeys(visualConfig.geoms[0]).flatMap((k) => encodings[k] as IViewField[]);
+                 const selectedTemporalFields = Object.keys(selectedMarkObject)
+                     .map((k) => allFields.find((x) => x.fid === k))
+                     .filter((x): x is IViewField => !!x && x.semanticType === 'temporal');
+                 if (selectedTemporalFields.length > 0) {
++                    const displayOffset = visualConfig.timezoneDisplayOffset ?? new Date().getTimezoneOffset();
+                     selectedTemporalFields.forEach((f) => {
++                        const offset = f.offset ?? new Date().getTimezoneOffset();
+                         const set = new Set(viewData.map((x) => x[f.fid] as string | number));
+-                        selectedMarkObject[f.fid] = [...set.values()].find((x) => new Date(x).getTime() === selectedMarkObject[f.fid]);
++                        selectedMarkObject[f.fid] = Array.from(set).find((x) => {
++                            const format = getTimeFormat(x);
++                            let offsetTime = displayOffset * -60000;
++                            if (format !== 'timestamp') {
++                                offsetTime += offset * 60000;
++                                if (!unexceptedUTCParsedPatternFormats.includes(format)) {
++                                    // the raw data will be parsed as local timezone, so reduce the offset with the local time zone.
++                                    offsetTime -= new Date().getTimezoneOffset() * 60000;
++                                }
++                            }
++                            const time = new Date(x).getTime() + offsetTime;
++                            return time === selectedMarkObject[f.fid];
++                        });
+                     });
+                 }
+                 if (e.item.mark.marktype === 'line') {
+                     // use the filter in mark group
+                     const keys = new Set(Object.keys(e.item.mark.group.datum ?? {}));
+-                    vizStore.updateSelectedMarkObject(Object.fromEntries(Object.entries<string | number>(selectedMarkObject).filter(([k]) => keys.has(k))));
++                    vizStore.updateSelectedMarkObject(Object.fromEntries(Object.entries(selectedMarkObject).filter(([k]) => keys.has(k))));
+                 } else {
+                     vizStore.updateSelectedMarkObject(selectedMarkObject);
+                 }","--- 
+
++++ 
+
+@@ -29,6 +29,8 @@
+
+ import { Item } from 'vega';
+ import { viewEncodingKeys } from '@/models/visSpec';
+ import LoadingLayer from '@/components/loadingLayer';
++import { getTimeFormat } from '@/lib/inferMeta';
++import { unexceptedUTCParsedPatternFormats } from '@/lib/op/offset';
+ 
+ interface RendererProps {
+     vizThemeConfig: IThemeKey | GWGlobalConfig;
+@@ -52,6 +54,7 @@
+
+         config: visualConfig,
+         layout,
+         currentVis: chart,
++        multiViewInfo,
+         visIndex,
+         visLength,
+         sort,
+@@ -65,8 +68,7 @@
+
+         }),
+         [layout, overrideSize]
+     );
+-
+-    const draggableFieldState = chart.encodings;
++    const draggableFieldState = { ...emptyEncodings, ...multiViewInfo.views, filters: multiViewInfo.filters };
+ 
+     const { i18n } = useTranslation();
+ 
+@@ -142,29 +144,48 @@
+
+     });
+ 
+     const handleGeomClick = useCallback(
+-        (values: any, e: MouseEvent & { item: Item }) => {
++        (_values: any, e: MouseEvent & { item: Item }) => {
+             e.stopPropagation();
+             if (GLOBAL_CONFIG.EMBEDED_MENU_LIST.length > 0) {
+                 runInAction(() => {
+                     vizStore.showEmbededMenu([e.clientX, e.clientY]);
+-                    vizStore.setFilters(values);
+                 });
+-                const selectedMarkObject = values.vlPoint.or[0];
++                const viewKeys = new Set(
++                    viewEncodingKeys(visualConfig.geoms[0])
++                        .flatMap((k) => encodings[k] as IViewField[])
++                        .map((x) => x.fid)
++                );
++                // getting fields from event, because vega cannot pass selection including dot in key.
++                const selectedMarkObject = Object.fromEntries(Object.entries<string | number | undefined>(e.item.datum).filter(([k]) => viewKeys.has(k)));
+                 // check selected fields include temporal, and return temporal timestamp to original data
+                 const allFields = viewEncodingKeys(visualConfig.geoms[0]).flatMap((k) => encodings[k] as IViewField[]);
+                 const selectedTemporalFields = Object.keys(selectedMarkObject)
+                     .map((k) => allFields.find((x) => x.fid === k))
+                     .filter((x): x is IViewField => !!x && x.semanticType === 'temporal');
+                 if (selectedTemporalFields.length > 0) {
++                    const displayOffset = visualConfig.timezoneDisplayOffset ?? new Date().getTimezoneOffset();
+                     selectedTemporalFields.forEach((f) => {
++                        const offset = f.offset ?? new Date().getTimezoneOffset();
+                         const set = new Set(viewData.map((x) => x[f.fid] as string | number));
+-                        selectedMarkObject[f.fid] = [...set.values()].find((x) => new Date(x).getTime() === selectedMarkObject[f.fid]);
++                        selectedMarkObject[f.fid] = Array.from(set).find((x) => {
++                            const format = getTimeFormat(x);
++                            let offsetTime = displayOffset * -60000;
++                            if (format !== 'timestamp') {
++                                offsetTime += offset * 60000;
++                                if (!unexceptedUTCParsedPatternFormats.includes(format)) {
++                                    // the raw data will be parsed as local timezone, so reduce the offset with the local time zone.
++                                    offsetTime -= new Date().getTimezoneOffset() * 60000;
++                                }
++                            }
++                            const time = new Date(x).getTime() + offsetTime;
++                            return time === selectedMarkObject[f.fid];
++                        });
+                     });
+                 }
+                 if (e.item.mark.marktype === 'line') {
+                     // use the filter in mark group
+                     const keys = new Set(Object.keys(e.item.mark.group.datum ?? {}));
+-                    vizStore.updateSelectedMarkObject(Object.fromEntries(Object.entries<string | number>(selectedMarkObject).filter(([k]) => keys.has(k))));
++                    vizStore.updateSelectedMarkObject(Object.fromEntries(Object.entries(selectedMarkObject).filter(([k]) => keys.has(k))));
+                 } else {
+                     vizStore.updateSelectedMarkObject(selectedMarkObject);
+                 }",1
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035,,,f5e805abca69c99d793c135937787c1c2ce376aa,689b28a4760eb686edaf24dd7a98cb795b680690,packages/graphic-walker/src/computation/clientComputation.ts,,"**Risk Level 3 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/computation/clientComputation.ts**
+
+There is a potential issue with the `filter` case in the `switch` statement. The `map` function is used but the returned value is not used. This could lead to unexpected behavior. Consider removing the `map` function or use the returned value.
+
+```typescript
+case 'filter': {
+    res = await applyFilter(
+        res,
+        step.filters
+            .filter(Boolean)
+    );
+    break;
+}
+```","@@ -1,26 +1,41 @@
+-import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from ""../interfaces"";
+-import { applyFilter, applySort, applyViewQuery, transformDataService } from ""../services"";
++import { DEFAULT_DATASET } from '@/constants';
++import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow, IBasicDataQueryWorkflowStep, IJoinWorkflowStep } from '../interfaces';
++import { applyFilter, applySort, applyViewQuery, joinDataService, transformDataService } from '../services';
+ 
+ export const dataQueryClient = async (
+-    rawData: IRow[],
++    rawDatas: Record<string, IRow[]>,
+     workflow: IDataQueryWorkflowStep[],
++    datasets: string[],
+     offset?: number,
+-    limit?: number,
++    limit?: number
+ ): Promise<IRow[]> => {
+-    if (process.env.NODE_ENV !== ""production"") {
+-        console.log('local query triggered', workflow);
++    if (process.env.NODE_ENV !== 'production') {
++        console.log('local query triggered', workflow, datasets);
+     }
+-    let res = rawData;
+-    for await (const step of workflow) {
++
++    const steps = workflow.filter((step): step is IBasicDataQueryWorkflowStep => step.type !== 'join');
++    const joins = workflow.find((step): step is IJoinWorkflowStep => step.type === 'join');
++    let res: IRow[];
++    if (joins) {
++        res = await joinDataService(rawDatas, joins.foreigns);
++    } else {
++        res = datasets.flatMap((dataset) => rawDatas[dataset]);
++    }
++    for await (const step of steps) {
+         switch (step.type) {
+             case 'filter': {
+-                res = await applyFilter(res, step.filters.map(filter => {
+-                    const res: IFilterFiledSimple = {
+-                        fid: filter.fid,
+-                        rule: filter.rule,
+-                    };
+-                    return res;
+-                }).filter(Boolean));
++                res = await applyFilter(
++                    res,
++                    step.filters
++                        .map((filter) => {
++                            const res: IFilterFiledSimple = {
++                                fid: filter.fid,
++                                rule: filter.rule,
++                            };
++                            return res;
++                        })
++                        .filter(Boolean)
++                );
+                 break;
+             }
+             case 'transform': {
+@@ -44,7 +59,14 @@ export const dataQueryClient = async (
+             }
+         }
+     }
+-    return res.slice(offset ?? 0, limit ? ((offset ?? 0) + limit) : undefined);
++
++    return res.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined);
+ };
+ 
+-export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit)
++export const getComputation = (rawDatas: Record<string, IRow[]> | IRow[]) => {
++    if (rawDatas instanceof Array) {
++        return (payload: IDataQueryPayload) =>
++            dataQueryClient({ [DEFAULT_DATASET]: rawDatas }, payload.workflow, [DEFAULT_DATASET], payload.offset, payload.limit);
++    }
++    return (payload: IDataQueryPayload) => dataQueryClient(rawDatas, payload.workflow, payload.datasets, payload.offset, payload.limit);
++};","--- 
+
++++ 
+
+@@ -1,26 +1,41 @@
+
+-import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow } from ""../interfaces"";
+-import { applyFilter, applySort, applyViewQuery, transformDataService } from ""../services"";
++import { DEFAULT_DATASET } from '@/constants';
++import type { IDataQueryPayload, IDataQueryWorkflowStep, IFilterFiledSimple, IRow, IBasicDataQueryWorkflowStep, IJoinWorkflowStep } from '../interfaces';
++import { applyFilter, applySort, applyViewQuery, joinDataService, transformDataService } from '../services';
+ 
+ export const dataQueryClient = async (
+-    rawData: IRow[],
++    rawDatas: Record<string, IRow[]>,
+     workflow: IDataQueryWorkflowStep[],
++    datasets: string[],
+     offset?: number,
+-    limit?: number,
++    limit?: number
+ ): Promise<IRow[]> => {
+-    if (process.env.NODE_ENV !== ""production"") {
+-        console.log('local query triggered', workflow);
++    if (process.env.NODE_ENV !== 'production') {
++        console.log('local query triggered', workflow, datasets);
+     }
+-    let res = rawData;
+-    for await (const step of workflow) {
++
++    const steps = workflow.filter((step): step is IBasicDataQueryWorkflowStep => step.type !== 'join');
++    const joins = workflow.find((step): step is IJoinWorkflowStep => step.type === 'join');
++    let res: IRow[];
++    if (joins) {
++        res = await joinDataService(rawDatas, joins.foreigns);
++    } else {
++        res = datasets.flatMap((dataset) => rawDatas[dataset]);
++    }
++    for await (const step of steps) {
+         switch (step.type) {
+             case 'filter': {
+-                res = await applyFilter(res, step.filters.map(filter => {
+-                    const res: IFilterFiledSimple = {
+-                        fid: filter.fid,
+-                        rule: filter.rule,
+-                    };
+-                    return res;
+-                }).filter(Boolean));
++                res = await applyFilter(
++                    res,
++                    step.filters
++                        .map((filter) => {
++                            const res: IFilterFiledSimple = {
++                                fid: filter.fid,
++                                rule: filter.rule,
++                            };
++                            return res;
++                        })
++                        .filter(Boolean)
++                );
+                 break;
+             }
+             case 'transform': {
+@@ -44,7 +59,14 @@
+
+             }
+         }
+     }
+-    return res.slice(offset ?? 0, limit ? ((offset ?? 0) + limit) : undefined);
++
++    return res.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined);
+ };
+ 
+-export const getComputation = (rawData: IRow[]) => (payload: IDataQueryPayload) => dataQueryClient(rawData, payload.workflow, payload.offset, payload.limit)
++export const getComputation = (rawDatas: Record<string, IRow[]> | IRow[]) => {
++    if (rawDatas instanceof Array) {
++        return (payload: IDataQueryPayload) =>
++            dataQueryClient({ [DEFAULT_DATASET]: rawDatas }, payload.workflow, [DEFAULT_DATASET], payload.offset, payload.limit);
++    }
++    return (payload: IDataQueryPayload) => dataQueryClient(rawDatas, payload.workflow, payload.datasets, payload.offset, payload.limit);
++};",2
+https://api.github.com/repos/Kanaries/graphic-walker/issues/comments/2029467035,,,f5e805abca69c99d793c135937787c1c2ce376aa,689b28a4760eb686edaf24dd7a98cb795b680690,packages/graphic-walker/src/lib/insights/explainBySelection.ts,,"**Risk Level 3 - /home/runner/work/graphic-walker/graphic-walker/packages/graphic-walker/src/lib/insights/explainBySelection.ts**
+
+The `explainBySelection` function is quite large and complex. It could be broken down into smaller, more manageable functions to improve readability and maintainability. For example, the logic inside the `for` loop could be extracted into a separate function.
+
+Also, the function is directly using the `dataQuery` function. This could make testing this function in isolation difficult. Consider passing the `dataQuery` function as a parameter to the `explainBySelection` function.","@@ -1,4 +1,15 @@
+-import { IAggregator, IExplainProps, IPredicate, IField, IRow, IViewField, IFilterField, IComputationFunction, IViewWorkflowStep, IDataQueryWorkflowStep } from '../../interfaces';
++import {
++    IAggregator,
++    IExplainProps,
++    IPredicate,
++    IField,
++    IRow,
++    IViewField,
++    IFilterField,
++    IComputationFunction,
++    IViewWorkflowStep,
++    IDataQueryWorkflowStep,
++} from '../../interfaces';
+ import { filterByPredicates, getMeaAggKey } from '../../utils';
+ import { compareDistribution, compareDistributionKL, compareDistributionJS, normalizeWithParent } from '../../utils/normalization';
+ import { aggregate } from '../op/aggregate';
+@@ -44,22 +55,44 @@ export async function explainBySelection(props: {
+                             op: 'bin',
+                             as: extendDimFid,
+                             num: QUANT_BIN_NUM,
+-                            params: [{
+-                                type: 'field',
+-                                value: extendDim.fid,
+-                            }]
+-                        }
+-                    }
++                            params: [
++                                {
++                                    type: 'field',
++                                    value: extendDim.fid,
++                                },
++                            ],
++                        },
++                    },
+                 ],
+             });
+         }
+         for (let mea of viewMeasures) {
+-            const overallWorkflow = toWorkflow(viewFilters, allFields, [extendDim], [mea], true, 'none', [], undefined, timezoneDisplayOffset);
++            const { workflow: overallWorkflow, datasets } = toWorkflow(
++                viewFilters,
++                allFields,
++                [extendDim],
++                [mea],
++                true,
++                'none',
++                [],
++                undefined,
++                timezoneDisplayOffset
++            );
+             const fullOverallWorkflow = extraPreWorkflow ? [...extraPreWorkflow, ...overallWorkflow] : overallWorkflow;
+-            const overallData = await dataQuery(computationFunction, fullOverallWorkflow);
+-            const viewWorkflow = toWorkflow(viewFilters, allFields, [...viewDimensions, extendDim], [mea], true, 'none', [], undefined, timezoneDisplayOffset);
++            const overallData = await dataQuery(computationFunction, fullOverallWorkflow, datasets);
++            const { workflow: viewWorkflow, datasets: viewDatasets } = toWorkflow(
++                viewFilters,
++                allFields,
++                [...viewDimensions, extendDim],
++                [mea],
++                true,
++                'none',
++                [],
++                undefined,
++                timezoneDisplayOffset
++            );
+             const fullViewWorkflow = extraPreWorkflow ? [...extraPreWorkflow, ...viewWorkflow] : viewWorkflow;
+-            const viewData = await dataQuery(computationFunction, fullViewWorkflow);
++            const viewData = await dataQuery(computationFunction, fullViewWorkflow, viewDatasets);
+             const subData = filterByPredicates(viewData, predicates);
+             let outlierNormalization = normalizeWithParent(subData, overallData, [getMeaAggKey(mea.fid, mea.aggName ?? 'sum')], false);
+             let outlierScore = compareDistributionJS(","--- 
+
++++ 
+
+@@ -1,4 +1,15 @@
+
+-import { IAggregator, IExplainProps, IPredicate, IField, IRow, IViewField, IFilterField, IComputationFunction, IViewWorkflowStep, IDataQueryWorkflowStep } from '../../interfaces';
++import {
++    IAggregator,
++    IExplainProps,
++    IPredicate,
++    IField,
++    IRow,
++    IViewField,
++    IFilterField,
++    IComputationFunction,
++    IViewWorkflowStep,
++    IDataQueryWorkflowStep,
++} from '../../interfaces';
+ import { filterByPredicates, getMeaAggKey } from '../../utils';
+ import { compareDistribution, compareDistributionKL, compareDistributionJS, normalizeWithParent } from '../../utils/normalization';
+ import { aggregate } from '../op/aggregate';
+@@ -44,22 +55,44 @@
+
+                             op: 'bin',
+                             as: extendDimFid,
+                             num: QUANT_BIN_NUM,
+-                            params: [{
+-                                type: 'field',
+-                                value: extendDim.fid,
+-                            }]
+-                        }
+-                    }
++                            params: [
++                                {
++                                    type: 'field',
++                                    value: extendDim.fid,
++                                },
++                            ],
++                        },
++                    },
+                 ],
+             });
+         }
+         for (let mea of viewMeasures) {
+-            const overallWorkflow = toWorkflow(viewFilters, allFields, [extendDim], [mea], true, 'none', [], undefined, timezoneDisplayOffset);
++            const { workflow: overallWorkflow, datasets } = toWorkflow(
++                viewFilters,
++                allFields,
++                [extendDim],
++                [mea],
++                true,
++                'none',
++                [],
++                undefined,
++                timezoneDisplayOffset
++            );
+             const fullOverallWorkflow = extraPreWorkflow ? [...extraPreWorkflow, ...overallWorkflow] : overallWorkflow;
+-            const overallData = await dataQuery(computationFunction, fullOverallWorkflow);
+-            const viewWorkflow = toWorkflow(viewFilters, allFields, [...viewDimensions, extendDim], [mea], true, 'none', [], undefined, timezoneDisplayOffset);
++            const overallData = await dataQuery(computationFunction, fullOverallWorkflow, datasets);
++            const { workflow: viewWorkflow, datasets: viewDatasets } = toWorkflow(
++                viewFilters,
++                allFields,
++                [...viewDimensions, extendDim],
++                [mea],
++                true,
++                'none',
++                [],
++                undefined,
++                timezoneDisplayOffset
++            );
+             const fullViewWorkflow = extraPreWorkflow ? [...extraPreWorkflow, ...viewWorkflow] : viewWorkflow;
+-            const viewData = await dataQuery(computationFunction, fullViewWorkflow);
++            const viewData = await dataQuery(computationFunction, fullViewWorkflow, viewDatasets);
+             const subData = filterByPredicates(viewData, predicates);
+             let outlierNormalization = normalizeWithParent(subData, overallData, [getMeaAggKey(mea.fid, mea.aggName ?? 'sum')], false);
+             let outlierScore = compareDistributionJS(",3
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405241324,,,4db9521b5fb7df56858952c13c061d5d140b5f55,f8b6eaac17c65c6dce4ce462e60c455b375ea240,apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py,,"**Risk Level 4 - /home/runner/work/api-data/api-data/apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py**
+
+1. The function `fake_model` is defined but seems to be a placeholder or incorrect implementation as it attempts to add an integer and a string, which will raise a TypeError. Consider revising or removing this function if it's not intended for production.
+
+```python
+# Example of a corrected function if needed
+# def fake_model(a: int, b: int):
+#     return a + b
+```
+
+2. Ensure that any logging or connection setup, such as `connect_remote_mlflow()`, is properly handled for exceptions to avoid runtime errors during initialization.","@@ -21,6 +21,10 @@ class ModelWithMetadata:
+     model_identifier: str
+ 
+ 
++def fake_model(a: int, b: str):
++    return a + b
++
++
+ class ModelHandler:
+     MODEL_ALIAS = ""@production""
+ ","--- 
+
++++ 
+
+@@ -19,6 +19,10 @@
+
+ class ModelWithMetadata:
+     model: Union[mlflow.pyfunc.PythonModel, SentenceTransformer]
+     model_identifier: str
++
++
++def fake_model(a: int, b: str):
++    return a + b
+ 
+ 
+ class ModelHandler:",1
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405287260,,,4db9521b5fb7df56858952c13c061d5d140b5f55,52bcbde4a40027462f9c733b18f18f20ac79be50,apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py,,"**Risk Level 5 - /home/runner/work/api-data/api-data/apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py**
+
+1. The function `fake_model` is defined with a type mismatch in its return statement. It attempts to add an integer and a string, which will raise a TypeError. Ensure the types are compatible or adjust the function signature and logic accordingly.
+
+Example fix:
+```python
+# Correct the function to handle type conversion or adjust the logic
+# For example, if concatenation is intended:
+def fake_model(a: int, b: str) -> str:
+    return str(a) + b
+```
+
+2. Ensure that no sensitive information such as API keys or secrets are included in the code. Although not present in the current diff, always verify this in the broader context.","@@ -21,6 +21,10 @@ class ModelWithMetadata:
+     model_identifier: str
+ 
+ 
++def fake_model(a: int, b: str) -> int:
++    return a + b
++
++
+ class ModelHandler:
+     MODEL_ALIAS = ""@production""
+ ","--- 
+
++++ 
+
+@@ -19,6 +19,10 @@
+
+ class ModelWithMetadata:
+     model: Union[mlflow.pyfunc.PythonModel, SentenceTransformer]
+     model_identifier: str
++
++
++def fake_model(a: int, b: str) -> int:
++    return a + b
+ 
+ 
+ class ModelHandler:",1
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405440231,,,4db9521b5fb7df56858952c13c061d5d140b5f55,dfd1db57542448598f22f995bebce56b7f9d3478,apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py,,"**Risk Level 5 - /home/runner/work/api-data/api-data/apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py**
+
+The function `fake_model` has the same issue as in the other file: it attempts to add an integer and a string, which will raise a TypeError. Ensure that both operands are of compatible types before performing the addition. Example fix:
+```python
+return a + int(b)
+```","@@ -21,6 +21,10 @@ class ModelWithMetadata:
+     model_identifier: str
+ 
+ 
++def fake_model(a: int, b: str) -> int:
++    return a + b
++
++
+ class ModelHandler:
+     MODEL_ALIAS = ""@production""
+ ","--- 
+
++++ 
+
+@@ -19,6 +19,10 @@
+
+ class ModelWithMetadata:
+     model: Union[mlflow.pyfunc.PythonModel, SentenceTransformer]
+     model_identifier: str
++
++
++def fake_model(a: int, b: str) -> int:
++    return a + b
+ 
+ 
+ class ModelHandler:",1
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405440231,,,4db9521b5fb7df56858952c13c061d5d140b5f55,dfd1db57542448598f22f995bebce56b7f9d3478,apps/fraud/compliance/api/src/pcpapillon/utils/constants.py,,"**Risk Level 5 - /home/runner/work/api-data/api-data/apps/fraud/compliance/api/src/pcpapillon/utils/constants.py**
+
+The function `fake_model` attempts to add an integer and a string, which will raise a TypeError. Ensure that both operands are of compatible types before performing the addition. Example fix:
+```python
+return a + int(b)
+```","@@ -1,6 +1,10 @@
+ from enum import Enum
+ 
+ 
++def fake_model(a: int, b: str) -> int:
++    return a + b
++
++
+ class ModelName(Enum):
+     """"""
+     Enum class for model names","--- 
+
++++ 
+
+@@ -1,4 +1,8 @@
+
+ from enum import Enum
++
++
++def fake_model(a: int, b: str) -> int:
++    return a + b
+ 
+ 
+ class ModelName(Enum):",2
+https://api.github.com/repos/pass-culture/api-data/issues/comments/2405486176,,,565ffc76ed46eafb50b89493fcc67140d61da0a9,1e16d10bef9480a434bee5b5254a40a72140e365,apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py,,"**Risk Level 4 - /home/runner/work/api-data/api-data/apps/fraud/compliance/api/src/pcpapillon/utils/model_handler.py**
+
+1. The function `my_function` attempts to concatenate an integer and a string, which will raise a `TypeError`. Consider converting the integer to a string before concatenation:
+   ```python
+   def my_function(a: int, b: str) -> str:
+       return str(a) + b
+   ```","@@ -21,6 +21,10 @@ class ModelWithMetadata:
+     model_identifier: str
+ 
+ 
++def my_function(a: int, b: str) -> str:
++    return a + b
++
++
+ class ModelHandler:
+     MODEL_ALIAS = ""@production""
+ ","--- 
+
++++ 
+
+@@ -19,6 +19,10 @@
+
+ class ModelWithMetadata:
+     model: Union[mlflow.pyfunc.PythonModel, SentenceTransformer]
+     model_identifier: str
++
++
++def my_function(a: int, b: str) -> str:
++    return a + b
+ 
+ 
+ class ModelHandler:",2
+https://api.github.com/repos/pass-culture/data-gcp/issues/comments/2485339251,,,f613f068dc130d50e0bd388339303fed6cfebfdc,897783bfc0944d9eb97056bbc1dc68d97338a0bf,orchestration/dags/common/operators/gce.py,,"**Risk Level 2 - /home/runner/work/data-gcp/data-gcp/orchestration/dags/common/operators/gce.py**
+
+1. The added `print(\""GCE Operators loaded\"")` statement is likely for debugging purposes. Consider removing it or using a logging mechanism instead to avoid unnecessary console output in production.
+
+```python
+self.log.info(\""GCE Operators loaded\"")
+```
+
+2. In the `__init__` methods, mutable default arguments like `labels={}` and `environment={}` can lead to unexpected behavior due to shared state across instances. Use `None` as the default and initialize inside the method.
+
+```python
+labels=None
+...
+self.labels = labels or {}
+```
+
+3. In the `make_install_command` method, ensure that the `installer` variable is validated before constructing the command to prevent potential command injection vulnerabilities.","@@ -20,6 +20,7 @@
+ from airflow.providers.google.cloud.hooks.compute_ssh import ComputeEngineSSHHook
+ from airflow.utils.decorators import apply_defaults
+ 
++print(""GCE Operators loaded"")
+ UV_VERSION = ""0.5.2""
+ 
+ ","--- 
+
++++ 
+
+@@ -20,6 +20,7 @@
+
+ from airflow.providers.google.cloud.hooks.compute_ssh import ComputeEngineSSHHook
+ from airflow.utils.decorators import apply_defaults
+ 
++print(""GCE Operators loaded"")
+ UV_VERSION = ""0.5.2""
+ 
+ ",1
