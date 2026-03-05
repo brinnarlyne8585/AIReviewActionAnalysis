@@ -56,8 +56,10 @@ FEATURE_GROUP_MAPPING = {
         'Source_mattzcarey/code-review-gpt',
         'Trigger_auto',
         'Trigger_manual',
+        'Trigger_Is_Manual',
         'Model_gpt-3.5',
         'Model_gpt-4',
+        'Model_Is_GPT4',
     ]
 }
 
@@ -173,32 +175,48 @@ def encode_trigger_mode(trigger_str):
     else:
         return -1
 
-def build_action_features(df: pd.DataFrame) -> pd.DataFrame:
+def map_model(model):
+    if isinstance(model, str):
+        if model.startswith("gpt-3.5"):
+            return "gpt-3.5"
+        elif model.startswith("gpt-4"):
+            return "gpt-4"
+        elif model == "unknown":
+            return "unknown"
+    return "NA"
+
+def build_action_features(df: pd.DataFrame, use_binary: bool = False) -> pd.DataFrame:
     # 1. Trigger mode one-hot encoding.
-    trigger_encoded = pd.get_dummies(df["Trigger_Mode"].fillna("NA"), prefix="Trigger")
-    # Remove the Trigger_human column (if it exists).
-    if "Trigger_human" in trigger_encoded.columns:
-        trigger_encoded = trigger_encoded.drop(columns=["Trigger_human"])
+    if use_binary:
+        # Binary Mode：0=auto, 1=manual
+        trigger_encoded = (df["Trigger_Mode"] == "manual").astype(int).to_frame(name="Trigger_Is_Manual")
+        print("✅ Trigger Mode: Apply binary conversion (Trigger_Is_Manual)")
+    else:
+        # One-hot 模式：原始逻辑
+        trigger_encoded = pd.get_dummies(df["Trigger_Mode"].fillna("NA"), prefix="Trigger")
+        # Remove the Trigger_human column (if it exists).
+        if "Trigger_human" in trigger_encoded.columns:
+            trigger_encoded = trigger_encoded.drop(columns=["Trigger_human"])
+        print("ℹ️ Trigger Mode: Apply one-hot encoding")
 
-    # 2. Model configuration one-hot encoding (normalized to gpt-3.5, gpt-4, unknown, NA).
-    def map_model(model):
-        if isinstance(model, str):
-            if model.startswith("gpt-3.5"):
-                return "gpt-3.5"
-            elif model.startswith("gpt-4"):
-                return "gpt-4"
-            elif model == "unknown":
-                return "unknown"
-        return "NA"
 
-    model_group = df["Model_Configured"].apply(map_model)
-    model_encoded = pd.get_dummies(model_group, prefix="Model")
-    # Remove NA (overlaps with Is_Human).
-    if "Model_NA" in model_encoded.columns:
-        model_encoded = model_encoded.drop(columns=["Model_NA"])
-    # Remove NA (overlaps with Is_Human).
-    if "Model_unknown" in model_encoded.columns:
-        model_encoded = model_encoded.drop(columns=["Model_unknown"])
+    # ---- Model Configuration 特征 ----
+    if use_binary:
+        # Binary Mode：Perform 0/1 conversion based solely on mapped gpt-3.5/gpt-4
+        model_group = df["Model_Configured"].apply(map_model)
+        model_encoded = model_group.apply(lambda x: 1 if x == "gpt-4" else 0).to_frame(name="Model_Is_GPT4")
+        print("✅ Model Config: Apply binary conversion (Model_Is_GPT4)")
+    else:
+        # One-hot Mode：
+        model_group = df["Model_Configured"].apply(map_model)
+        model_encoded = pd.get_dummies(model_group, prefix="Model")
+        # Remove Model_NA (overlaps with Is_Human).
+        if "Model_NA" in model_encoded.columns:
+            model_encoded = model_encoded.drop(columns=["Model_NA"])
+        # Remove Model_unknown (overlaps with Is_Human).
+        if "Model_unknown" in model_encoded.columns:
+            model_encoded = model_encoded.drop(columns=["Model_unknown"])
+        print("ℹ️ Model Config: Apply one-hot encoding")
 
     # 3. Source structure (whether it is human/action/file/patch).
     df["Is_Human"] = (df["Source"] == "Human").astype(int)
@@ -232,7 +250,8 @@ def assemble_feature_matrix(df: pd.DataFrame, enabled_feature_types: dict) -> pd
     if enabled_feature_types.get("file"):
         feature_parts.append(build_file_features(df))
     if enabled_feature_types.get("action"):
-        feature_parts.append(build_action_features(df))
+        use_bin = enabled_feature_types.get("action_use_binary", False)
+        feature_parts.append(build_action_features(df, use_binary=use_bin))
     if enabled_feature_types.get("topic"):
         feature_parts.append(build_topic_feature(df))
 

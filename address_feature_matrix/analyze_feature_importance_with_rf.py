@@ -14,8 +14,7 @@ from sklearn.preprocessing import FunctionTransformer
 import shap
 from scipy.stats import pearsonr
 
-from address_feature_matrix.build_features import assemble_feature_matrix, FEATURE_GROUP_MAPPING
-
+from address_feature_matrix.build_features import assemble_feature_matrix, FEATURE_GROUP_MAPPING, map_model
 
 # --------------- Tokenizer --------------- #
 lemmatizer = WordNetLemmatizer()
@@ -413,6 +412,44 @@ if __name__ == "__main__":
         print(f"Original row count: {len(df)}")
         df = df[df["Source"] != "Human"]
         print(f"Row count after removing Human source: {len(df)}")
+
+        # ========================================================================================================
+        # Verify if Trigger Mode and Model Configuration are suitable for binary encoding
+        # ========================================================================================================
+
+        # --- Verify Trigger Mode ---
+        trigger_unique = df["Trigger_Mode"].dropna().unique()
+        print(f"\n🔍 Verify Trigger_Mode unique values (after filtering Human): {trigger_unique}")
+        trigger_ok = False
+        if set(trigger_unique) <= {"auto", "manual"}:
+            print("✅ Trigger_Mode only contains auto/manual, suitable for binary feature")
+            trigger_ok = True
+        else:
+            print(f"⚠️ Trigger_Mode contains extra values: {set(trigger_unique) - {'auto', 'manual'} }, binary feature is not recommended")
+
+        # --- Verify Model Configuration ---
+        model_mapped = df["Model_Configured"].apply(map_model)
+        model_unique = model_mapped.unique()
+        print(f"🔍 Verify Model_Configured mapped unique values (after filtering Human): {model_unique}")
+        # After filtering Human, NA and unknown are usually dropped, leaving only gpt-3.5 and gpt-4
+        model_values_after_drop = set(model_unique) - {"NA", "unknown"}
+
+        model_ok = False
+        if model_values_after_drop <= {"gpt-3.5", "gpt-4"}:
+            print("✅ Model_Configured (after removing NA/unknown) only contains gpt-3.5/gpt-4, suitable for binary feature")
+            model_ok = True
+        else:
+            print(
+                f"⚠️ Model_Configured contains extra values: {model_values_after_drop - {'gpt-3.5', 'gpt-4'} }, binary feature is not recommended")
+
+        USE_BINARY_FEATURES = trigger_ok and model_ok
+
+        if USE_BINARY_FEATURES:
+            print("\n🔧 Verification passed: Automatically pass the instruction to the feature builder to use Binary encoding (action_use_binary=True)")
+            enabled_config["action_use_binary"] = True
+        else:
+            print("\n🔧 Verification failed or data contains extra states: Fallback to keep using one-hot encoding (action_use_binary=False)")
+            enabled_config["action_use_binary"] = False
 
     # Perform training with 5-fold CV.
     train_rf_with_tfidf_and_structured_5fold(
