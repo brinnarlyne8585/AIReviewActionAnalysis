@@ -23,7 +23,7 @@ CLIENT_CONFIGS = {
     "azure": {
         "type": "azure_openai",
         "params": {
-            "azure_endpoint": "https://subcription-openai.openai.azure.com/",
+            "azure_endpoint": "",
             "api_key": "",
             "api_version": "2024-09-01-preview"
         }
